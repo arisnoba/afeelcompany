@@ -21,7 +21,7 @@ Phase 5: 통합 + 런칭
 | # | Phase | Goal | Requirements | Success Criteria |
 |---|-------|------|--------------|------------------|
 | 0 | 프로젝트 스캐폴딩 | 빈 프로젝트 → 동작하는 Next.js 앱 + DB/Blob 연결 | SCAF-01~07 | 4 |
-| 1 | Spike — 인스타 API 검증 | Meta Graph API로 피드 읽기 기술 검증 (INST-01~03) | INST-01~03 | 3 |
+| 1 | Spike — 인스타 API 검증 | 1/5 | In Progress|  |
 | 2 | Spike — PDF 출력 검증 | 브라우저 인쇄 기반 가로형 PDF 품질 검증 | PDF-01~06 | 6 |
 | 3 | 데이터 레이어 + 관리자 | 관리자 인증/업로드/관리 백엔드 완성 | AUTH-01~04, UPLD-01~06, PORT-01~05, PROF-01~03 | 5 |
 | 4 | 공개 사이트 | 방문자용 프론트엔드 페이지 전체 구현 | SITE-01~08 | 5 |
@@ -52,10 +52,10 @@ Phase 5: 통합 + 런칭
 
 > **Note:** Phase 1과 Phase 2는 병렬 진행 가능 (독립적인 Spike)
 
-**Plans:** 5 plans
+**Plans:** 1/5 plans executed
 
 Plans:
-- [ ] 01-01-PLAN.md — Foundations: types, db helper, next.config remotePatterns
+- [x] 01-01-PLAN.md — Foundations: types, db helper, next.config remotePatterns
 - [ ] 01-02-PLAN.md — Library: instagram.ts (fetchFeed, syncToDb, getCachedFeed, refreshToken, checkTokenExpiry)
 - [ ] 01-03-PLAN.md — API routes: /api/instagram/sync + /api/instagram/refresh-token
 - [ ] 01-04-PLAN.md — Spike UI: /admin/instagram-test page (3-column grid + SyncButton)
