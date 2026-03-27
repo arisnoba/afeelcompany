@@ -56,7 +56,7 @@ Phase 5: 통합 + 런칭
 
 Plans:
 - [x] 01-01-PLAN.md — Foundations: types, db helper, next.config remotePatterns
-- [ ] 01-02-PLAN.md — Library: instagram.ts (fetchFeed, syncToDb, getCachedFeed, refreshToken, checkTokenExpiry)
+- [x] 01-02-PLAN.md — Library: instagram.ts (fetchFeed, syncToDb, getCachedFeed, refreshToken, checkTokenExpiry)
 - [ ] 01-03-PLAN.md — API routes: /api/instagram/sync + /api/instagram/refresh-token
 - [ ] 01-04-PLAN.md — Spike UI: /admin/instagram-test page (3-column grid + SyncButton)
 - [ ] 01-05-PLAN.md — Human verification checkpoint (INST-01~03)

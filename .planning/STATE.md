@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Executing Phase 01
-last_updated: "2026-03-27T03:29:41.319Z"
+last_updated: "2026-03-27T03:33:12.043Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 6
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State: AFEEL Company Site (MVP)
@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 **v1.0 — MVP Launch**
 
-### Progress [███░░░░░░░] 33%
+### Progress [█████░░░░░] 50%
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
 | 0 | 프로젝트 스캐폴딩 | **Not Started** | SCAF-01~07 |
-| 1 | Spike — 인스타 API 검증 | In Progress (Plan 1/4) | INST-01~05 |
+| 1 | Spike — 인스타 API 검증 | In Progress (Plan 2/4) | INST-01~05 |
 | 2 | Spike — PDF 출력 검증 | Not Started | PDF-01~06 |
 | 3 | 데이터 레이어 + 관리자 | Not Started | AUTH, UPLD, PORT, PROF |
 | 4 | 공개 사이트 | Not Started | SITE-01~08 |
@@ -41,7 +41,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 - Status: In Progress
 - Goal: Meta Graph API 피드 읽기 + DB 캐싱 + 토큰 갱신 동작 검증
-- Current Plan: 01-01 (complete) → next: 01-02
+- Current Plan: 01-02 (complete) → next: 01-03
 
 ## Decisions
 
@@ -49,18 +49,22 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 |-------|----------|
 | 01-01 | CachedPost mirrors schema.sql instagram_feed_cache DDL exactly; thumbnail_url is API-only not persisted |
 | 01-01 | remotePatterns uses **.cdninstagram.com double-star glob; **.fbcdn.net added as Facebook CDN fallback |
+| 01-02 | syncToDb only writes columns present in schema.sql; thumbnail_url/media_type not stored in DB |
+| 01-02 | VIDEO posts use thumbnail_url as media_url fallback before DB write (Pitfall 3) |
+| 01-02 | checkTokenExpiry warns only at <=7 days; no auto-refresh (D-12) |
 
 ## Performance Metrics
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-instagram-api-spike | 01 | 2min | 2 | 3 |
+| 01-instagram-api-spike | 02 | 2min | 2 | 1 |
 
 ## Session Context
 
 - Last session: 2026-03-27
-- Stopped at: Completed 01-01-PLAN.md
-- Last action: Created type contracts (src/types/instagram.ts), db helper (src/lib/db.ts), and next.config.ts remotePatterns
+- Stopped at: Completed 01-02-PLAN.md
+- Last action: Implemented src/lib/instagram.ts with 5 exported functions (fetchFeed, syncToDb, getCachedFeed, refreshToken, checkTokenExpiry)
 
 ## Blockers
 
