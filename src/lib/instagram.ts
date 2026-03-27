@@ -9,9 +9,25 @@ import type {
 
 const INSTAGRAM_API_BASE = 'https://graph.instagram.com/v25.0'
 const INSTAGRAM_REFRESH_BASE = 'https://graph.instagram.com'
+const INSTAGRAM_PUBLISH_BASE = 'https://graph.facebook.com/v25.0'
 const FEED_FIELDS = 'id,caption,media_url,thumbnail_url,timestamp,media_type,permalink'
 // Token warning threshold: 7 days in ms (per D-12)
 const TOKEN_WARN_DAYS = 7
+
+function getInstagramPublishContext(): { accessToken: string; userId: string } {
+  const accessToken = process.env.INSTAGRAM_ACCESS_TOKEN
+  const userId = process.env.INSTAGRAM_USER_ID
+
+  if (!accessToken) {
+    throw new Error('INSTAGRAM_ACCESS_TOKEN environment variable is not set')
+  }
+
+  if (!userId) {
+    throw new Error('INSTAGRAM_USER_ID environment variable is not set')
+  }
+
+  return { accessToken, userId }
+}
 
 /**
  * Fetch recent media posts from Meta Graph API.
@@ -51,6 +67,66 @@ export async function refreshToken(
   }
 
   return res.json() as Promise<RefreshTokenResult>
+}
+
+export async function createMediaContainer(
+  imageUrl: string,
+  caption: string
+): Promise<{ id: string }> {
+  const { accessToken, userId } = getInstagramPublishContext()
+  const body = new URLSearchParams({
+    image_url: imageUrl,
+    caption,
+    access_token: accessToken,
+  })
+
+  const response = await fetch(`${INSTAGRAM_PUBLISH_BASE}/${userId}/media`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+    cache: 'no-store',
+  })
+
+  const result = (await response.json()) as { id?: string; error?: unknown }
+
+  if (!response.ok || !result.id) {
+    throw new Error(
+      `Create media container failed ${response.status}: ${JSON.stringify(result.error ?? result)}`
+    )
+  }
+
+  return { id: result.id }
+}
+
+export async function publishMediaContainer(
+  containerId: string
+): Promise<{ id: string }> {
+  const { accessToken, userId } = getInstagramPublishContext()
+  const body = new URLSearchParams({
+    creation_id: containerId,
+    access_token: accessToken,
+  })
+
+  const response = await fetch(`${INSTAGRAM_PUBLISH_BASE}/${userId}/media_publish`, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body,
+    cache: 'no-store',
+  })
+
+  const result = (await response.json()) as { id?: string; error?: unknown }
+
+  if (!response.ok || !result.id) {
+    throw new Error(
+      `Publish media container failed ${response.status}: ${JSON.stringify(result.error ?? result)}`
+    )
+  }
+
+  return { id: result.id }
 }
 
 /**
