@@ -1,0 +1,53 @@
+@page {
+  size: A4 landscape;
+  margin: 8mm;
+}
+
+.pdf-document {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  padding: 24px;
+  background: #f5f1ea;
+}
+
+.pdf-sheet {
+  width: 297mm;
+  min-height: 210mm;
+  background: #ffffff;
+  color: #111111;
+  page-break-after: always;
+  break-after: page;
+}
+
+.screen-only {
+  display: flex;
+}
+
+@media print {
+  html,
+  body {
+    background: #ffffff;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .screen-only {
+    display: none !important;
+  }
+
+  .pdf-document {
+    gap: 0;
+    padding: 0;
+    background: transparent;
+  }
+
+  .pdf-sheet {
+    margin: 0;
+  }
+
+  .avoid-break {
+    break-inside: avoid;
+    page-break-inside: avoid;
+  }
+}
