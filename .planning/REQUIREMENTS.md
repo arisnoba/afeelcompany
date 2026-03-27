@@ -25,12 +25,12 @@
 
 ### PDF 소개서 (PDF)
 
-- [ ] **PDF-01**: `/pdf-export` 라우트에서 가로형 A4 레이아웃의 회사 소개서 페이지가 렌더링된다
-- [ ] **PDF-02**: `@media print` CSS로 인쇄 시 가로 방향, 페이지 나눔, 배경색이 정확히 출력된다
-- [ ] **PDF-03**: 소개서 섹션 구성(표지→ABOUT→WORK→CLIENT→연락처)이 올바르게 배치된다
-- [ ] **PDF-04**: 한글 텍스트가 깨짐 없이 출력된다 (Pretendard / Noto Sans KR)
-- [ ] **PDF-05**: `window.print()` + "다운로드" 버튼으로 PDF 저장 플로우가 동작한다
-- [ ] **PDF-06**: Chrome과 Safari에서 동일한 출력 결과를 얻을 수 있다
+- [x] **PDF-01**: `/pdf-export` 라우트에서 가로형 A4 레이아웃의 회사 소개서 페이지가 렌더링된다
+- [x] **PDF-02**: `@media print` CSS로 인쇄 시 가로 방향, 페이지 나눔, 배경색이 정확히 출력된다
+- [x] **PDF-03**: 소개서 섹션 구성(표지→ABOUT→WORK→CLIENT→연락처)이 올바르게 배치된다
+- [x] **PDF-04**: 한글 텍스트가 깨짐 없이 출력된다 (Pretendard / Noto Sans KR)
+- [x] **PDF-05**: `window.print()` + "다운로드" 버튼으로 PDF 저장 플로우가 동작한다
+- [x] **PDF-06**: Chrome과 Safari에서 동일한 출력 결과를 얻을 수 있다
 
 ### 관리자 인증 (AUTH)
 
@@ -117,9 +117,9 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | SCAF-01~07 | Phase 0 | Pending |
-| INST-01~03 | Phase 1 | Pending |
+| INST-01~03 | Phase 1 | Complete |
 | INST-04~05 | Phase 1 | Pending |
-| PDF-01~06 | Phase 2 | Pending |
+| PDF-01~06 | Phase 2 | Complete |
 | AUTH-01~04 | Phase 3 | Pending |
 | UPLD-01~06 | Phase 3 | Pending |
 | PORT-01~05 | Phase 3 | Pending |
@@ -134,4 +134,4 @@
 
 ---
 *Requirements defined: 2026-03-26*
-*Last updated: 2026-03-26 after initial definition*
+*Last updated: 2026-03-27 after Phase 2 approval*
