@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Awaiting verification
-last_updated: "2026-03-27T09:15:00.000Z"
+status: Ready to plan
+last_updated: "2026-03-27T10:05:00.000Z"
 progress:
   total_phases: 6
-  completed_phases: 3
+  completed_phases: 4
   total_plans: 17
-  completed_plans: 16
+  completed_plans: 17
 ---
 
 # Project State: AFEEL Company Site (MVP)
@@ -18,30 +18,30 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** 원소스 멀티유즈 — 한 번 업로드로 웹 갤러리 · 인스타그램 · PDF 소개서 모두 반영
-**Current focus:** Phase 03 — 데이터 레이어 + 관리자 페이지
+**Current focus:** Phase 04 — 공개 사이트
 
 ## Current Milestone
 
 **v1.0 — MVP Launch**
 
-### Progress [█████████░] 94%
+### Progress [██████████] 100%
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
 | 0 | 프로젝트 스캐폴딩 | Complete | SCAF-01~07 |
 | 1 | Spike — 인스타 API 검증 | Complete (Plan 5/5) | INST-01~05 |
 | 2 | Spike — PDF 출력 검증 | Complete (Plan 5/5) | PDF-01~06 |
-| 3 | 데이터 레이어 + 관리자 | In Review (Plan 5/6) | AUTH, UPLD, PORT, PROF, INST |
+| 3 | 데이터 레이어 + 관리자 | Complete (Plan 6/6) | AUTH, UPLD, PORT, PROF, INST |
 | 4 | 공개 사이트 | Not Started | SITE-01~08 |
 | 5 | 통합 + 런칭 | Not Started | LNCH-01~06 |
 
 ### Active Phase
 
-**Phase 03: 데이터 레이어 + 관리자 페이지**
+**Phase 04: 공개 사이트**
 
-- Status: Awaiting human verification
-- Goal: 관리자 인증, 업로드, 포트폴리오 관리, 회사 프로필/브랜드, 인스타 큐까지 구현 후 수동 검증 마감
-- Current Plan: 03-06 (manual checkpoint)
+- Status: Ready to plan
+- Goal: 방문자용 공개 사이트를 실데이터 기반으로 구현
+- Current Plan: none
 
 ## Decisions
 
@@ -65,6 +65,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - [Phase 03-04]: `company_profile`은 singleton row 전략으로 유지하고 브랜드 로고는 `brands/*` Blob 경로를 재사용한다
 - [Phase 03-05]: Instagram 게시 플로우는 `draft -> pending -> published/failed` 상태 전이를 DB에 기록한다
 - [Phase 03-06]: 원격 Google font 의존성을 제거해 현재 환경에서도 `npm run build`가 안정적으로 재현되도록 조정했다
+- [Phase 03-06]: 사용자 수동 검증에서 로그인, 업로드, 포트폴리오 관리, 프로필/브랜드, PDF 반영, 인스타 큐 게시가 모두 성공해 Phase 03을 승인했다
 
 ## Performance Metrics
 
@@ -83,12 +84,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 ## Session Context
 
 - Last session: 2026-03-27
-- Stopped at: Implemented Phase 03 plans 03-01~03-05 and cleared lint/build baseline
-- Last action: Left Phase 03 at 03-06 human verification checkpoint
+- Stopped at: Completed and approved Phase 03 after human admin checkpoint
+- Last action: Advanced project focus to Phase 04 planning
 
 ## Blockers
 
-- Human browser/UAT checkpoint for Phase 03 is still required before final approval
+None
 
 ---
 *Last updated: 2026-03-27*

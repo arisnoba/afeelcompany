@@ -1,7 +1,7 @@
 ---
 phase: 3
 slug: data-layer-admin
-status: in_progress
+status: approved
 nyquist_compliant: true
 wave_0_complete: true
 created: 2026-03-27
@@ -39,18 +39,18 @@ created: 2026-03-27
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
 | 03-01-01 | 01 | 1 | AUTH-01 | build | `npm run build` | ✅ | ✅ green |
-| 03-01-02 | 01 | 1 | AUTH-02~04 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-01-02 | 01 | 1 | AUTH-02~04 | manual + build | `npm run build` | ✅ | ✅ green |
 | 03-02-01 | 02 | 2 | UPLD-01~04 | build | `npm run build` | ✅ | ✅ green |
-| 03-02-02 | 02 | 2 | UPLD-05~06 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-02-02 | 02 | 2 | UPLD-05~06 | manual + build | `npm run build` | ✅ | ✅ green |
 | 03-03-01 | 03 | 3 | PORT-01~03 | build | `npm run build` | ✅ | ✅ green |
-| 03-03-02 | 03 | 3 | PORT-04~05 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-03-02 | 03 | 3 | PORT-04~05 | manual + build | `npm run build` | ✅ | ✅ green |
 | 03-04-01 | 04 | 3 | PROF-01~02 | build | `npm run build` | ✅ | ✅ green |
-| 03-04-02 | 04 | 3 | PROF-03 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-04-02 | 04 | 3 | PROF-03 | manual + build | `npm run build` | ✅ | ✅ green |
 | 03-05-01 | 05 | 4 | INST-04 | build | `npm run build` | ✅ | ✅ green |
-| 03-05-02 | 05 | 4 | INST-05 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
-| 03-06-01 | 06 | 5 | AUTH-01~04 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
-| 03-06-02 | 06 | 5 | UPLD-01~06 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
-| 03-06-03 | 06 | 5 | PORT-01~05, PROF-01~03, INST-04~05 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
+| 03-05-02 | 05 | 4 | INST-05 | manual + build | `npm run build` | ✅ | ✅ green |
+| 03-06-01 | 06 | 5 | AUTH-01~04 | manual | `npm run lint && npm run build` | ✅ | ✅ green |
+| 03-06-02 | 06 | 5 | UPLD-01~06 | manual | `npm run lint && npm run build` | ✅ | ✅ green |
+| 03-06-03 | 06 | 5 | PORT-01~05, PROF-01~03, INST-04~05 | manual | `npm run lint && npm run build` | ✅ | ✅ green |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -87,4 +87,4 @@ created: 2026-03-27
 - [x] Feedback latency < 30s
 - [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending human admin checkpoint
+**Approval:** approved

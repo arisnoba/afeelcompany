@@ -23,7 +23,7 @@ Phase 5: 통합 + 런칭
 | 0 | 프로젝트 스캐폴딩 | Complete (1/1) | SCAF-01~07 | 4 |
 | 1 | Spike — 인스타 API 검증 | 5/5 | Complete | 3 |
 | 2 | Spike — PDF 출력 검증 | 5/5 | Complete | 6 |
-| 3 | 데이터 레이어 + 관리자 | 5/6 | In Review | 5 |
+| 3 | 데이터 레이어 + 관리자 | 6/6 | Complete | 5 |
 | 4 | 공개 사이트 | 방문자용 프론트엔드 페이지 전체 구현 | SITE-01~08 | 5 |
 | 5 | 통합 + 런칭 | E2E 플로우 검증 + 프로덕션 배포 | LNCH-01~06 | 4 |
 
@@ -112,7 +112,7 @@ Plans:
 **Depends on:** Phase 0 + Phase 1~2 검증 결과
 **UI hint:** yes
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans executed
 
 Plans:
 - [x] 03-01-PLAN.md — 관리자 인증, 로그인/로그아웃, 보호된 admin layout
@@ -120,7 +120,7 @@ Plans:
 - [x] 03-03-PLAN.md — 포트폴리오 목록/수정/토글/정렬/삭제 관리
 - [x] 03-04-PLAN.md — 회사 프로필/브랜드 로고 관리
 - [x] 03-05-PLAN.md — 인스타 큐 목록/생성/수동 게시 버튼
-- [ ] 03-06-PLAN.md — 사람 검증 체크포인트
+- [x] 03-06-PLAN.md — 사람 검증 체크포인트
 
 **Success Criteria:**
 1. 관리자가 비밀번호로 로그인하고 `/admin/*` 영역에 접근할 수 있다
@@ -175,4 +175,4 @@ Phase 1~2 Spike 완료 후 확정할 사항:
 
 ---
 *Created: 2026-03-26*
-*Last updated: 2026-03-27 — Phase 3 implementation complete for plans 03-01~03-05; 03-06 human checkpoint pending*
+*Last updated: 2026-03-27 — Phase 3 approved after successful human admin checkpoint; next focus is Phase 4*

@@ -18,14 +18,19 @@
 
 ## 사람 확인 필요
 
-- `/admin/login` 로그인/로그아웃
-- `/admin/upload` 실제 업로드 + DB/Blob 반영
-- `/admin/portfolio` 수정/토글/정렬/삭제
-- `/admin/profile` 회사 정보 저장 + 브랜드 로고 관리
-- `/pdf-export` 실데이터 반영 확인
-- `/admin/instagram` 큐 생성 + publish 결과 확인
+- 완료: `/admin/login` 로그인/로그아웃
+- 완료: `/admin/upload` 실제 업로드 + DB/Blob 반영
+- 완료: `/admin/portfolio` 수정/토글/정렬/삭제
+- 완료: `/admin/profile` 회사 정보 저장 + 브랜드 로고 관리
+- 완료: `/pdf-export` 실데이터 반영 확인
+- 완료: `/admin/instagram` 큐 생성 + publish 결과 확인
 
 ## 상태 판단
 
 - 자동 구현 범위 03-01~03-05는 완료
-- Phase 03 전체 완료 여부는 사람 검증 결과가 들어와야 최종 승인 가능
+- 사람 검증 결과까지 승인되어 Phase 03을 완료 처리한다
+
+## 최종 승인
+
+- 사용자 수동 확인 결과: 모두 성공
+- 승인 범위: AUTH-01~04, UPLD-01~06, PORT-01~05, PROF-01~03, INST-04~05
