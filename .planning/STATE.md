@@ -3,12 +3,12 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: Executing Phase 01
-last_updated: "2026-03-27T03:33:12.043Z"
+last_updated: "2026-03-27T03:37:03.512Z"
 progress:
   total_phases: 6
   completed_phases: 1
   total_plans: 6
-  completed_plans: 3
+  completed_plans: 5
 ---
 
 # Project State: AFEEL Company Site (MVP)
@@ -41,7 +41,7 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 - Status: In Progress
 - Goal: Meta Graph API 피드 읽기 + DB 캐싱 + 토큰 갱신 동작 검증
-- Current Plan: 01-02 (complete) → next: 01-03
+- Current Plan: 01-04 (complete) → Phase 01 complete
 
 ## Decisions
 
@@ -53,18 +53,23 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 | 01-02 | VIDEO posts use thumbnail_url as media_url fallback before DB write (Pitfall 3) |
 | 01-02 | checkTokenExpiry warns only at <=7 days; no auto-refresh (D-12) |
 
+- [Phase 01-03]: Both API routes read INSTAGRAM_ACCESS_TOKEN from env var only; POST semantics for trigger endpoints; refresh-token returns operator instructions for manual Vercel dashboard update
+- [Phase 01-04]: export const dynamic = 'force-dynamic' required on DB-dependent pages to prevent build-time pre-rendering failures
+
 ## Performance Metrics
 
 | Phase | Plan | Duration | Tasks | Files |
 |-------|------|----------|-------|-------|
 | 01-instagram-api-spike | 01 | 2min | 2 | 3 |
 | 01-instagram-api-spike | 02 | 2min | 2 | 1 |
+| Phase 01-instagram-api-spike P03 | 1min | 2 tasks | 2 files |
+| Phase 01-instagram-api-spike P04 | 8min | 1 tasks | 2 files |
 
 ## Session Context
 
 - Last session: 2026-03-27
-- Stopped at: Completed 01-02-PLAN.md
-- Last action: Implemented src/lib/instagram.ts with 5 exported functions (fetchFeed, syncToDb, getCachedFeed, refreshToken, checkTokenExpiry)
+- Stopped at: Completed 01-04-PLAN.md
+- Last action: Created /admin/instagram-test spike UI — Server Component grid page + SyncButton client component
 
 ## Blockers
 
