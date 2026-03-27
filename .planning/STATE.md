@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to execute
-last_updated: "2026-03-27T04:38:02.658Z"
+status: Awaiting verification
+last_updated: "2026-03-27T09:15:00.000Z"
 progress:
   total_phases: 6
   completed_phases: 3
   total_plans: 17
-  completed_plans: 11
+  completed_plans: 16
 ---
 
 # Project State: AFEEL Company Site (MVP)
@@ -24,14 +24,14 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 **v1.0 — MVP Launch**
 
-### Progress [███████░░░] 65%
+### Progress [█████████░] 94%
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
 | 0 | 프로젝트 스캐폴딩 | Complete | SCAF-01~07 |
 | 1 | Spike — 인스타 API 검증 | Complete (Plan 5/5) | INST-01~05 |
 | 2 | Spike — PDF 출력 검증 | Complete (Plan 5/5) | PDF-01~06 |
-| 3 | 데이터 레이어 + 관리자 | Planned (Plan 0/6) | AUTH, UPLD, PORT, PROF |
+| 3 | 데이터 레이어 + 관리자 | In Review (Plan 5/6) | AUTH, UPLD, PORT, PROF, INST |
 | 4 | 공개 사이트 | Not Started | SITE-01~08 |
 | 5 | 통합 + 런칭 | Not Started | LNCH-01~06 |
 
@@ -39,9 +39,9 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Phase 03: 데이터 레이어 + 관리자 페이지**
 
-- Status: Ready to execute
-- Goal: 관리자 인증, 업로드, 포트폴리오 관리, 회사 프로필 편집 백엔드 구현
-- Current Plan: 03-01 (ready)
+- Status: Awaiting human verification
+- Goal: 관리자 인증, 업로드, 포트폴리오 관리, 회사 프로필/브랜드, 인스타 큐까지 구현 후 수동 검증 마감
+- Current Plan: 03-06 (manual checkpoint)
 
 ## Decisions
 
@@ -59,6 +59,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 - [Phase 02-03]: `/pdf-export` renders explicit brochure sheets in fixed order instead of deriving page order dynamically
 - [Phase 02-04]: Browser print flow is driven by `/pdf-export?print=1` and waits for fonts plus brochure images before calling `window.print()`
 - [Phase 02-05]: Chrome와 Safari 수동 검증을 완료했고 브라우저 인쇄 접근을 MVP 유지안으로 승인했다
+- [Phase 03-01]: `/admin/login`은 App Router 레이아웃 충돌을 피하기 위해 별도 route group에 두고, 보호 경계는 `src/app/admin/layout.tsx`에서 유지한다
+- [Phase 03-02]: 관리자 이미지 업로드는 클라이언트 리사이즈(2000px, JPEG 0.8) 후 Blob server upload로 고정했다
+- [Phase 03-03]: 포트폴리오 편집은 인라인 테이블 방식으로 구현하고 정렬 저장은 `/api/portfolio/reorder`에서 일괄 반영한다
+- [Phase 03-04]: `company_profile`은 singleton row 전략으로 유지하고 브랜드 로고는 `brands/*` Blob 경로를 재사용한다
+- [Phase 03-05]: Instagram 게시 플로우는 `draft -> pending -> published/failed` 상태 전이를 DB에 기록한다
+- [Phase 03-06]: 원격 Google font 의존성을 제거해 현재 환경에서도 `npm run build`가 안정적으로 재현되도록 조정했다
 
 ## Performance Metrics
 
@@ -77,12 +83,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 ## Session Context
 
 - Last session: 2026-03-27
-- Stopped at: Planned Phase 03 into 6 executable feature slices
-- Last action: Created Phase 03 research, validation, and 03-01~03-06 plan set
+- Stopped at: Implemented Phase 03 plans 03-01~03-05 and cleared lint/build baseline
+- Last action: Left Phase 03 at 03-06 human verification checkpoint
 
 ## Blockers
 
-None
+- Human browser/UAT checkpoint for Phase 03 is still required before final approval
 
 ---
 *Last updated: 2026-03-27*

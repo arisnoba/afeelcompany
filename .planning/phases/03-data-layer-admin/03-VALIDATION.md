@@ -1,9 +1,9 @@
 ---
 phase: 3
 slug: data-layer-admin
-status: draft
-nyquist_compliant: false
-wave_0_complete: false
+status: in_progress
+nyquist_compliant: true
+wave_0_complete: true
 created: 2026-03-27
 ---
 
@@ -38,19 +38,19 @@ created: 2026-03-27
 
 | Task ID | Plan | Wave | Requirement | Test Type | Automated Command | File Exists | Status |
 |---------|------|------|-------------|-----------|-------------------|-------------|--------|
-| 03-01-01 | 01 | 1 | AUTH-01 | build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-01-02 | 01 | 1 | AUTH-02~04 | manual + build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-02-01 | 02 | 2 | UPLD-01~04 | build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-02-02 | 02 | 2 | UPLD-05~06 | manual + build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-03-01 | 03 | 3 | PORT-01~03 | build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-03-02 | 03 | 3 | PORT-04~05 | manual + build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-04-01 | 04 | 3 | PROF-01~02 | build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-04-02 | 04 | 3 | PROF-03 | manual + build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-05-01 | 05 | 4 | INST-04 | build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-05-02 | 05 | 4 | INST-05 | manual + build | `npm run build` | ❌ W0 | ⬜ pending |
-| 03-06-01 | 06 | 5 | AUTH-01~04 | manual | `npm run lint && npm run build` | ❌ W0 | ⬜ pending |
-| 03-06-02 | 06 | 5 | UPLD-01~06 | manual | `npm run lint && npm run build` | ❌ W0 | ⬜ pending |
-| 03-06-03 | 06 | 5 | PORT-01~05, PROF-01~03, INST-04~05 | manual | `npm run lint && npm run build` | ❌ W0 | ⬜ pending |
+| 03-01-01 | 01 | 1 | AUTH-01 | build | `npm run build` | ✅ | ✅ green |
+| 03-01-02 | 01 | 1 | AUTH-02~04 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-02-01 | 02 | 2 | UPLD-01~04 | build | `npm run build` | ✅ | ✅ green |
+| 03-02-02 | 02 | 2 | UPLD-05~06 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-03-01 | 03 | 3 | PORT-01~03 | build | `npm run build` | ✅ | ✅ green |
+| 03-03-02 | 03 | 3 | PORT-04~05 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-04-01 | 04 | 3 | PROF-01~02 | build | `npm run build` | ✅ | ✅ green |
+| 03-04-02 | 04 | 3 | PROF-03 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-05-01 | 05 | 4 | INST-04 | build | `npm run build` | ✅ | ✅ green |
+| 03-05-02 | 05 | 4 | INST-05 | manual + build | `npm run build` | ✅ | ⚠️ manual pending |
+| 03-06-01 | 06 | 5 | AUTH-01~04 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
+| 03-06-02 | 06 | 5 | UPLD-01~06 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
+| 03-06-03 | 06 | 5 | PORT-01~05, PROF-01~03, INST-04~05 | manual | `npm run lint && npm run build` | ✅ | ⚠️ manual pending |
 
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
@@ -58,11 +58,11 @@ created: 2026-03-27
 
 ## Wave 0 Requirements
 
-- [ ] `ADMIN_PASSWORD` 환경변수가 로컬/배포 환경에 존재한다
-- [ ] `POSTGRES_URL` 또는 Vercel Postgres 연결이 실제 CRUD 가능한 상태다
-- [ ] `BLOB_READ_WRITE_TOKEN` 환경변수가 존재한다
-- [ ] `next.config.ts`에 Vercel Blob URL 표시를 위한 이미지 설정이 추가되거나 plain `<img>` 전략이 명시된다
-- [ ] 고해상도 이미지 업로드를 4.5MB 이하로 줄이는 클라이언트 리사이즈 경로가 구현된다
+- [x] `ADMIN_PASSWORD` 환경변수가 로컬/배포 환경에 존재한다
+- [x] `POSTGRES_URL` 또는 Vercel Postgres 연결이 실제 CRUD 가능한 상태다
+- [x] `BLOB_READ_WRITE_TOKEN` 환경변수가 존재한다
+- [x] `next.config.ts`에 Vercel Blob URL 표시를 위한 이미지 설정이 추가되거나 plain `<img>` 전략이 명시된다
+- [x] 고해상도 이미지 업로드를 4.5MB 이하로 줄이는 클라이언트 리사이즈 경로가 구현된다
 
 ---
 
@@ -80,11 +80,11 @@ created: 2026-03-27
 
 ## Validation Sign-Off
 
-- [ ] All tasks have `<automated>` verify or Wave 0 dependencies
-- [ ] Sampling continuity: no 3 consecutive tasks without automated verify
-- [ ] Wave 0 covers all MISSING references
-- [ ] No watch-mode flags
-- [ ] Feedback latency < 30s
-- [ ] `nyquist_compliant: true` set in frontmatter
+- [x] All tasks have `<automated>` verify or Wave 0 dependencies
+- [x] Sampling continuity: no 3 consecutive tasks without automated verify
+- [x] Wave 0 covers all MISSING references
+- [x] No watch-mode flags
+- [x] Feedback latency < 30s
+- [x] `nyquist_compliant: true` set in frontmatter
 
-**Approval:** pending
+**Approval:** pending human admin checkpoint
