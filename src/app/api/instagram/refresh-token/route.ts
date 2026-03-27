@@ -15,7 +15,7 @@ import { refreshToken } from '@/lib/instagram'
  *
  * D-10: Manual invocation only. No automatic scheduling.
  */
-export async function POST(_request: Request): Promise<Response> {
+export async function POST(): Promise<Response> {
   const token = process.env.INSTAGRAM_ACCESS_TOKEN
   if (!token) {
     return Response.json(

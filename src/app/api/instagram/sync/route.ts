@@ -6,7 +6,7 @@ import { fetchFeed, syncToDb, checkTokenExpiry } from '@/lib/instagram'
  * Requires INSTAGRAM_ACCESS_TOKEN env var.
  * D-06: Manual trigger only (no cron). Called from /admin/instagram-test UI.
  */
-export async function POST(_request: Request): Promise<Response> {
+export async function POST(): Promise<Response> {
   // Log token expiry warning on each sync call (D-12)
   checkTokenExpiry()
 
