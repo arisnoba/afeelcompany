@@ -2,13 +2,13 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-status: Ready to plan
-last_updated: "2026-03-27T10:05:00.000Z"
+status: Executing Phase 4
+last_updated: "2026-03-27T06:39:19.784Z"
 progress:
   total_phases: 6
   completed_phases: 4
-  total_plans: 17
-  completed_plans: 17
+  total_plans: 22
+  completed_plans: 21
 ---
 
 # Project State: AFEEL Company Site (MVP)
@@ -18,7 +18,7 @@ progress:
 See: .planning/PROJECT.md (updated 2026-03-26)
 
 **Core value:** 원소스 멀티유즈 — 한 번 업로드로 웹 갤러리 · 인스타그램 · PDF 소개서 모두 반영
-**Current focus:** Phase 04 — 공개 사이트
+**Current focus:** Phase 4 — 공개 사이트
 
 ## Current Milestone
 
@@ -32,16 +32,16 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 | 1 | Spike — 인스타 API 검증 | Complete (Plan 5/5) | INST-01~05 |
 | 2 | Spike — PDF 출력 검증 | Complete (Plan 5/5) | PDF-01~06 |
 | 3 | 데이터 레이어 + 관리자 | Complete (Plan 6/6) | AUTH, UPLD, PORT, PROF, INST |
-| 4 | 공개 사이트 | Not Started | SITE-01~08 |
+| 4 | 공개 사이트 | In Progress (Plan 4/5 complete) | SITE-01~08 |
 | 5 | 통합 + 런칭 | Not Started | LNCH-01~06 |
 
 ### Active Phase
 
 **Phase 04: 공개 사이트**
 
-- Status: Ready to plan
+- Status: Executing
 - Goal: 방문자용 공개 사이트를 실데이터 기반으로 구현
-- Current Plan: none
+- Current Plan: 04-05 manual public-site checkpoint pending
 
 ## Decisions
 
@@ -84,8 +84,8 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 ## Session Context
 
 - Last session: 2026-03-27
-- Stopped at: Completed and approved Phase 03 after human admin checkpoint
-- Last action: Advanced project focus to Phase 04 planning
+- Stopped at: Phase 04 implementation complete through Plans 04-01~04-04; manual checkpoint remains
+- Last action: Implemented public shell, HOME/ABOUT/PORTFOLIO/FEED/CONTACT and passed lint/build
 
 ## Blockers
 
