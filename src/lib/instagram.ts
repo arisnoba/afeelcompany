@@ -1,7 +1,10 @@
+import { sql } from '@/lib/db'
 import type {
+  CachedPost,
   InstagramPost,
   InstagramFeedResponse,
   RefreshTokenResult,
+  SyncResult,
 } from '@/types/instagram'
 
 const INSTAGRAM_API_BASE = 'https://graph.instagram.com/v25.0'
@@ -79,4 +82,54 @@ export function checkTokenExpiry(): void {
       'Call POST /api/instagram/refresh-token to renew.'
     )
   }
+}
+
+/**
+ * Upsert Instagram posts into instagram_feed_cache.
+ * Uses ON CONFLICT (post_id) DO UPDATE to handle re-syncs idempotently.
+ * Only columns that exist in schema.sql are written:
+ *   post_id, media_url, caption, permalink, post_timestamp, fetched_at
+ * thumbnail_url and media_type are NOT stored (no column in DB).
+ */
+export async function syncToDb(posts: InstagramPost[]): Promise<SyncResult> {
+  const fetchedAt = new Date().toISOString()
+
+  for (const post of posts) {
+    // Use thumbnail_url as media_url fallback for VIDEO posts (Pitfall 3)
+    const mediaUrl = post.media_url ?? post.thumbnail_url ?? ''
+    const postTimestamp = post.timestamp ? new Date(post.timestamp).toISOString() : null
+
+    await sql`
+      INSERT INTO instagram_feed_cache
+        (post_id, media_url, caption, permalink, post_timestamp, fetched_at)
+      VALUES
+        (${post.id}, ${mediaUrl}, ${post.caption ?? null}, ${post.permalink ?? null}, ${postTimestamp}, NOW())
+      ON CONFLICT (post_id) DO UPDATE SET
+        media_url     = EXCLUDED.media_url,
+        caption       = EXCLUDED.caption,
+        permalink     = EXCLUDED.permalink,
+        post_timestamp = EXCLUDED.post_timestamp,
+        fetched_at    = NOW()
+    `
+  }
+
+  return {
+    synced: posts.length,
+    total: posts.length,
+    fetched_at: fetchedAt,
+  }
+}
+
+/**
+ * Read cached posts from DB. No API call. (D-08: cache-first strategy)
+ * Returns posts ordered newest-first, capped at 20.
+ */
+export async function getCachedFeed(): Promise<CachedPost[]> {
+  const result = await sql<CachedPost>`
+    SELECT id, post_id, media_url, caption, permalink, post_timestamp, fetched_at
+    FROM instagram_feed_cache
+    ORDER BY post_timestamp DESC NULLS LAST
+    LIMIT 20
+  `
+  return result.rows
 }
