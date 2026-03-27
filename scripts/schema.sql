@@ -1,5 +1,5 @@
 -- 포트폴리오 아이템 (갤러리)
-CREATE TABLE portfolio_items (
+CREATE TABLE IF NOT EXISTS portfolio_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
   brand_name TEXT NOT NULL,
@@ -15,7 +15,7 @@ CREATE TABLE portfolio_items (
 );
 
 -- 인스타그램 게시 대기열
-CREATE TABLE instagram_queue (
+CREATE TABLE IF NOT EXISTS instagram_queue (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   portfolio_item_id UUID REFERENCES portfolio_items(id),
   caption TEXT,
@@ -27,7 +27,7 @@ CREATE TABLE instagram_queue (
 );
 
 -- 인스타그램 피드 캐시
-CREATE TABLE instagram_feed_cache (
+CREATE TABLE IF NOT EXISTS instagram_feed_cache (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   post_id TEXT UNIQUE NOT NULL,
   media_url TEXT NOT NULL,
@@ -38,7 +38,7 @@ CREATE TABLE instagram_feed_cache (
 );
 
 -- 회사 프로필 (단일 row)
-CREATE TABLE company_profile (
+CREATE TABLE IF NOT EXISTS company_profile (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   about_text TEXT,
   contact_email TEXT,
@@ -49,7 +49,7 @@ CREATE TABLE company_profile (
 );
 
 -- 클라이언트 브랜드 로고
-CREATE TABLE client_brands (
+CREATE TABLE IF NOT EXISTS client_brands (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   logo_url TEXT,
