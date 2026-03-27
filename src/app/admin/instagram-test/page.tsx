@@ -38,7 +38,9 @@ export default async function InstagramTestPage() {
             gap: '16px',
           }}
         >
-          {posts.map((post) => (
+          {posts.map((post) => {
+            const isVideo = post.media_url.includes('.mp4')
+            return (
             <div
               key={post.post_id}
               style={{
@@ -49,13 +51,28 @@ export default async function InstagramTestPage() {
               }}
             >
               <div style={{ position: 'relative', aspectRatio: '1 / 1' }}>
-                <Image
-                  src={post.media_url}
-                  alt={post.caption ?? 'Instagram post'}
-                  fill
-                  style={{ objectFit: 'cover' }}
-                  sizes="(max-width: 768px) 100vw, 33vw"
-                />
+                {isVideo ? (
+                  <div style={{
+                    width: '100%',
+                    height: '100%',
+                    background: '#111',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    color: '#fff',
+                    fontSize: '13px',
+                  }}>
+                    📹 Video
+                  </div>
+                ) : (
+                  <Image
+                    src={post.media_url}
+                    alt={post.caption ?? 'Instagram post'}
+                    fill
+                    style={{ objectFit: 'cover' }}
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                  />
+                )}
               </div>
               {post.caption && (
                 <div style={{ padding: '12px', fontSize: '13px', color: '#374151' }}>
@@ -72,7 +89,8 @@ export default async function InstagramTestPage() {
                 </div>
               )}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
     </div>
