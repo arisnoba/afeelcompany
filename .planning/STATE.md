@@ -24,12 +24,12 @@ See: .planning/PROJECT.md (updated 2026-03-26)
 
 **v1.0 — MVP Launch**
 
-### Progress [█████░░░░░] 50%
+### Progress [███████░░░] 67%
 
 | Phase | Name | Status | Requirements |
 |-------|------|--------|--------------|
 | 0 | 프로젝트 스캐폴딩 | **Not Started** | SCAF-01~07 |
-| 1 | Spike — 인스타 API 검증 | In Progress (Plan 2/4) | INST-01~05 |
+| 1 | Spike — 인스타 API 검증 | In Progress (Plan 4/4) | INST-01~05 |
 | 2 | Spike — PDF 출력 검증 | Not Started | PDF-01~06 |
 | 3 | 데이터 레이어 + 관리자 | Not Started | AUTH, UPLD, PORT, PROF |
 | 4 | 공개 사이트 | Not Started | SITE-01~08 |
