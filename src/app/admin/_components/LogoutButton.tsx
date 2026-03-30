@@ -3,9 +3,17 @@
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
-import { Button } from '@/components/ui/button'
+import { Button, type buttonVariants } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
+import type { VariantProps } from 'class-variance-authority'
 
-export function LogoutButton() {
+export function LogoutButton({
+  className,
+  variant = 'secondary',
+}: {
+  className?: string
+  variant?: VariantProps<typeof buttonVariants>['variant']
+}) {
   const router = useRouter()
   const [isPending, setIsPending] = useState(false)
 
@@ -26,8 +34,11 @@ export function LogoutButton() {
   return (
     <Button
       type="button"
-      variant="secondary"
-      className="self-start rounded-full bg-white/12 px-4 text-white hover:bg-white/20"
+      variant={variant}
+      className={cn(
+        'self-start px-4',
+        className
+      )}
       onClick={handleLogout}
       disabled={isPending}
     >

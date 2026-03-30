@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db'
 import { InstagramQueueTable } from '@/components/admin/InstagramQueueTable'
+import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
 
 interface QueueRow {
   id: string
@@ -44,17 +45,14 @@ export default async function AdminInstagramPage() {
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-stone-950/8">
-        <p className="text-xs uppercase tracking-[0.28em] text-stone-500">
-          Instagram Queue
-        </p>
-        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-stone-950">
-          인스타그램 큐 운영
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          포트폴리오 이미지를 큐로 연결하고, 수동 publish 버튼으로 실제 게시 시도를 기록합니다.
-        </p>
-      </section>
+      <AdminPageIntro
+        eyebrow="인스타 큐"
+        title="인스타그램 큐 관리"
+        description="포트폴리오 이미지를 큐로 연결하고 수동 publish 버튼으로 실제 게시 시도를 기록합니다."
+        aside={
+          <div>캡션과 연결 자산을 확인한 뒤 publish를 실행하세요.</div>
+        }
+      />
 
       <InstagramQueueTable
         initialQueue={queueResult.rows.map((row) => ({

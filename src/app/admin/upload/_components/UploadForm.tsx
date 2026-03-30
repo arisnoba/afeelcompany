@@ -3,11 +3,23 @@
 import Image from 'next/image'
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
 
-import { resizePortfolioImage } from '@/lib/image'
-import { PORTFOLIO_CATEGORIES, type PortfolioCategory } from '@/types/portfolio'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import { resizePortfolioImage } from '@/lib/image'
+import {
+  PORTFOLIO_CATEGORIES,
+  type PortfolioCategory,
+} from '@/types/portfolio'
 
 interface UploadResponse {
   success: boolean
@@ -116,139 +128,145 @@ export function UploadForm() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_minmax(320px,0.8fr)]">
-      <Card className="rounded-[32px] border-0 bg-white shadow-sm ring-1 ring-stone-950/8">
+    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_360px]">
+      <Card className="py-0">
         <CardHeader>
-          <CardTitle>업로드 메타데이터</CardTitle>
+          <CardTitle>업로드 입력</CardTitle>
         </CardHeader>
-        <CardContent>
-          <form
-            className="grid gap-5"
-            onSubmit={handleSubmit}
-            encType="multipart/form-data"
-          >
-            <label className="grid gap-2 text-sm font-medium text-stone-800">
-              이미지 파일
+        <CardContent className="pb-6">
+          <form className="grid gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
+            <div className="grid gap-2">
+              <Label htmlFor="upload-file">이미지 파일</Label>
               <Input
+                id="upload-file"
                 type="file"
                 accept="image/jpeg,image/png,image/webp"
                 onChange={handleFileChange}
-                className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4 file:mr-3"
               />
-            </label>
-
-            <div className="grid gap-5 md:grid-cols-2">
-              <label className="grid gap-2 text-sm font-medium text-stone-800">
-                제목
-                <Input
-                  value={form.title}
-                  onChange={(event) => setForm((current) => ({ ...current, title: event.target.value }))}
-                  placeholder="ROYNINE LOOK 01"
-                  required
-                  className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
-                />
-              </label>
-
-              <label className="grid gap-2 text-sm font-medium text-stone-800">
-                브랜드명
-                <Input
-                  value={form.brandName}
-                  onChange={(event) => setForm((current) => ({ ...current, brandName: event.target.value }))}
-                  placeholder="ROYNINE"
-                  required
-                  className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
-                />
-              </label>
             </div>
 
-            <div className="grid gap-5 md:grid-cols-[minmax(0,1fr)_220px]">
-              <label className="grid gap-2 text-sm font-medium text-stone-800">
-                셀럽명
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="upload-title">제목</Label>
                 <Input
-                  value={form.celebrityName}
+                  id="upload-title"
+                  value={form.title}
                   onChange={(event) =>
-                    setForm((current) => ({ ...current, celebrityName: event.target.value }))
+                    setForm((current) => ({ ...current, title: event.target.value }))
                   }
-                  placeholder="선택 입력"
-                  className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
+                  placeholder="ROYNINE LOOK 01"
+                  required
                 />
-              </label>
+              </div>
 
-              <label className="grid gap-2 text-sm font-medium text-stone-800">
-                카테고리
-                <select
-                  value={form.category}
+              <div className="grid gap-2">
+                <Label htmlFor="upload-brand">브랜드명</Label>
+                <Input
+                  id="upload-brand"
+                  value={form.brandName}
+                  onChange={(event) =>
+                    setForm((current) => ({ ...current, brandName: event.target.value }))
+                  }
+                  placeholder="ROYNINE"
+                  required
+                />
+              </div>
+            </div>
+
+            <div className="grid gap-4 md:grid-cols-2">
+              <div className="grid gap-2">
+                <Label htmlFor="upload-celebrity">셀럽명</Label>
+                <Input
+                  id="upload-celebrity"
+                  value={form.celebrityName}
                   onChange={(event) =>
                     setForm((current) => ({
                       ...current,
-                      category: event.target.value as PortfolioCategory,
+                      celebrityName: event.target.value,
                     }))
                   }
-                  className="h-11 rounded-2xl border border-stone-300 bg-stone-50 px-4 text-sm text-stone-900 outline-none focus:border-stone-500"
+                  placeholder="선택 입력"
+                />
+              </div>
+
+              <div className="grid gap-2">
+                <Label>카테고리</Label>
+                <Select
+                  value={form.category}
+                  onValueChange={(value) => {
+                    if (!value) {
+                      return
+                    }
+
+                    setForm((current) => ({
+                      ...current,
+                      category: value as PortfolioCategory,
+                    }))
+                  }}
                 >
-                  {PORTFOLIO_CATEGORIES.map((category) => (
-                    <option key={category} value={category}>
-                      {category}
-                    </option>
-                  ))}
-                </select>
-              </label>
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="카테고리 선택" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {PORTFOLIO_CATEGORIES.map((category) => (
+                      <SelectItem key={category} value={category}>
+                        {category}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
             </div>
 
-            <div className="grid gap-3 sm:grid-cols-2">
-              <label className="flex items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700">
-                <input
-                  type="checkbox"
+            <div className="grid gap-3 md:grid-cols-2">
+              <div className="flex items-center gap-2 rounded-md border p-3">
+                <Checkbox
+                  id="upload-web"
                   checked={form.showOnWeb}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, showOnWeb: event.target.checked }))
+                  onCheckedChange={(checked) =>
+                    setForm((current) => ({ ...current, showOnWeb: Boolean(checked) }))
                   }
-                  className="size-4 rounded border-stone-300"
                 />
-                웹 노출 사용 (`showOnWeb`)
-              </label>
+                <Label htmlFor="upload-web">웹 노출 사용</Label>
+              </div>
 
-              <label className="flex items-center gap-3 rounded-2xl border border-stone-200 bg-stone-50 px-4 py-3 text-sm text-stone-700">
-                <input
-                  type="checkbox"
+              <div className="flex items-center gap-2 rounded-md border p-3">
+                <Checkbox
+                  id="upload-pdf"
                   checked={form.showOnPdf}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, showOnPdf: event.target.checked }))
+                  onCheckedChange={(checked) =>
+                    setForm((current) => ({ ...current, showOnPdf: Boolean(checked) }))
                   }
-                  className="size-4 rounded border-stone-300"
                 />
-                PDF 노출 사용 (`showOnPdf`)
-              </label>
+                <Label htmlFor="upload-pdf">PDF 노출 사용</Label>
+              </div>
             </div>
 
             {error ? (
-              <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+              <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+                {error}
+              </div>
             ) : null}
 
             {success ? (
-              <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+              <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
                 {success}
-              </p>
+              </div>
             ) : null}
 
-            <Button
-              type="submit"
-              size="lg"
-              className="h-11 rounded-full bg-stone-950 text-white hover:bg-stone-800"
-              disabled={isPending}
-            >
+            <Button type="submit" disabled={isPending}>
               {isPending ? '업로드 중...' : '포트폴리오 생성'}
             </Button>
           </form>
         </CardContent>
       </Card>
 
-      <Card className="rounded-[32px] border-0 bg-stone-900 text-stone-50 shadow-sm ring-1 ring-stone-950/12">
+      <Card className="py-0">
         <CardHeader>
           <CardTitle>미리보기</CardTitle>
         </CardHeader>
-        <CardContent className="grid gap-4">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-[28px] bg-white/6">
+        <CardContent className="grid gap-4 pb-6">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-md border bg-muted">
             {previewUrl ? (
               <Image
                 src={previewUrl}
@@ -256,18 +274,17 @@ export function UploadForm() {
                 fill
                 unoptimized
                 className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 32vw"
+                sizes="(max-width: 1024px) 100vw, 360px"
               />
             ) : (
-              <div className="flex h-full items-center justify-center px-6 text-center text-sm leading-6 text-stone-300">
-                이미지를 선택하면 여기에서 업로드 전 미리보기를 확인할 수 있습니다.
+              <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
+                이미지를 선택하면 여기에서 미리보기를 확인할 수 있습니다.
               </div>
             )}
           </div>
 
-          <div className="rounded-[28px] border border-white/10 bg-white/6 p-5 text-sm leading-6 text-stone-300">
-            <p className="font-medium text-stone-100">업로드 체크</p>
-            <p className="mt-2">서버 업로드 한도는 4.5MB입니다.</p>
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <p>서버 업로드 한도는 4.5MB입니다.</p>
             <p>클라이언트에서 2000px JPEG 0.8 품질로 리사이즈합니다.</p>
           </div>
         </CardContent>

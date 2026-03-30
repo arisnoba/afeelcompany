@@ -1,11 +1,12 @@
+import type { ReactNode } from 'react'
 import Link from 'next/link'
 
-import { LogoutButton } from '@/app/admin/_components/LogoutButton'
+import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
+import { ADMIN_NAV_ITEMS } from '@/components/admin/admin-navigation'
 import {
   Card,
   CardContent,
   CardDescription,
-  CardFooter,
   CardHeader,
   CardTitle,
 } from '@/components/ui/card'
@@ -36,49 +37,76 @@ const FEATURE_CARDS = [
 export default function AdminDashboardPage() {
   return (
     <div className="flex flex-col gap-6">
-      <section className="rounded-[32px] bg-[linear-gradient(135deg,#1c1917,rgba(68,64,60,0.92))] p-8 text-stone-50 shadow-sm">
-        <p className="text-xs uppercase tracking-[0.28em] text-stone-300">
-          Protected
-        </p>
-        <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div className="max-w-2xl">
-            <h2 className="text-3xl font-semibold tracking-tight">
-              관리자 작업을 여기서 이어가면 됩니다.
-            </h2>
-            <p className="mt-3 text-sm leading-6 text-stone-300">
-              업로드된 포트폴리오 데이터는 웹, PDF, 인스타 큐에서 같은 DB 레이어를 공유합니다.
-            </p>
-          </div>
-          <LogoutButton />
-        </div>
-      </section>
+      <AdminPageIntro
+        eyebrow="관리자"
+        title="운영 화면"
+        description="업로드부터 포트폴리오 정리, 회사 정보 반영, 인스타 큐 발행까지 같은 데이터 레이어로 연결됩니다."
+        aside={
+          <div>활성 메뉴 {ADMIN_NAV_ITEMS.length}개</div>
+        }
+      />
 
       <section className="grid gap-4 md:grid-cols-2">
         {FEATURE_CARDS.map((card) => (
-          <Card key={card.href} className="rounded-[28px] border-0 bg-white shadow-sm ring-1 ring-stone-950/8">
+          <Card
+              key={card.href}
+              className="py-0"
+            >
             <CardHeader>
               <CardTitle>{card.title}</CardTitle>
               <CardDescription>{card.description}</CardDescription>
             </CardHeader>
-            <CardContent>
-              <p className="text-sm leading-6 text-stone-500">
-                현재 Phase 03 데이터 레이어 기준으로 연결되는 운영 화면입니다.
+            <CardContent className="flex items-center justify-between gap-4 pb-6">
+              <p className="text-sm text-muted-foreground">
+                바로 이동해 작업을 시작할 수 있습니다.
               </p>
+              <ButtonLink href={card.href}>열기</ButtonLink>
             </CardContent>
-            <CardFooter className="justify-between">
-              <span className="text-xs uppercase tracking-[0.24em] text-stone-400">
-                admin
-              </span>
-              <Link
-                href={card.href}
-                className="rounded-full bg-stone-900 px-4 py-2 text-sm font-medium text-stone-50 transition hover:bg-stone-700"
-              >
-                열기
-              </Link>
-            </CardFooter>
           </Card>
         ))}
       </section>
+
+      <section className="grid gap-4 lg:grid-cols-2">
+        <Card className="py-0">
+          <CardHeader>
+            <CardTitle>운영 순서</CardTitle>
+            <CardDescription>일반적인 작업 흐름입니다.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 pb-6 text-sm text-muted-foreground">
+            <p>1. 업로드에서 자산과 메타데이터를 등록합니다.</p>
+            <p>2. 포트폴리오에서 노출 여부와 정렬 순서를 조정합니다.</p>
+            <p>3. 인스타 큐에서 캡션을 확인하고 게시합니다.</p>
+          </CardContent>
+        </Card>
+
+        <Card className="py-0">
+          <CardHeader>
+            <CardTitle>공유 데이터</CardTitle>
+            <CardDescription>서로 연결된 운영 데이터입니다.</CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-3 pb-6 text-sm text-muted-foreground">
+            <p>포트폴리오 항목은 웹, PDF, 인스타 큐에서 함께 사용됩니다.</p>
+            <p>회사 정보와 브랜드 로고는 외부 출력물과 사이트에서 함께 사용됩니다.</p>
+          </CardContent>
+        </Card>
+      </section>
     </div>
+  )
+}
+
+function ButtonLink({
+  href,
+  children,
+}: {
+  href: string
+  children: ReactNode
+}) {
+  return (
+    <Link
+      href={href}
+      className="inline-flex h-9 items-center justify-center rounded-lg border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
+    >
+      {children}
+    </Link>
   )
 }

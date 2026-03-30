@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db'
 import { BrandManager } from '@/components/admin/BrandManager'
 import { ProfileEditor } from '@/app/admin/profile/_components/ProfileEditor'
+import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
 
 interface CompanyProfileRow {
   about_text: string | null
@@ -36,17 +37,14 @@ export default async function AdminProfilePage() {
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-stone-950/8">
-        <p className="text-xs uppercase tracking-[0.28em] text-stone-500">
-          Company Profile
-        </p>
-        <h2 className="mt-4 text-3xl font-semibold tracking-tight text-stone-950">
-          회사 정보와 브랜드 관리
-        </h2>
-        <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-          여기서 저장한 회사 소개와 브랜드 로고는 `/pdf-export`가 우선적으로 읽는 실데이터가 됩니다.
-        </p>
-      </section>
+      <AdminPageIntro
+        eyebrow="회사 정보"
+        title="회사 프로필과 브랜드 관리"
+        description="여기서 저장한 회사 소개와 브랜드 로고는 `/pdf-export`가 우선적으로 읽는 데이터입니다."
+        aside={
+          <div>브랜드 로고 순서는 제안서와 웹 노출 순서에도 영향을 줍니다.</div>
+        }
+      />
 
       <ProfileEditor
         initialProfile={{

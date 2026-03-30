@@ -5,6 +5,8 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Textarea } from '@/components/ui/textarea'
 
 interface ProfileEditorProps {
   initialProfile: {
@@ -50,76 +52,78 @@ export function ProfileEditor({ initialProfile }: ProfileEditorProps) {
   }
 
   return (
-    <Card className="rounded-[32px] border-0 bg-white shadow-sm ring-1 ring-stone-950/8">
+    <Card className="py-0">
       <CardHeader>
         <CardTitle>회사 프로필</CardTitle>
       </CardHeader>
 
-      <CardContent className="grid gap-5">
-        <label className="grid gap-2 text-sm font-medium text-stone-800">
-          About
-          <textarea
+      <CardContent className="grid gap-6 pb-6">
+        <div className="grid gap-2">
+          <Label htmlFor="profile-about">About</Label>
+          <Textarea
+            id="profile-about"
             value={profile.aboutText}
             onChange={(event) =>
               setProfile((current) => ({ ...current, aboutText: event.target.value }))
             }
             rows={6}
-            className="rounded-[28px] border border-stone-300 bg-stone-50 px-4 py-3 text-sm text-stone-900 outline-none focus:border-stone-500"
           />
-        </label>
-
-        <div className="grid gap-5 md:grid-cols-2">
-          <label className="grid gap-2 text-sm font-medium text-stone-800">
-            Contact Email
-            <Input
-              value={profile.contactEmail}
-              onChange={(event) =>
-                setProfile((current) => ({ ...current, contactEmail: event.target.value }))
-              }
-              className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
-            />
-          </label>
-
-          <label className="grid gap-2 text-sm font-medium text-stone-800">
-            Contact Phone
-            <Input
-              value={profile.contactPhone}
-              onChange={(event) =>
-                setProfile((current) => ({ ...current, contactPhone: event.target.value }))
-              }
-              className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
-            />
-          </label>
         </div>
 
-        <label className="grid gap-2 text-sm font-medium text-stone-800">
-          Address
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="grid gap-2">
+            <Label htmlFor="profile-email">Contact Email</Label>
+            <Input
+              id="profile-email"
+              value={profile.contactEmail}
+              onChange={(event) =>
+                setProfile((current) => ({
+                  ...current,
+                  contactEmail: event.target.value,
+                }))
+              }
+            />
+          </div>
+
+          <div className="grid gap-2">
+            <Label htmlFor="profile-phone">Contact Phone</Label>
+            <Input
+              id="profile-phone"
+              value={profile.contactPhone}
+              onChange={(event) =>
+                setProfile((current) => ({
+                  ...current,
+                  contactPhone: event.target.value,
+                }))
+              }
+            />
+          </div>
+        </div>
+
+        <div className="grid gap-2">
+          <Label htmlFor="profile-address">Address</Label>
           <Input
+            id="profile-address"
             value={profile.address}
             onChange={(event) =>
               setProfile((current) => ({ ...current, address: event.target.value }))
             }
-            className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
           />
-        </label>
+        </div>
 
         {feedback ? (
-          <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             {feedback}
-          </p>
+          </div>
         ) : null}
 
         {error ? (
-          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+          <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
         ) : null}
 
-        <Button
-          type="button"
-          size="lg"
-          onClick={handleSave}
-          disabled={isPending}
-          className="h-11 rounded-full bg-stone-950 text-white hover:bg-stone-800"
-        >
+        <Button type="button" onClick={handleSave} disabled={isPending}>
           {isPending ? '저장 중...' : '회사 정보 저장'}
         </Button>
       </CardContent>

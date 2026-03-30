@@ -2,6 +2,7 @@ import Link from 'next/link'
 
 import { sql } from '@/lib/db'
 import { PortfolioTable } from '@/components/admin/PortfolioTable'
+import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
 import type { PortfolioAdminItem } from '@/types/portfolio'
 
 interface PortfolioPageRow {
@@ -51,28 +52,22 @@ export default async function AdminPortfolioPage() {
 
   return (
     <div className="grid gap-6">
-      <section className="rounded-[32px] bg-white p-8 shadow-sm ring-1 ring-stone-950/8">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div>
-            <p className="text-xs uppercase tracking-[0.28em] text-stone-500">
-              Portfolio
-            </p>
-            <h2 className="mt-4 text-3xl font-semibold tracking-tight text-stone-950">
-              포트폴리오 정리
-            </h2>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-stone-600">
-              업로드된 항목을 수정하고, 웹/PDF 노출 여부와 정렬 순서를 운영 기준에 맞게 조정합니다.
-            </p>
-          </div>
-
+      <AdminPageIntro
+        eyebrow="포트폴리오"
+        title="포트폴리오 관리"
+        description="업로드된 항목을 수정하고 웹/PDF 노출 여부와 정렬 순서를 운영 기준에 맞게 조정합니다."
+        action={
           <Link
             href="/admin/upload"
-            className="inline-flex h-11 items-center justify-center rounded-full bg-stone-950 px-5 text-sm font-medium text-white transition hover:bg-stone-800"
+            className="inline-flex h-9 items-center justify-center rounded-lg border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
           >
             새 항목 업로드
           </Link>
-        </div>
-      </section>
+        }
+        aside={
+          <div>`showOnWeb`, `showOnPdf`, `sortOrder`는 DB 필드와 1:1로 연결됩니다.</div>
+        }
+      />
 
       <PortfolioTable initialItems={result.rows.map(mapPortfolioRow)} />
     </div>

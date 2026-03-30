@@ -3,10 +3,24 @@
 import Image from 'next/image'
 import { useState } from 'react'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
-import { PORTFOLIO_CATEGORIES, type PortfolioAdminItem, type PortfolioCategory } from '@/types/portfolio'
+import { Label } from '@/components/ui/label'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select'
+import {
+  PORTFOLIO_CATEGORIES,
+  type PortfolioAdminItem,
+  type PortfolioCategory,
+} from '@/types/portfolio'
 
 interface PortfolioTableProps {
   initialItems: PortfolioAdminItem[]
@@ -159,12 +173,12 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
   }
 
   return (
-    <Card className="rounded-[32px] border-0 bg-white shadow-sm ring-1 ring-stone-950/8">
-      <CardHeader className="gap-4 md:flex md:flex-row md:items-end md:justify-between">
-        <div>
-          <CardTitle>운영 테이블</CardTitle>
-          <p className="mt-2 text-sm leading-6 text-stone-600">
-            `showOnWeb`, `showOnPdf`, `sortOrder`는 DB 필드와 1:1로 연결됩니다.
+    <Card className="py-0">
+      <CardHeader className="gap-4 md:flex md:flex-row md:items-center md:justify-between">
+        <div className="space-y-1">
+          <CardTitle>포트폴리오 항목</CardTitle>
+          <p className="text-sm text-muted-foreground">
+            각 항목을 개별 저장하거나, 정렬 순서를 한 번에 저장할 수 있습니다.
           </p>
         </div>
 
@@ -172,163 +186,167 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
           type="button"
           onClick={handleSaveOrder}
           disabled={isSavingOrder || items.length === 0}
-          className="rounded-full bg-stone-950 px-4 text-white hover:bg-stone-800"
         >
           {isSavingOrder ? '정렬 저장 중...' : '정렬 저장'}
         </Button>
       </CardHeader>
 
-      <CardContent className="space-y-4">
+      <CardContent className="space-y-4 pb-6">
         {feedback ? (
-          <p className="rounded-2xl bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
+          <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
             {feedback}
-          </p>
+          </div>
         ) : null}
 
         {error ? (
-          <p className="rounded-2xl bg-red-50 px-4 py-3 text-sm text-red-700">{error}</p>
+          <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+            {error}
+          </div>
         ) : null}
 
         {items.length === 0 ? (
-          <div className="rounded-[28px] border border-dashed border-stone-300 bg-stone-50 px-6 py-12 text-center text-sm text-stone-500">
+          <div className="rounded-lg border border-dashed bg-muted/40 px-6 py-12 text-center text-sm text-muted-foreground">
             아직 업로드된 포트폴리오 항목이 없습니다.
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="min-w-full border-separate border-spacing-y-3 text-sm">
-              <thead className="text-left text-xs uppercase tracking-[0.18em] text-stone-500">
-                <tr>
-                  <th className="px-3 py-2">Thumbnail</th>
-                  <th className="px-3 py-2">Title</th>
-                  <th className="px-3 py-2">Brand</th>
-                  <th className="px-3 py-2">Category</th>
-                  <th className="px-3 py-2">showOnWeb</th>
-                  <th className="px-3 py-2">showOnPdf</th>
-                  <th className="px-3 py-2">sortOrder</th>
-                  <th className="px-3 py-2">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => {
-                  const isRowPending = activeRowId === item.id
+          <div className="space-y-4">
+            {items.map((item, index) => {
+              const isRowPending = activeRowId === item.id
 
-                  return (
-                    <tr key={item.id} className="rounded-[28px] bg-stone-50">
-                      <td className="px-3 py-3 align-top">
-                        <div className="relative h-24 w-20 overflow-hidden rounded-2xl bg-stone-200">
-                          <Image
-                            src={item.thumbnailUrl ?? item.imageUrl}
-                            alt={item.title}
-                            fill
-                            className="object-cover"
-                            sizes="80px"
-                          />
-                        </div>
-                      </td>
-                      <td className="min-w-52 px-3 py-3 align-top">
+              return (
+                <Card key={item.id} className="py-0">
+                  <CardContent className="grid gap-6 py-6 lg:grid-cols-[140px_minmax(0,1fr)]">
+                    <div className="space-y-3">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-md border bg-muted">
+                        <Image
+                          src={item.thumbnailUrl ?? item.imageUrl}
+                          alt={item.title}
+                          fill
+                          className="object-cover"
+                          sizes="140px"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <Badge variant="outline">순서 {item.sortOrder}</Badge>
+                        <Badge variant="secondary">{item.category}</Badge>
+                      </div>
+                    </div>
+
+                    <div className="space-y-6">
+                      <div className="grid gap-4 md:grid-cols-2">
                         <div className="grid gap-2">
+                          <Label htmlFor={`title-${item.id}`}>제목</Label>
                           <Input
+                            id={`title-${item.id}`}
                             value={item.title}
                             onChange={(event) =>
                               updateItem(item.id, { title: event.target.value })
                             }
-                            className="rounded-2xl border-stone-300 bg-white"
                           />
+                        </div>
+
+                        <div className="grid gap-2">
+                          <Label htmlFor={`brand-${item.id}`}>브랜드명</Label>
                           <Input
+                            id={`brand-${item.id}`}
+                            value={item.brandName}
+                            onChange={(event) =>
+                              updateItem(item.id, { brandName: event.target.value })
+                            }
+                          />
+                        </div>
+
+                        <div className="grid gap-2">
+                          <Label htmlFor={`celebrity-${item.id}`}>셀럽명</Label>
+                          <Input
+                            id={`celebrity-${item.id}`}
                             value={item.celebrityName ?? ''}
                             onChange={(event) =>
-                              updateItem(item.id, { celebrityName: event.target.value || null })
+                              updateItem(item.id, {
+                                celebrityName: event.target.value || null,
+                              })
                             }
-                            placeholder="셀럽명"
-                            className="rounded-2xl border-stone-300 bg-white"
+                            placeholder="선택 입력"
                           />
                         </div>
-                      </td>
-                      <td className="min-w-44 px-3 py-3 align-top">
-                        <Input
-                          value={item.brandName}
-                          onChange={(event) =>
-                            updateItem(item.id, { brandName: event.target.value })
-                          }
-                          className="rounded-2xl border-stone-300 bg-white"
-                        />
-                      </td>
-                      <td className="px-3 py-3 align-top">
-                        <select
-                          value={item.category}
-                          onChange={(event) =>
-                            updateItem(item.id, {
-                              category: event.target.value as PortfolioCategory,
-                            })
-                          }
-                          className="h-8 rounded-2xl border border-stone-300 bg-white px-3 text-sm text-stone-900 outline-none focus:border-stone-500"
-                        >
-                          {PORTFOLIO_CATEGORIES.map((category) => (
-                            <option key={category} value={category}>
-                              {category}
-                            </option>
-                          ))}
-                        </select>
-                      </td>
-                      <td className="px-3 py-3 align-top">
-                        <label className="inline-flex items-center gap-2 text-sm text-stone-700">
-                          <input
-                            type="checkbox"
-                            checked={item.showOnWeb}
-                            onChange={(event) =>
-                              updateItem(item.id, { showOnWeb: event.target.checked })
-                            }
-                          />
-                          사용
-                        </label>
-                      </td>
-                      <td className="px-3 py-3 align-top">
-                        <label className="inline-flex items-center gap-2 text-sm text-stone-700">
-                          <input
-                            type="checkbox"
-                            checked={item.showOnPdf}
-                            onChange={(event) =>
-                              updateItem(item.id, { showOnPdf: event.target.checked })
-                            }
-                          />
-                          사용
-                        </label>
-                      </td>
-                      <td className="px-3 py-3 align-top">
+
                         <div className="grid gap-2">
-                          <span className="inline-flex h-8 items-center justify-center rounded-2xl bg-white px-3 text-sm text-stone-700">
-                            {item.sortOrder}
-                          </span>
-                          <div className="flex gap-2">
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => reorderLocally(item.id, -1)}
-                              disabled={index === 0}
-                            >
-                              위
-                            </Button>
-                            <Button
-                              type="button"
-                              variant="outline"
-                              size="sm"
-                              onClick={() => reorderLocally(item.id, 1)}
-                              disabled={index === items.length - 1}
-                            >
-                              아래
-                            </Button>
+                          <Label>카테고리</Label>
+                          <Select
+                            value={item.category}
+                            onValueChange={(value) => {
+                              if (!value) {
+                                return
+                              }
+
+                              updateItem(item.id, {
+                                category: value as PortfolioCategory,
+                              })
+                            }}
+                          >
+                            <SelectTrigger className="w-full">
+                              <SelectValue placeholder="카테고리 선택" />
+                            </SelectTrigger>
+                            <SelectContent>
+                              {PORTFOLIO_CATEGORIES.map((category) => (
+                                <SelectItem key={category} value={category}>
+                                  {category}
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                      </div>
+
+                      <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
+                        <div className="flex flex-col gap-3 md:flex-row md:items-center">
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`web-${item.id}`}
+                              checked={item.showOnWeb}
+                              onCheckedChange={(checked) =>
+                                updateItem(item.id, { showOnWeb: Boolean(checked) })
+                              }
+                            />
+                            <Label htmlFor={`web-${item.id}`}>웹 노출</Label>
+                          </div>
+
+                          <div className="flex items-center gap-2">
+                            <Checkbox
+                              id={`pdf-${item.id}`}
+                              checked={item.showOnPdf}
+                              onCheckedChange={(checked) =>
+                                updateItem(item.id, { showOnPdf: Boolean(checked) })
+                              }
+                            />
+                            <Label htmlFor={`pdf-${item.id}`}>PDF 노출</Label>
                           </div>
                         </div>
-                      </td>
-                      <td className="px-3 py-3 align-top">
-                        <div className="grid gap-2">
+
+                        <div className="flex flex-wrap items-center gap-2">
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => reorderLocally(item.id, -1)}
+                            disabled={index === 0}
+                          >
+                            위로
+                          </Button>
+                          <Button
+                            type="button"
+                            variant="outline"
+                            size="sm"
+                            onClick={() => reorderLocally(item.id, 1)}
+                            disabled={index === items.length - 1}
+                          >
+                            아래로
+                          </Button>
                           <Button
                             type="button"
                             size="sm"
                             onClick={() => handleSave(item.id)}
                             disabled={isRowPending}
-                            className="rounded-full bg-stone-950 px-4 text-white hover:bg-stone-800"
                           >
                             {isRowPending ? '저장 중...' : '저장'}
                           </Button>
@@ -338,17 +356,16 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
                             variant="destructive"
                             onClick={() => handleDelete(item.id)}
                             disabled={isRowPending}
-                            className="rounded-full"
                           >
                             삭제
                           </Button>
                         </div>
-                      </td>
-                    </tr>
-                  )
-                })}
-              </tbody>
-            </table>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )
+            })}
           </div>
         )}
       </CardContent>
