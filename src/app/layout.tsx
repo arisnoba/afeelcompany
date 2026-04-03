@@ -1,22 +1,34 @@
-import type { Metadata } from "next";
-import "./globals.css";
+import type { Metadata } from 'next'
+import { Geist_Mono, Inter } from 'next/font/google'
+
+import './globals.css'
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+})
+
+const geistMono = Geist_Mono({
+  subsets: ['latin'],
+  variable: '--font-geist-mono',
+})
 
 export const metadata: Metadata = {
-  title: "AFEEL Company",
-  description: "패션 스타마케팅 포트폴리오와 회사 소개를 제공하는 AFEEL Company 공식 사이트",
-};
+  title: 'AFEEL Company',
+  description: '패션 스타마케팅 포트폴리오와 회사 소개를 제공하는 AFEEL Company 공식 사이트',
+}
 
 export default function RootLayout({
   children,
 }: Readonly<{
-  children: React.ReactNode;
+  children: React.ReactNode
 }>) {
   return (
     <html
       lang="ko"
-      className="h-full antialiased"
+      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>
-  );
+  )
 }

@@ -1,5 +1,3 @@
-import Link from 'next/link'
-
 import { sql } from '@/lib/db'
 import { PortfolioTable } from '@/components/admin/PortfolioTable'
 import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
@@ -55,17 +53,12 @@ export default async function AdminPortfolioPage() {
       <AdminPageIntro
         eyebrow="포트폴리오"
         title="포트폴리오 관리"
-        description="업로드된 항목을 수정하고 웹/PDF 노출 여부와 정렬 순서를 운영 기준에 맞게 조정합니다."
-        action={
-          <Link
-            href="/admin/upload"
-            className="inline-flex h-9 items-center justify-center rounded-lg border border-input bg-background px-4 text-sm font-medium hover:bg-accent hover:text-accent-foreground"
-          >
-            새 항목 업로드
-          </Link>
-        }
+        description="목록에서 항목을 선택하면 우측 패널이 열리고, 새 등록부터 수정까지 같은 흐름 안에서 처리할 수 있습니다."
         aside={
-          <div>`showOnWeb`, `showOnPdf`, `sortOrder`는 DB 필드와 1:1로 연결됩니다.</div>
+          <div>
+            `showOnWeb`, `showOnPdf`, `sortOrder`는 DB 필드와 1:1로 연결되며,
+            정렬 저장 전까지는 목록에서만 임시 순서가 반영됩니다.
+          </div>
         }
       />
 

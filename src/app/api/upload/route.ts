@@ -1,7 +1,11 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
-import { PORTFOLIO_CATEGORIES, type PortfolioCategory } from '@/types/portfolio'
+import {
+  PORTFOLIO_CATEGORIES,
+  type PortfolioAdminItem,
+  type PortfolioCategory,
+} from '@/types/portfolio'
 
 function toBoolean(value: FormDataEntryValue | null): boolean | null {
   if (value === 'true') {
@@ -17,6 +21,34 @@ function toBoolean(value: FormDataEntryValue | null): boolean | null {
 
 function isPortfolioCategory(value: string): value is PortfolioCategory {
   return PORTFOLIO_CATEGORIES.some((category) => category === value)
+}
+
+interface PortfolioUploadRow {
+  id: string
+  title: string
+  brand_name: string
+  celebrity_name: string | null
+  category: string
+  image_url: string
+  thumbnail_url: string | null
+  show_on_web: boolean
+  show_on_pdf: boolean
+  sort_order: number
+}
+
+function mapPortfolioRow(row: PortfolioUploadRow): PortfolioAdminItem {
+  return {
+    id: row.id,
+    title: row.title,
+    brandName: row.brand_name,
+    celebrityName: row.celebrity_name,
+    category: row.category,
+    imageUrl: row.image_url,
+    thumbnailUrl: row.thumbnail_url,
+    showOnWeb: row.show_on_web,
+    showOnPdf: row.show_on_pdf,
+    sortOrder: row.sort_order,
+  }
 }
 
 export async function POST(request: Request): Promise<Response> {
@@ -47,7 +79,7 @@ export async function POST(request: Request): Promise<Response> {
 
   try {
     const uploaded = await uploadPublicImage(file, 'portfolio')
-    const result = await sql<{ id: string }>`
+    const result = await sql<PortfolioUploadRow>`
       INSERT INTO portfolio_items (
         title,
         brand_name,
@@ -68,17 +100,24 @@ export async function POST(request: Request): Promise<Response> {
         ${uploaded.url},
         ${showOnWeb},
         ${showOnPdf},
-        ${0}
+        (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM portfolio_items)
       )
-      RETURNING id
+      RETURNING
+        id,
+        title,
+        brand_name,
+        celebrity_name,
+        category,
+        image_url,
+        thumbnail_url,
+        show_on_web,
+        show_on_pdf,
+        sort_order
     `
 
     return Response.json({
       success: true,
-      data: {
-        id: result.rows[0]?.id,
-        imageUrl: uploaded.url,
-      },
+      data: result.rows[0] ? mapPortfolioRow(result.rows[0]) : undefined,
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'UPLOAD_FAILED'

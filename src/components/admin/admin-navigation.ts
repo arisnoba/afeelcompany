@@ -11,14 +11,14 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     description: '운영 흐름과 핵심 진입점을 한 번에 확인합니다.',
   },
   {
-    href: '/admin/upload',
-    label: '업로드',
-    description: '이미지와 메타데이터를 올려 전체 파이프라인의 시작점을 만듭니다.',
-  },
-  {
     href: '/admin/portfolio',
     label: '포트폴리오',
-    description: '노출 여부와 정렬 순서를 운영 기준에 맞게 정리합니다.',
+    description: '우측 패널에서 신규 등록과 상세 편집을 함께 처리합니다.',
+  },
+  {
+    href: '/admin/export',
+    label: '익스포트',
+    description: '브로셔 PDF 미리보기와 출력 흐름을 실행합니다.',
   },
   {
     href: '/admin/profile',

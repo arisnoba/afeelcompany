@@ -1,5 +1,3 @@
-import { Geist, Geist_Mono } from 'next/font/google'
-
 import { requireAdminSession } from '@/lib/auth'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { AdminTopbar } from '@/components/admin/AdminTopbar'
@@ -7,16 +5,6 @@ import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
 
 export const dynamic = 'force-dynamic'
-
-const geist = Geist({
-  subsets: ['latin'],
-  variable: '--font-admin-sans',
-})
-
-const geistMono = Geist_Mono({
-  subsets: ['latin'],
-  variable: '--font-admin-mono',
-})
 
 export default async function AdminLayout({
   children,
@@ -29,7 +17,7 @@ export default async function AdminLayout({
     <TooltipProvider>
       <SidebarProvider
         defaultOpen
-        className={`${geist.variable} ${geistMono.variable} min-h-[100dvh] bg-muted/30 font-[family-name:var(--font-admin-sans)] text-foreground`}
+        className="min-h-[100dvh] bg-[radial-gradient(circle_at_top_left,rgba(24,226,153,0.09),transparent_24%),linear-gradient(180deg,#fcfffd_0%,#f8fbf9_100%)] text-foreground"
       >
         <AdminSidebar />
 

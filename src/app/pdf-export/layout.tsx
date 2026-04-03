@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react'
 import { Noto_Sans_KR } from 'next/font/google'
+import 'swiper/css'
 import './print.css'
 
 const brochureSans = Noto_Sans_KR({

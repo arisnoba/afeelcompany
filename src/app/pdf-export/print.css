@@ -6,18 +6,42 @@
 .pdf-document {
   display: flex;
   flex-direction: column;
-  gap: 24px;
-  padding: 24px;
+  align-items: center;
+  width: 100%;
+  gap: 28px;
+  padding: 28px 20px 56px;
   background: #f5f1ea;
 }
 
 .pdf-sheet {
-  width: 297mm;
-  min-height: 210mm;
+  box-sizing: border-box;
+  flex: 0 0 auto;
+  width: min(1180px, calc(100vw - 40px));
+  max-width: 1180px;
+  aspect-ratio: 297 / 210;
+  min-height: auto;
+  margin-inline: auto;
   background: #ffffff;
   color: #111111;
   page-break-after: always;
   break-after: page;
+}
+
+.pdf-slide-shell {
+  width: 100%;
+  padding: 28px 20px 56px;
+  background: #f5f1ea;
+}
+
+.pdf-swiper {
+  width: min(100%, 1240px);
+  margin: 0 auto;
+}
+
+.pdf-swiper-slide {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
 }
 
 .screen-only {
@@ -36,6 +60,10 @@
     display: none !important;
   }
 
+  .pdf-slide-shell {
+    display: none !important;
+  }
+
   .pdf-document {
     gap: 0;
     padding: 0;
@@ -43,6 +71,9 @@
   }
 
   .pdf-sheet {
+    width: 297mm;
+    min-height: 210mm;
+    aspect-ratio: auto;
     margin: 0;
   }
 

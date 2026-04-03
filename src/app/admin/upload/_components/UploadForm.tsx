@@ -3,43 +3,26 @@
 import Image from 'next/image'
 import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
 
-import { Checkbox } from '@/components/ui/checkbox'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import { resizePortfolioImage } from '@/lib/image'
+import type { PortfolioAdminItem } from '@/types/portfolio'
 import {
   PORTFOLIO_CATEGORIES,
-  type PortfolioCategory,
 } from '@/types/portfolio'
+import {
+  PortfolioMetadataFields,
+  type PortfolioMetadataValue,
+} from '@/components/admin/PortfolioMetadataFields'
 
 interface UploadResponse {
   success: boolean
-  data?: {
-    id: string
-    imageUrl: string
-  }
+  data?: PortfolioAdminItem
   error?: string
 }
 
-interface UploadFormState {
-  title: string
-  brandName: string
-  celebrityName: string
-  category: PortfolioCategory
-  showOnWeb: boolean
-  showOnPdf: boolean
-}
-
-const INITIAL_FORM: UploadFormState = {
+const INITIAL_FORM: PortfolioMetadataValue = {
   title: '',
   brandName: '',
   celebrityName: '',
@@ -48,7 +31,11 @@ const INITIAL_FORM: UploadFormState = {
   showOnPdf: true,
 }
 
-export function UploadForm() {
+interface UploadFormProps {
+  onSuccess?: (item: PortfolioAdminItem) => void
+}
+
+export function UploadForm({ onSuccess }: UploadFormProps = {}) {
   const [form, setForm] = useState(INITIAL_FORM)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
@@ -77,6 +64,10 @@ export function UploadForm() {
     updatePreview(file)
     setError(null)
     setSuccess(null)
+  }
+
+  function updateForm(patch: Partial<PortfolioMetadataValue>) {
+    setForm((current) => ({ ...current, ...patch }))
   }
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
@@ -109,15 +100,21 @@ export function UploadForm() {
       })
       const result = (await response.json()) as UploadResponse
 
-      if (!response.ok || !result.success) {
+      if (!response.ok || !result.success || !result.data) {
         setError(result.error ?? '업로드에 실패했습니다.')
         return
       }
 
-      setSuccess('업로드가 완료되었습니다. 포트폴리오 관리 화면에서 바로 편집할 수 있습니다.')
       setForm(INITIAL_FORM)
       setSelectedFile(null)
       updatePreview(null)
+
+      if (onSuccess) {
+        onSuccess(result.data)
+        return
+      }
+
+      setSuccess('업로드가 완료되었습니다. 포트폴리오 관리 화면에서 바로 편집할 수 있습니다.')
     } catch (submitError) {
       const message =
         submitError instanceof Error ? submitError.message : '업로드에 실패했습니다.'
@@ -128,167 +125,82 @@ export function UploadForm() {
   }
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[minmax(0,1.2fr)_360px]">
-      <Card className="py-0">
-        <CardHeader>
-          <CardTitle>업로드 입력</CardTitle>
-        </CardHeader>
-        <CardContent className="pb-6">
-          <form className="grid gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
-            <div className="grid gap-2">
-              <Label htmlFor="upload-file">이미지 파일</Label>
-              <Input
-                id="upload-file"
-                type="file"
-                accept="image/jpeg,image/png,image/webp"
-                onChange={handleFileChange}
-              />
+    <form className="grid gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
+      <div className="grid gap-3">
+        <div className="flex items-center justify-between gap-3">
+          <Label htmlFor="upload-file" className="text-sm font-medium text-foreground">
+            이미지 파일
+          </Label>
+          <span className="text-xs text-muted-foreground">JPEG, PNG, WEBP</span>
+        </div>
+        <Input
+          id="upload-file"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          onChange={handleFileChange}
+          disabled={isPending}
+        />
+        <p className="text-xs text-muted-foreground">
+          서버 업로드 한도 4.5MB, 클라이언트에서 2000px JPEG 0.8 품질로 리사이즈합니다.
+        </p>
+      </div>
+
+      <div className="grid gap-4 rounded-[24px] border border-black/6 bg-white p-4">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">미리보기</p>
+          <p className="text-xs text-muted-foreground">
+            선택한 이미지는 저장 전까지 로컬에서만 표시됩니다.
+          </p>
+        </div>
+
+        <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
+          {previewUrl ? (
+            <Image
+              src={previewUrl}
+              alt={previewAlt}
+              fill
+              unoptimized
+              className="object-cover"
+              sizes="(max-width: 768px) 100vw, 560px"
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
+              이미지를 선택하면 여기에서 미리보기를 확인할 수 있습니다.
             </div>
+          )}
+        </div>
+      </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="upload-title">제목</Label>
-                <Input
-                  id="upload-title"
-                  value={form.title}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, title: event.target.value }))
-                  }
-                  placeholder="ROYNINE LOOK 01"
-                  required
-                />
-              </div>
+      <div className="grid gap-4 rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
+        <div className="flex flex-col gap-1">
+          <p className="text-sm font-medium text-foreground">기본 정보</p>
+          <p className="text-xs text-muted-foreground">
+            목록 카드와 상세 정보 패널에 같은 데이터가 반영됩니다.
+          </p>
+        </div>
+        <PortfolioMetadataFields
+          value={form}
+          idPrefix="upload"
+          disabled={isPending}
+          onChange={updateForm}
+        />
+      </div>
 
-              <div className="grid gap-2">
-                <Label htmlFor="upload-brand">브랜드명</Label>
-                <Input
-                  id="upload-brand"
-                  value={form.brandName}
-                  onChange={(event) =>
-                    setForm((current) => ({ ...current, brandName: event.target.value }))
-                  }
-                  placeholder="ROYNINE"
-                  required
-                />
-              </div>
-            </div>
+      {error ? (
+        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
 
-            <div className="grid gap-4 md:grid-cols-2">
-              <div className="grid gap-2">
-                <Label htmlFor="upload-celebrity">셀럽명</Label>
-                <Input
-                  id="upload-celebrity"
-                  value={form.celebrityName}
-                  onChange={(event) =>
-                    setForm((current) => ({
-                      ...current,
-                      celebrityName: event.target.value,
-                    }))
-                  }
-                  placeholder="선택 입력"
-                />
-              </div>
+      {success ? (
+        <div className="rounded-2xl border border-[#18e299]/25 bg-[#18e299]/10 px-4 py-3 text-sm text-[#0f7b54]">
+          {success}
+        </div>
+      ) : null}
 
-              <div className="grid gap-2">
-                <Label>카테고리</Label>
-                <Select
-                  value={form.category}
-                  onValueChange={(value) => {
-                    if (!value) {
-                      return
-                    }
-
-                    setForm((current) => ({
-                      ...current,
-                      category: value as PortfolioCategory,
-                    }))
-                  }}
-                >
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="카테고리 선택" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {PORTFOLIO_CATEGORIES.map((category) => (
-                      <SelectItem key={category} value={category}>
-                        {category}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-            </div>
-
-            <div className="grid gap-3 md:grid-cols-2">
-              <div className="flex items-center gap-2 rounded-md border p-3">
-                <Checkbox
-                  id="upload-web"
-                  checked={form.showOnWeb}
-                  onCheckedChange={(checked) =>
-                    setForm((current) => ({ ...current, showOnWeb: Boolean(checked) }))
-                  }
-                />
-                <Label htmlFor="upload-web">웹 노출 사용</Label>
-              </div>
-
-              <div className="flex items-center gap-2 rounded-md border p-3">
-                <Checkbox
-                  id="upload-pdf"
-                  checked={form.showOnPdf}
-                  onCheckedChange={(checked) =>
-                    setForm((current) => ({ ...current, showOnPdf: Boolean(checked) }))
-                  }
-                />
-                <Label htmlFor="upload-pdf">PDF 노출 사용</Label>
-              </div>
-            </div>
-
-            {error ? (
-              <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-                {error}
-              </div>
-            ) : null}
-
-            {success ? (
-              <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-                {success}
-              </div>
-            ) : null}
-
-            <Button type="submit" disabled={isPending}>
-              {isPending ? '업로드 중...' : '포트폴리오 생성'}
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
-
-      <Card className="py-0">
-        <CardHeader>
-          <CardTitle>미리보기</CardTitle>
-        </CardHeader>
-        <CardContent className="grid gap-4 pb-6">
-          <div className="relative aspect-[4/5] overflow-hidden rounded-md border bg-muted">
-            {previewUrl ? (
-              <Image
-                src={previewUrl}
-                alt={previewAlt}
-                fill
-                unoptimized
-                className="object-cover"
-                sizes="(max-width: 1024px) 100vw, 360px"
-              />
-            ) : (
-              <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-                이미지를 선택하면 여기에서 미리보기를 확인할 수 있습니다.
-              </div>
-            )}
-          </div>
-
-          <div className="space-y-2 text-sm text-muted-foreground">
-            <p>서버 업로드 한도는 4.5MB입니다.</p>
-            <p>클라이언트에서 2000px JPEG 0.8 품질로 리사이즈합니다.</p>
-          </div>
-        </CardContent>
-      </Card>
-    </div>
+      <Button type="submit" size="lg" disabled={isPending || !selectedFile}>
+        {isPending ? '업로드 중...' : '포트폴리오 생성'}
+      </Button>
+    </form>
   )
 }
