@@ -124,6 +124,7 @@
   }
   body {
     @apply bg-background text-foreground;
+    word-break: keep-all;
   }
   html {
     @apply font-sans;
@@ -139,5 +140,22 @@
   select,
   textarea {
     font-family: var(--font-sans);
+  }
+}
+
+@keyframes home-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
+@layer utilities {
+  .home-marquee-track {
+    animation: home-marquee 34s linear infinite;
+    will-change: transform;
   }
 }
