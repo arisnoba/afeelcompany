@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { Building2, Camera, FileOutput, Images, LayoutDashboard } from 'lucide-react';
+import { BriefcaseBusiness, Building2, Camera, FileOutput, Images, LayoutDashboard } from 'lucide-react';
 
 import { LogoutButton } from '@/app/admin/_components/LogoutButton';
 import {
@@ -26,8 +26,9 @@ import { ADMIN_NAV_ITEMS, isAdminHrefActive } from './admin-navigation';
 const NAV_ICONS = {
 	'/admin': LayoutDashboard,
 	'/admin/portfolio': Images,
-	'/admin/export': FileOutput,
 	'/admin/profile': Building2,
+	'/admin/clients': BriefcaseBusiness,
+	'/admin/export': FileOutput,
 	'/admin/instagram': Camera,
 } as const;
 
@@ -75,7 +76,7 @@ export function AdminSidebar() {
 					<SidebarGroupLabel>메모</SidebarGroupLabel>
 					<SidebarGroupContent>
 						<div className="rounded-sm border border-black/6 bg-[#fbfdfb] p-3 text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">
-							포트폴리오 등록은 목록 우측 패널에서 바로 시작할 수 있습니다.
+							포트폴리오와 클라이언트 등록은 목록 우측 패널에서 바로 시작할 수 있습니다.
 						</div>
 					</SidebarGroupContent>
 				</SidebarGroup>

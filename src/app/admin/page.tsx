@@ -24,8 +24,13 @@ const FEATURE_CARDS = [
   },
   {
     href: '/admin/profile',
-    title: '회사 정보와 브랜드',
-    description: '소개 문구, 연락처, 브랜드 로고를 관리해 PDF와 웹 공용 데이터를 갱신합니다.',
+    title: '회사 프로필 관리',
+    description: '소개 문구와 연락처를 관리해 PDF와 웹 공용 데이터를 갱신합니다.',
+  },
+  {
+    href: '/admin/clients',
+    title: '클라이언트 관리',
+    description: '브랜드 리스트와 로고, URL, 활성 상태를 테이블과 우측 패널에서 관리합니다.',
   },
   {
     href: '/admin/instagram',
@@ -40,7 +45,7 @@ export default function AdminDashboardPage() {
       <AdminPageIntro
         eyebrow="관리자"
         title="운영 화면"
-        description="업로드부터 포트폴리오 정리, 회사 정보 반영, 인스타 큐 발행까지 같은 데이터 레이어로 연결됩니다."
+        description="업로드부터 포트폴리오 정리, 회사 정보 반영, 클라이언트 관리, 인스타 큐 발행까지 같은 데이터 레이어로 연결됩니다."
         aside={
           <div>활성 메뉴 {ADMIN_NAV_ITEMS.length}개</div>
         }
@@ -75,7 +80,8 @@ export default function AdminDashboardPage() {
           <CardContent className="space-y-3 pb-6 text-sm text-muted-foreground">
             <p>1. 업로드에서 자산과 메타데이터를 등록합니다.</p>
             <p>2. 포트폴리오에서 노출 여부와 정렬 순서를 조정합니다.</p>
-            <p>3. 인스타 큐에서 캡션을 확인하고 게시합니다.</p>
+            <p>3. 회사 정보와 클라이언트 리스트를 최신 상태로 맞춥니다.</p>
+            <p>4. 인스타 큐에서 캡션을 확인하고 게시합니다.</p>
           </CardContent>
         </Card>
 
@@ -86,7 +92,7 @@ export default function AdminDashboardPage() {
           </CardHeader>
           <CardContent className="space-y-3 pb-6 text-sm text-muted-foreground">
             <p>포트폴리오 항목은 웹, PDF, 인스타 큐에서 함께 사용됩니다.</p>
-            <p>회사 정보와 브랜드 로고는 외부 출력물과 사이트에서 함께 사용됩니다.</p>
+            <p>회사 정보와 클라이언트 로고는 외부 출력물과 사이트에서 함께 사용됩니다.</p>
           </CardContent>
         </Card>
       </section>

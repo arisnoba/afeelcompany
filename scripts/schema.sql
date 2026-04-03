@@ -53,7 +53,15 @@ CREATE TABLE IF NOT EXISTS client_brands (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   name TEXT NOT NULL,
   logo_url TEXT,
+  brand_url TEXT,
   sort_order INTEGER DEFAULT 0,
   is_active BOOLEAN DEFAULT true,
-  created_at TIMESTAMPTZ DEFAULT NOW()
+  created_at TIMESTAMPTZ DEFAULT NOW(),
+  updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE client_brands
+ADD COLUMN IF NOT EXISTS brand_url TEXT;
+
+ALTER TABLE client_brands
+ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();

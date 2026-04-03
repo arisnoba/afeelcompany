@@ -2,26 +2,45 @@ import { del } from '@vercel/blob'
 
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
-
-interface BrandPatchPayload {
-  name?: string
-  sortOrder?: number
-  isActive?: boolean
-}
+import { uploadPublicImage } from '@/lib/blob'
+import type { ClientBrandAdminItem } from '@/types/client-brand'
 
 interface ClientBrandRow {
   id: string
   name: string
   logo_url: string | null
+  brand_url: string | null
   sort_order: number
   is_active: boolean
 }
 
-function mapBrandRow(row: ClientBrandRow) {
+function normalizeBrandUrl(input: string | null): string | null {
+  if (!input) {
+    return null
+  }
+
+  const trimmed = input.trim()
+
+  if (!trimmed) {
+    return null
+  }
+
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  const url = new URL(withProtocol)
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('브랜드 URL은 http 또는 https 주소만 사용할 수 있습니다.')
+  }
+
+  return url.toString()
+}
+
+function mapBrandRow(row: ClientBrandRow): ClientBrandAdminItem {
   return {
     id: row.id,
     name: row.name,
     logoUrl: row.logo_url,
+    brandUrl: row.brand_url,
     sortOrder: row.sort_order,
     isActive: row.is_active,
   }
@@ -36,34 +55,69 @@ export async function PATCH(
   }
 
   const { id } = await ctx.params
-  const body = (await request.json()) as BrandPatchPayload
-
-  if (
-    typeof body.name !== 'string' ||
-    typeof body.sortOrder !== 'number' ||
-    typeof body.isActive !== 'boolean'
-  ) {
-    return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
-  }
-
-  const result = await sql<ClientBrandRow>`
-    UPDATE client_brands
-    SET
-      name = ${body.name.trim()},
-      sort_order = ${body.sortOrder},
-      is_active = ${body.isActive}
+  const current = await sql<ClientBrandRow>`
+    SELECT id, name, logo_url, brand_url, sort_order, is_active
+    FROM client_brands
     WHERE id = ${id}
-    RETURNING id, name, logo_url, sort_order, is_active
+    LIMIT 1
   `
 
-  if (!result.rows[0]) {
+  const brand = current.rows[0]
+
+  if (!brand) {
     return Response.json({ success: false, error: 'NOT_FOUND' }, { status: 404 })
   }
 
-  return Response.json({
-    success: true,
-    data: mapBrandRow(result.rows[0]),
-  })
+  const formData = await request.formData()
+  const name = formData.get('name')?.toString().trim()
+  const brandUrlRaw = formData.get('brandUrl')?.toString() ?? null
+  const isActiveRaw = formData.get('isActive')?.toString()
+  const file = formData.get('logo')
+
+  if (!name || (file !== null && !(file instanceof File))) {
+    return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
+  }
+
+  if (isActiveRaw !== 'true' && isActiveRaw !== 'false') {
+    return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
+  }
+
+  try {
+    const brandUrl = normalizeBrandUrl(brandUrlRaw)
+    let logoUrl = brand.logo_url
+    let previousLogoUrl: string | null = null
+
+    if (file instanceof File && file.size > 0) {
+      const uploaded = await uploadPublicImage(file, 'brands')
+      logoUrl = uploaded.url
+      previousLogoUrl = brand.logo_url
+    }
+
+    const result = await sql<ClientBrandRow>`
+      UPDATE client_brands
+      SET
+        name = ${name},
+        logo_url = ${logoUrl},
+        brand_url = ${brandUrl},
+        is_active = ${isActiveRaw === 'true'},
+        updated_at = NOW()
+      WHERE id = ${id}
+      RETURNING id, name, logo_url, brand_url, sort_order, is_active
+    `
+
+    if (previousLogoUrl) {
+      await del(previousLogoUrl)
+    }
+
+    return Response.json({
+      success: true,
+      data: mapBrandRow(result.rows[0]),
+    })
+  } catch (error) {
+    const message = error instanceof Error ? error.message : 'BRAND_UPDATE_FAILED'
+    const status = message.includes('브랜드 URL') ? 400 : 500
+    return Response.json({ success: false, error: message }, { status })
+  }
 }
 
 export async function DELETE(

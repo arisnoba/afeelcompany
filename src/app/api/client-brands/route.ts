@@ -1,20 +1,44 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
+import type { ClientBrandAdminItem } from '@/types/client-brand'
 
 interface ClientBrandRow {
   id: string
   name: string
   logo_url: string | null
+  brand_url: string | null
   sort_order: number
   is_active: boolean
 }
 
-function mapBrandRow(row: ClientBrandRow) {
+function normalizeBrandUrl(input: string | null): string | null {
+  if (!input) {
+    return null
+  }
+
+  const trimmed = input.trim()
+
+  if (!trimmed) {
+    return null
+  }
+
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  const url = new URL(withProtocol)
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('브랜드 URL은 http 또는 https 주소만 사용할 수 있습니다.')
+  }
+
+  return url.toString()
+}
+
+function mapBrandRow(row: ClientBrandRow): ClientBrandAdminItem {
   return {
     id: row.id,
     name: row.name,
     logoUrl: row.logo_url,
+    brandUrl: row.brand_url,
     sortOrder: row.sort_order,
     isActive: row.is_active,
   }
@@ -26,7 +50,7 @@ export async function GET(): Promise<Response> {
   }
 
   const result = await sql<ClientBrandRow>`
-    SELECT id, name, logo_url, sort_order, is_active
+    SELECT id, name, logo_url, brand_url, sort_order, is_active
     FROM client_brands
     ORDER BY sort_order ASC, created_at ASC
   `
@@ -44,26 +68,27 @@ export async function POST(request: Request): Promise<Response> {
 
   const formData = await request.formData()
   const name = formData.get('name')?.toString().trim()
-  const sortOrderRaw = formData.get('sortOrder')?.toString()
+  const brandUrlRaw = formData.get('brandUrl')?.toString() ?? null
   const isActive = formData.get('isActive')?.toString() === 'true'
   const file = formData.get('logo')
 
-  if (!name || !sortOrderRaw || !(file instanceof File)) {
+  if (!name || !(file instanceof File)) {
     return Response.json({ success: false, error: 'INVALID_FORM_DATA' }, { status: 400 })
   }
 
-  const sortOrder = Number(sortOrderRaw)
-
-  if (!Number.isFinite(sortOrder)) {
-    return Response.json({ success: false, error: 'INVALID_SORT_ORDER' }, { status: 400 })
-  }
-
   try {
+    const brandUrl = normalizeBrandUrl(brandUrlRaw)
     const uploaded = await uploadPublicImage(file, 'brands')
     const result = await sql<ClientBrandRow>`
-      INSERT INTO client_brands (name, logo_url, sort_order, is_active)
-      VALUES (${name}, ${uploaded.url}, ${sortOrder}, ${isActive})
-      RETURNING id, name, logo_url, sort_order, is_active
+      INSERT INTO client_brands (name, logo_url, brand_url, sort_order, is_active)
+      VALUES (
+        ${name},
+        ${uploaded.url},
+        ${brandUrl},
+        (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM client_brands),
+        ${isActive}
+      )
+      RETURNING id, name, logo_url, brand_url, sort_order, is_active
     `
 
     return Response.json({
@@ -72,6 +97,7 @@ export async function POST(request: Request): Promise<Response> {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'BRAND_CREATE_FAILED'
-    return Response.json({ success: false, error: message }, { status: 500 })
+    const status = message.includes('브랜드 URL') ? 400 : 500
+    return Response.json({ success: false, error: message }, { status })
   }
 }

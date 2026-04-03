@@ -16,14 +16,19 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     description: '우측 패널에서 신규 등록과 상세 편집을 함께 처리합니다.',
   },
   {
+    href: '/admin/profile',
+    label: '회사 정보',
+    description: '회사 프로필과 연락처 데이터를 실데이터 기준으로 관리합니다.',
+  },
+  {
+    href: '/admin/clients',
+    label: '클라이언트 관리',
+    description: '브랜드 리스트를 테이블과 우측 패널에서 관리합니다.',
+  },
+  {
     href: '/admin/export',
     label: '익스포트',
     description: '브로셔 PDF 미리보기와 출력 흐름을 실행합니다.',
-  },
-  {
-    href: '/admin/profile',
-    label: '회사 정보',
-    description: '브랜드 로고와 회사 프로필을 실데이터 기준으로 관리합니다.',
   },
   {
     href: '/admin/instagram',
