@@ -153,9 +153,54 @@
   }
 }
 
+@keyframes about-rise {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(0, -50%, 0);
+  }
+}
+
+@keyframes about-rise-reverse {
+  0% {
+    transform: translate3d(0, -50%, 0);
+  }
+
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+@keyframes about-logo-marquee {
+  0% {
+    transform: translate3d(0, 0, 0);
+  }
+
+  100% {
+    transform: translate3d(-50%, 0, 0);
+  }
+}
+
 @layer utilities {
   .home-marquee-track {
     animation: home-marquee 34s linear infinite;
+    will-change: transform;
+  }
+
+  .about-rise-track {
+    animation: about-rise 24s linear infinite;
+    will-change: transform;
+  }
+
+  .about-rise-track-reverse {
+    animation: about-rise-reverse 28s linear infinite;
+    will-change: transform;
+  }
+
+  .about-logo-marquee-track {
+    animation: about-logo-marquee 30s linear infinite;
     will-change: transform;
   }
 }

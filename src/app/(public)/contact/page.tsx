@@ -6,7 +6,7 @@ function renderValue(value: string) {
 
 function ContactDetail({ label, children }: { label: string; children: React.ReactNode }) {
 	return (
-		<section className="grid gap-4">
+		<section className="grid gap-2">
 			<span className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{label}</span>
 			{children}
 		</section>
@@ -39,9 +39,6 @@ export default async function ContactPage() {
 			<header className="grid gap-5 border-b border-stone-900/10 pb-12 md:pb-16">
 				<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Connect With Us</p>
 				<h1 className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">Get In Touch.</h1>
-				<p className="max-w-3xl text-base leading-8 text-stone-600 sm:text-lg">
-					브랜드의 현재 상태와 필요한 협업 맥락을 남겨 주세요. 운영 중인 공개 아카이브와 같은 톤으로, 문의 접점 역시 차분하고 명확한 에디토리얼 구조로 정리했습니다.
-				</p>
 			</header>
 
 			<section className="grid gap-14 lg:grid-cols-12 lg:gap-20">
@@ -61,7 +58,7 @@ export default async function ContactPage() {
 						</ContactDetail>
 
 						<div className="grid gap-10 md:grid-cols-2 md:gap-12">
-							<ContactDetail label="Inquiries">
+							<ContactDetail label="Email">
 								{email ? (
 									<a href={mailtoHref} className="border-b border-stone-300/60 pb-1 text-xl leading-tight text-stone-900 transition hover:text-[#274133] [font-family:var(--font-newsreader)]">
 										{email}
@@ -86,11 +83,13 @@ export default async function ContactPage() {
 
 				<div className="grid gap-8 border border-stone-900/10 bg-[#f6f3f2] p-8 sm:p-10 lg:col-span-7 lg:p-12">
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Project Inquiry</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">Start the conversation with the essentials.</h2>
-						<p className="max-w-2xl text-base leading-8 text-stone-600">
-							현재 사이트에는 별도 문의 수집 API가 없어, 아래 구성은 기본 메일 앱으로 연결됩니다. 브랜드명, 연락처, 요청 배경을 함께 적어주시면 초기 응답이 더 빨라집니다.
-						</p>
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Inquiry</p>
+						<h2 className="text-4xl leading-tight tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
+							다음 트렌드의 주인공.
+							<br />
+							당신의 브랜드입니다.
+						</h2>
+						<p className="max-w-2xl text-base leading-8 text-stone-600">언제든 편안하게 말을 걸어주세요. 멋진 프로젝트를 함께 시작할 준비가 되어 있습니다.</p>
 					</div>
 
 					<form action={mailtoHref} method="post" encType="text/plain" className="grid gap-10">

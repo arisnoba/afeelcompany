@@ -1,43 +1,130 @@
+import Image from 'next/image'
 import Link from 'next/link'
 
-import { BrandLogoGrid } from '@/components/site/BrandLogoGrid'
 import { getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site'
+import type { SiteClientBrand } from '@/types/site'
 
 const FALLBACK_ABOUT =
   '어필컴퍼니는 브랜드 이미지와 셀럽 노출의 접점을 설계하고, 축적된 작업물을 한 번의 업데이트로 여러 채널에 연결하는 방식을 지향합니다.'
 
-const SERVICES = [
+const STORY_LINES = [
+  '2018년 봄, 어필컴퍼니는 단순한 목표 하나로 시작했습니다.',
+  "'우리가 가장 잘하는 일을, 가장 확실하게 하자.'",
+  '우리는 그저 옷을 협찬하는 데 그치지 않습니다.',
+  '스타의 고유한 분위기에 완벽히 맞는 핏을 찾습니다.',
+  '그 찰나의 순간이 대중의 열망으로 번지도록 설계합니다.',
+  '화려한 지표를 꾸며내기보다 현상 그 자체에 집중합니다.',
+  '어제보다 오늘 더 많은 브랜드가 품절 대란을 겪고,',
+  '더 많은 스타일리스트가 우리를 찾는 흐름을 증명합니다.',
+]
+
+const MOMENTUM_MILESTONES = [
   {
-    title: 'PR & Communications',
-    description:
-      '브랜드의 결을 해치지 않으면서도 더 넓은 장면으로 확장되는 커뮤니케이션 시나리오를 설계합니다.',
+    year: '2018.04',
+    title: '새로운 기준의 시작',
+    description: '어필컴퍼니 설립',
   },
   {
-    title: 'Event Management',
-    description:
-      '런칭, 프레젠테이션, 프레스 이벤트를 하나의 인상으로 읽히도록 현장 경험과 공개 결과물을 함께 정리합니다.',
+    year: '2019',
+    title: '드라마 패션의 판도를 바꾸다',
+    description: '주요 완판 사례 릴레이 시작',
   },
   {
-    title: 'Digital Strategy',
-    description:
-      '포트폴리오, 소개서, 인스타그램 아카이브가 같은 목소리를 유지하도록 디지털 접점을 정교하게 연결합니다.',
+    year: '2021',
+    title: '이커머스 플랫폼 랭킹 장악',
+    description: '무신사/W컨셉 베스트셀러 견인',
+  },
+  {
+    year: '2025 현재',
+    title: '글로벌 포트폴리오 구축',
+    description: '글로벌 K-POP 아티스트와 최정상 배우 스타일링 축적',
   },
 ]
 
-const WORKING_METHOD = [
+const EDGE_ITEMS = [
   {
-    label: 'Observation',
-    description: '브랜드와 셀럽, 매체 접점에서 무엇이 실제로 인상을 남기는지 먼저 읽어냅니다.',
+    title: 'Strategic Curation',
+    headline: '기획된 우연',
+    description:
+      '우연한 노출은 없습니다. 브랜드의 미학과 셀럽의 페르소나를 예리하게 매칭해 대중의 시선을 사로잡는 결정적 씬(Scene)을 만듭니다.',
   },
   {
-    label: 'Composition',
-    description: '보이는 결과만이 아니라 과정과 맥락까지 포함한 공개용 서사를 설계합니다.',
+    title: 'Endless Archive',
+    headline: '집요한 기록',
+    description:
+      '트렌드는 휘발되지만 기록은 남습니다. 모든 방송, SNS, 미디어 노출을 실시간으로 추적하고 바이럴 자산으로 영구히 보존합니다.',
   },
   {
-    label: 'Continuity',
-    description: '한 번 정리된 결과가 포트폴리오, 소개서, 소셜 아카이브로 이어지게 유지합니다.',
+    title: 'Proven Impact',
+    headline: '확실한 결과',
+    description:
+      '단순히 예쁜 사진 한 장을 넘어서, 연관 검색어 장악과 플랫폼 품절 대란이라는 실질적인 상업적 임팩트로 증명합니다.',
   },
 ]
+
+const FALLBACK_NETWORK_NAMES = [
+  'SHIFT',
+  'HAVISM',
+  'LUCIE RYU',
+  'GLOBAL K-POP',
+  'TOP ACTOR',
+  'LEAD STYLIST',
+  'FASHION EDITOR',
+  'RUNWAY BRAND',
+  'BESTSELLER DROP',
+  'RED CARPET',
+  'DRAMA FASHION',
+  'ARCHIVE SIGNAL',
+]
+
+function buildNetworkNames(brands: SiteClientBrand[]) {
+  const names = brands
+    .map((brand) => brand.name.trim())
+    .filter(Boolean)
+    .map((name) => name.toUpperCase())
+
+  const merged = [...names, ...FALLBACK_NETWORK_NAMES]
+
+  return Array.from(new Set(merged))
+}
+
+function chunkNames(names: string[], size: number) {
+  const chunks: string[][] = []
+
+  for (let index = 0; index < names.length; index += size) {
+    chunks.push(names.slice(index, index + size))
+  }
+
+  return chunks
+}
+
+function renderBrandMark(brand: SiteClientBrand, index: number) {
+  if (brand.logoUrl) {
+    return (
+      <div
+        key={`${brand.id}-${index}`}
+        className="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
+      >
+        <Image
+          src={brand.logoUrl}
+          alt={brand.name}
+          fill
+          className="object-contain grayscale"
+          sizes="128px"
+        />
+      </div>
+    )
+  }
+
+  return (
+    <span
+      key={`${brand.id}-${index}`}
+      className="shrink-0 text-[0.82rem] font-semibold uppercase tracking-[0.32em] text-stone-400"
+    >
+      {brand.name}
+    </span>
+  )
+}
 
 export default async function AboutPage() {
   const [profile, brands] = await Promise.all([
@@ -46,133 +133,240 @@ export default async function AboutPage() {
   ])
 
   const aboutText = profile.aboutText || FALLBACK_ABOUT
+  const networkNames = buildNetworkNames(brands)
+  const nameColumns = chunkNames(networkNames, Math.ceil(networkNames.length / 3))
+  const rollingBrands = brands.length > 0 ? brands : []
 
   return (
     <div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-32 lg:py-20">
-      <header className="grid gap-8">
+      <header className="grid gap-10">
         <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">
-          The Collective
+          About AFEEL
         </p>
-        <div className="grid gap-10 md:grid-cols-12 md:items-end">
-          <div className="grid gap-6 md:col-span-8">
-            <h1 className="text-5xl font-light leading-[0.92] tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">
-              Curating
+
+        <div className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.7fr)] md:items-end">
+          <div className="grid gap-6">
+            <h1 className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">
+              숫자로는 담을 수 없는
               <br />
-              the Invisible
+              진짜 영향력.
             </h1>
-          </div>
-          <div className="grid gap-4 md:col-span-4 md:pb-3">
-            <p className="text-base leading-8 text-stone-600 sm:text-lg">
-              보이지 않는 인상과 맥락을 읽고, 브랜드의 서사를 더 정교한 공개 아카이브로
-              정리합니다.
+            <p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
+              성장의 속도보다 중요한 것은 시장이 체감하는 기세입니다. 어필컴퍼니는
+              무형의 모멘텀을 축적 가능한 신뢰로 바꾸는 방식으로 움직입니다.
             </p>
+          </div>
+
+          <div className="grid gap-4 border-l border-stone-900/8 pl-6">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+              Philosophy Note
+            </p>
+            <p className="text-sm leading-7 text-stone-600">{aboutText}</p>
           </div>
         </div>
       </header>
 
-      <section className="relative grid gap-8 md:grid-cols-[minmax(0,1.25fr)_minmax(280px,0.75fr)] md:items-end">
-        <div className="relative min-h-[24rem] overflow-hidden bg-[#f0eded] sm:min-h-[30rem]">
-          <div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(17,24,39,0.28),transparent_38%),radial-gradient(circle_at_top_right,rgba(255,255,255,0.52),transparent_36%),linear-gradient(180deg,rgba(39,65,51,0.18),rgba(17,24,39,0.04))]" />
-          <div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(255,255,255,0.42)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.2)_1px,transparent_1px)] [background-size:28px_28px]" />
-          <div className="absolute inset-x-0 bottom-0 grid gap-3 bg-gradient-to-t from-black/80 via-black/35 to-transparent px-6 py-8 text-white sm:px-10 sm:py-10">
-            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/65">
-              Editorial Atmosphere
+      <section className="grid gap-8 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.7fr)] md:items-start">
+        <div className="relative overflow-hidden border border-stone-900/8 bg-[linear-gradient(135deg,#f4f0ec_0%,#faf6f3_46%,#efebe7_100%)] px-7 py-10 sm:px-10 sm:py-12">
+          <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] [background-size:28px_28px]" />
+          <div className="relative z-10 grid gap-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">
+              Our Story & Philosophy
             </p>
-            <p className="max-w-lg text-2xl leading-tight [font-family:var(--font-newsreader)] sm:text-4xl">
-              Prestige is often built in the layer beneath the obvious.
-            </p>
+
+            <div className="grid gap-3">
+              {STORY_LINES.map((line, index) => (
+                <p
+                  key={line}
+                  className={`max-w-3xl ${
+                    index === 1
+                      ? 'text-2xl italic leading-tight text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl'
+                      : 'text-lg leading-8 text-stone-700 sm:text-[1.38rem] sm:leading-9'
+                  }`}
+                >
+                  {line}
+                </p>
+              ))}
+            </div>
           </div>
         </div>
 
-        <div className="md:-ml-20 md:mb-10">
-          <div className="grid gap-6 bg-[#eae7e7] p-8 sm:p-10 md:p-12">
-            <h2 className="text-4xl italic leading-none tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-              Our Vision
-            </h2>
-            <p className="text-base leading-8 text-stone-600 sm:text-lg">
-              {aboutText}
-            </p>
+        <aside className="grid gap-5 bg-[#f6f1ec] p-8 sm:p-10">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+            Working Principle
+          </p>
+          <p className="text-3xl italic leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)]">
+            One idea.
+            <br />
+            One line.
+          </p>
+          <p className="text-sm leading-7 text-stone-600">
+            선언은 짧고, 실행은 집요하게. 브랜드와 스타일리스트가 필요로 하는 것은
+            과장된 수치가 아니라 반복해서 체감되는 결과입니다.
+          </p>
+          <div className="border-t border-stone-900/8 pt-5 text-[0.7rem] font-semibold uppercase tracking-[0.28em] text-stone-500">
+            Momentum over vanity metrics
           </div>
-        </div>
+        </aside>
       </section>
 
-      <section className="bg-[#f6f3f2] px-6 py-16 sm:px-8 sm:py-20 lg:px-12 lg:py-24">
-        <div className="mx-auto grid w-full max-w-screen-2xl gap-16">
-          <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
-            <h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-              Strategic Prowess
+      <section className="relative overflow-hidden border border-stone-900/8 bg-stone-950 px-6 py-14 text-white sm:px-10 sm:py-18 lg:px-12 lg:py-20">
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(95,123,107,0.28),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_28%)]" />
+        <div className="absolute inset-0 overflow-hidden">
+          <div className="grid h-full grid-cols-2 gap-4 px-4 opacity-18 md:grid-cols-3">
+            {nameColumns.map((column, columnIndex) => (
+              <div key={columnIndex} className="relative overflow-hidden">
+                <div
+                  className={
+                    columnIndex % 2 === 0
+                      ? 'about-rise-track flex flex-col gap-5 py-2'
+                      : 'about-rise-track-reverse flex flex-col gap-5 py-2'
+                  }
+                >
+                  {[...column, ...column].map((name, nameIndex) => (
+                    <span
+                      key={`${name}-${nameIndex}`}
+                      className={`whitespace-nowrap font-semibold uppercase text-white/70 ${
+                        nameIndex % 3 === 0
+                          ? 'text-[0.68rem] tracking-[0.38em]'
+                          : nameIndex % 3 === 1
+                            ? 'text-[1.05rem] tracking-[0.18em] [font-family:var(--font-newsreader)]'
+                            : 'text-[0.78rem] tracking-[0.3em]'
+                      }`}
+                    >
+                      {name}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div className="relative z-10 grid gap-12 lg:grid-cols-[minmax(280px,0.42fr)_minmax(0,1fr)]">
+          <div className="grid gap-5">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">
+              Visualizing Momentum
+            </p>
+            <h2 className="text-4xl leading-none tracking-[-0.06em] text-white [font-family:var(--font-newsreader)] sm:text-5xl">
+              The Accumulation Line
             </h2>
-            <span className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">
-              Services Portfolio
-            </span>
+            <p className="max-w-md text-sm leading-7 text-stone-300 sm:text-base">
+              수치 그래프 대신 시간을 시각화합니다. 쌓여온 사례의 밀도, 연결된 이름의
+              압력, 그리고 계속 상승하는 현상을 하나의 흐름으로 보여줍니다.
+            </p>
           </div>
 
-          <div className="grid gap-10 md:grid-cols-3 md:gap-12">
-            {SERVICES.map((service) => (
-              <article key={service.title} className="grid gap-4 pt-8">
-                <h3 className="text-2xl leading-tight text-[#274133] [font-family:var(--font-newsreader)]">
-                  {service.title}
-                </h3>
-                <p className="text-sm leading-8 text-stone-600 sm:text-base">
-                  {service.description}
-                </p>
-              </article>
-            ))}
+          <div className="relative">
+            <div className="absolute left-3 top-0 h-full w-px bg-white/14 sm:left-4" />
+            <div className="grid gap-10">
+              {MOMENTUM_MILESTONES.map((milestone, index) => (
+                <article
+                  key={milestone.year}
+                  className={`relative ml-10 max-w-2xl border border-white/10 bg-white/6 p-6 backdrop-blur-sm sm:ml-14 sm:p-7 ${
+                    index % 2 === 1 ? 'lg:ml-24' : ''
+                  }`}
+                >
+                  <div className="absolute -left-[2.15rem] top-7 h-3 w-3 rounded-full border border-[#ccead6] bg-[#ccead6] shadow-[0_0_18px_rgba(204,234,214,0.7)] sm:-left-[2.85rem]" />
+                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">
+                    {milestone.year}
+                  </p>
+                  <h3 className="mt-3 text-2xl tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-3xl">
+                    {milestone.title}
+                  </h3>
+                  <p className="mt-3 text-sm leading-7 text-stone-300 sm:text-base">
+                    {milestone.description}
+                  </p>
+                </article>
+              ))}
+            </div>
           </div>
         </div>
       </section>
 
       <section className="grid gap-10">
-        <div className="grid gap-5 md:grid-cols-[minmax(0,0.9fr)_minmax(280px,1.1fr)] md:items-start">
+        <div className="grid gap-5 md:grid-cols-[minmax(0,0.95fr)_minmax(280px,1.05fr)] md:items-end">
           <div className="grid gap-4">
             <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">
-              Working Method
+              Our Edge
             </p>
-            <h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-              Precision behind the surface.
+            <h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+              Why AFEEL
             </h2>
           </div>
           <p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-            어필컴퍼니의 작업은 결과물만 만드는 방식이 아니라, 브랜드의 현재 위치와 이후
-            장면까지 함께 설계하는 방식에 가깝습니다.
+            타깃이 가장 궁금해하는 질문에는 짧고 단단한 단어로 답합니다. 미학, 기록,
+            상업적 결과까지 전부 연결하는 팀이라는 점이 우리의 차별점입니다.
           </p>
         </div>
 
-        <div className="grid gap-8 md:grid-cols-3 md:gap-10">
-          {WORKING_METHOD.map((item, index) => (
-            <article key={item.label} className="grid gap-4">
+        <div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
+          {EDGE_ITEMS.map((item) => (
+            <article key={item.title} className="grid gap-5 bg-[#faf7f3] p-7 sm:p-8">
               <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
-                {String(index + 1).padStart(2, '0')} {item.label}
+                {item.title}
               </p>
-              <p className="text-lg leading-8 text-stone-700">{item.description}</p>
+              <h3 className="text-3xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)]">
+                {item.headline}
+              </h3>
+              <p className="text-sm leading-8 text-stone-600 sm:text-base">
+                {item.description}
+              </p>
             </article>
           ))}
         </div>
       </section>
 
-      <section className="grid gap-6">
-        <div className="grid gap-4">
-          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">
-            Clients
+      <section className="grid gap-10 border border-stone-900/8 bg-[#f5f1ec] px-6 py-12 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
+        <div className="grid gap-5 md:grid-cols-[minmax(0,0.9fr)_minmax(280px,1.1fr)] md:items-end">
+          <div className="grid gap-4">
+            <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">
+              Social Proof
+            </p>
+            <h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+              Trusted by the Best
+            </h2>
+          </div>
+          <p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
+            숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.
+            다음 시즌의 메가 히트를 준비하는 브랜드와, 완벽한 룩이 필요한 스타일리스트가
+            같은 이유로 어필컴퍼니를 찾습니다.
           </p>
-          <h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-            Collective Partners
-          </h2>
         </div>
-        <BrandLogoGrid brands={brands} />
-      </section>
 
-      <section className="bg-stone-950 px-8 py-16 text-center text-white sm:px-12 sm:py-20">
-        <div className="mx-auto grid max-w-3xl justify-items-center gap-8">
-          <h2 className="text-4xl italic leading-none tracking-[-0.05em] [font-family:var(--font-newsreader)] sm:text-5xl">
-            Begin the Dialogue
-          </h2>
-          <Link
-            href="/contact"
-            className="inline-flex items-center justify-center bg-[#274133] px-10 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6] transition hover:bg-[#5f7b6b] hover:text-white"
-          >
-            Inquire for Collaboration
-          </Link>
+        <div className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
+          <div className="about-logo-marquee-track flex min-w-max items-center gap-14">
+            {rollingBrands.length > 0
+              ? [...rollingBrands, ...rollingBrands].map((brand, index) =>
+                  renderBrandMark(brand, index)
+                )
+              : [...networkNames, ...networkNames].map((name, index) => (
+                  <span
+                    key={`${name}-${index}`}
+                    className="shrink-0 text-[0.82rem] font-semibold uppercase tracking-[0.32em] text-stone-400"
+                  >
+                    {name}
+                  </span>
+                ))}
+          </div>
+        </div>
+
+        <div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">
+            Target Alignment
+          </p>
+          <p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
+            다음 시즌의 메가 히트를 준비하는 브랜드 매니저. 완벽한 레드카펫 룩이 당장
+            필요한 스타일리스트. 어필컴퍼니는 당신의 가장 든든하고 확실한 파트너입니다.
+          </p>
+          <div>
+            <Link
+              href="/contact"
+              className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14"
+            >
+              Inquire for Collaboration
+            </Link>
+          </div>
         </div>
       </section>
     </div>

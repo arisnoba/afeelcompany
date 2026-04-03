@@ -13,9 +13,9 @@ function renderValue(value: string) {
 }
 
 const STUDIO_LINKS = [
-	{ href: '/about', label: 'About' },
-	{ href: '/portfolio', label: 'Portfolio' },
-	{ href: '/contact', label: 'Contact' },
+	{ href: '/portfolio', label: 'Archive' },
+	{ href: '/about', label: 'Process' },
+	{ href: '/about#our-edge', label: 'Vision' },
 ];
 
 export function SiteFooter({ profile }: SiteFooterProps) {
@@ -23,38 +23,38 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
 	const connectLinks = [
-		{ href: '/feed', label: 'Feed', external: false },
 		{ href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true },
-		...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : [{ href: '/contact', label: 'Contact', external: false }]),
+		{ href: '/contact', label: 'Contact', external: false },
+		...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : []),
 	];
 
 	return (
-		<footer className="border-t border-stone-900/10 bg-[#faf8f4] pb-10 pt-20 text-stone-900 sm:pt-24">
-			<div className="mx-auto grid w-full max-w-screen-2xl gap-16 px-6 md:grid-cols-3 md:gap-20 md:px-12">
-				<div className="grid gap-6">
+		<footer className="border-t border-stone-900/8 bg-[#faf7f3] text-stone-900">
+			<div className="mx-auto grid w-full max-w-screen-2xl gap-14 px-6 py-20 md:grid-cols-[minmax(0,1.4fr)_minmax(260px,1.15fr)_180px_180px] md:gap-x-16 md:px-12 md:py-24 lg:gap-x-24">
+				<div className="grid content-start gap-10">
 					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
 						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" />
 					</span>
-					<p className="max-w-xs text-sm leading-7 text-stone-500">{description}</p>
+					<p className="max-w-md text-[1.02rem] leading-[1.7] text-stone-500">{description}</p>
 				</div>
 
-				<div className="grid gap-8">
-					<div className="grid gap-2">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Address</p>
-						<p className="whitespace-pre-line text-sm leading-7 text-stone-800">{renderValue(profile.address)}</p>
+				<div className="grid content-start gap-12">
+					<div className="grid gap-4">
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Atelier</p>
+						<p className="whitespace-pre-line text-[1.02rem] leading-[1.7] text-stone-800">{renderValue(profile.address)}</p>
 					</div>
-					<div className="grid gap-2">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Inquiries</p>
-						<div className="grid gap-1 text-sm leading-7 text-stone-800">
+					<div className="grid gap-4">
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Inquiries</p>
+						<div className="grid gap-1 text-[1.02rem] leading-[1.7] text-stone-800">
 							{phone ? (
-								<a href={`tel:${phone}`} className="transition hover:text-[#274133]">
+								<a href={`tel:${phone}`} className="transition hover:text-stone-950">
 									{phone}
 								</a>
 							) : (
 								<p>{renderValue(phone)}</p>
 							)}
 							{email ? (
-								<a href={`mailto:${email}`} className="transition hover:text-[#274133]">
+								<a href={`mailto:${email}`} className="transition hover:text-stone-950">
 									{email}
 								</a>
 							) : (
@@ -64,48 +64,46 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 					</div>
 				</div>
 
-				<div className="grid grid-cols-2 gap-8">
-					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Studio</p>
-						<ul className="grid gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-stone-700">
-							{STUDIO_LINKS.map(item => (
-								<li key={item.href}>
-									<Link href={item.href} className="transition hover:text-[#274133]">
+				<div className="grid content-start gap-5">
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Studio</p>
+					<ul className="grid gap-5 text-[0.92rem] font-semibold uppercase tracking-[0.18em] text-stone-700">
+						{STUDIO_LINKS.map(item => (
+							<li key={item.href}>
+								<Link href={item.href} className="transition hover:text-stone-950">
+									{item.label}
+								</Link>
+							</li>
+						))}
+					</ul>
+				</div>
+
+				<div className="grid content-start gap-5">
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Connect</p>
+					<ul className="grid gap-5 text-[0.92rem] font-semibold uppercase tracking-[0.18em] text-stone-700">
+						{connectLinks.map(item => (
+							<li key={item.href}>
+								{item.external ? (
+									<a
+										href={item.href}
+										target={item.href.startsWith('http') ? '_blank' : undefined}
+										rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+										className="transition hover:text-stone-950">
+										{item.label}
+									</a>
+								) : (
+									<Link href={item.href} className="transition hover:text-stone-950">
 										{item.label}
 									</Link>
-								</li>
-							))}
-						</ul>
-					</div>
-
-					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Connect</p>
-						<ul className="grid gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-stone-700">
-							{connectLinks.map(item => (
-								<li key={item.href}>
-									{item.external ? (
-										<a
-											href={item.href}
-											target={item.href.startsWith('http') ? '_blank' : undefined}
-											rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
-											className="transition hover:text-[#274133]">
-											{item.label}
-										</a>
-									) : (
-										<Link href={item.href} className="transition hover:text-[#274133]">
-											{item.label}
-										</Link>
-									)}
-								</li>
-							))}
-						</ul>
-					</div>
+								)}
+							</li>
+						))}
+					</ul>
 				</div>
 			</div>
 
-			<div className="mx-auto mt-16 flex w-full max-w-screen-2xl flex-col gap-4 border-t border-stone-900/10 px-6 pt-8 text-[0.62rem] uppercase tracking-[0.24em] text-stone-400 md:flex-row md:items-center md:justify-between md:px-12">
-				<p>© {new Date().getFullYear()} AFEELCOMPANY. ALL RIGHTS RESERVED.</p>
-				<p>Site by Digital Atelier</p>
+			<div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-4 border-t border-stone-900/8 px-6 py-8 text-[0.62rem] uppercase tracking-[0.24em] text-stone-400 md:flex-row md:items-center md:justify-between md:px-12">
+				<p>© {new Date().getFullYear()} AFEELCOMPANY. All Rights Reserved.</p>
+				<p>Editorial Digital Archive</p>
 			</div>
 		</footer>
 	);

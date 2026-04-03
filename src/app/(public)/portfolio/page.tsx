@@ -5,22 +5,20 @@ export default async function PortfolioPage() {
   const items = await getPublicPortfolioItems()
 
   return (
-    <div className="grid gap-8 py-8 sm:gap-10 sm:py-10 lg:gap-14 lg:py-14">
-      <section className="grid gap-6 rounded-[2rem] border border-stone-900/10 bg-white/74 px-6 py-8 shadow-[0_22px_60px_rgba(56,36,19,0.08)] backdrop-blur-sm sm:px-8 lg:px-10">
-        <div>
-          <p className="text-xs uppercase tracking-[0.36em] text-stone-500">
-            Portfolio
+    <div className="grid gap-14 py-12 sm:gap-16 sm:py-16 lg:gap-20 lg:py-20">
+      <section className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
+        <div className="max-w-3xl">
+          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">
+            Archives
           </p>
-          <h1 className="mt-4 text-4xl tracking-[-0.05em] text-stone-950 sm:text-5xl">
-            PORTFOLIO
+          <h1 className="mt-5 text-5xl font-light leading-none tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-6xl md:text-7xl">
+            Selected Works
           </h1>
-          <p className="mt-4 max-w-3xl text-base leading-8 text-stone-700 sm:text-lg">
-            카테고리별 포트폴리오를 한 화면에서 정리하고, 선택한 작업을 작은 라이트박스에서 바로 확인할 수 있도록 구성했습니다.
-          </p>
         </div>
 
-        <p className="text-sm uppercase tracking-[0.3em] text-stone-500">
-          카테고리별 포트폴리오
+        <p className="max-w-xl text-sm leading-7 text-stone-500 sm:text-base">
+          카테고리별 작업을 정제된 3열 그리드로 정리했습니다. 카드 선택 시 기존
+          라이트박스에서 상세 이미지를 이어서 확인할 수 있습니다.
         </p>
       </section>
 
