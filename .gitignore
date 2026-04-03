@@ -23,6 +23,7 @@
 # misc
 .DS_Store
 *.pem
+stitch-downloads/
 
 # debug
 npm-debug.log*
