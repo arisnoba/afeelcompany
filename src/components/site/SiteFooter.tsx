@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 import type { SiteCompanyProfile } from '@/types/site';
@@ -31,7 +32,9 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 		<footer className="border-t border-stone-900/10 bg-[#faf8f4] pb-10 pt-20 text-stone-900 sm:pt-24">
 			<div className="mx-auto grid w-full max-w-screen-2xl gap-16 px-6 md:grid-cols-3 md:gap-20 md:px-12">
 				<div className="grid gap-6">
-					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">AFEELCOMPANY</span>
+					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
+						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" />
+					</span>
 					<p className="max-w-xs text-sm leading-7 text-stone-500">{description}</p>
 				</div>
 
