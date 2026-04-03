@@ -5,6 +5,8 @@ import type {
   SiteCompanyProfile,
 } from '@/types/site'
 
+export const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/afeelcompany/'
+
 interface CompanyProfileRow {
   about_text: string | null
   contact_email: string | null

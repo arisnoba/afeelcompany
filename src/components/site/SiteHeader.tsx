@@ -1,4 +1,9 @@
+'use client'
+
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
+import { Menu, X } from 'lucide-react'
+import { useState } from 'react'
 
 const NAV_ITEMS = [
   { href: '/', label: 'HOME' },
@@ -8,39 +13,86 @@ const NAV_ITEMS = [
   { href: '/contact', label: 'CONTACT' },
 ]
 
-export function SiteHeader() {
-  return (
-    <header className="sticky top-0 z-30 py-4 sm:py-5">
-      <div className="rounded-[1.75rem] border border-stone-900/10 bg-white/72 px-4 py-4 shadow-[0_16px_40px_rgba(56,36,19,0.08)] backdrop-blur-md sm:px-5 lg:px-6">
-        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <Link
-            href="/"
-            className="inline-flex items-center gap-3 text-stone-950"
-          >
-            <span className="grid h-11 w-11 place-items-center rounded-full border border-stone-900/12 bg-stone-950 text-xs uppercase tracking-[0.35em] text-stone-50">
-              AF
-            </span>
-            <span className="grid gap-1">
-              <span className="text-lg tracking-[-0.04em]">AFEEL Company</span>
-              <span className="text-[0.68rem] uppercase tracking-[0.34em] text-stone-500">
-                Fashion PR Archive
-              </span>
-            </span>
-          </Link>
+function isNavItemActive(pathname: string, href: string) {
+  if (href === '/') {
+    return pathname === href
+  }
 
-          <nav className="flex flex-wrap gap-2 text-sm text-stone-700">
-            {NAV_ITEMS.map((item) => (
+  return pathname === href || pathname.startsWith(`${href}/`)
+}
+
+export function SiteHeader() {
+  const pathname = usePathname()
+  const [mobileOpen, setMobileOpen] = useState(false)
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-stone-200/60 bg-[#fcf9f8]/82 backdrop-blur-[20px]">
+      <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-6 sm:px-6 md:py-7 lg:px-10 lg:py-8">
+        <Link href="/" className="text-stone-950">
+          <span className="text-[1.9rem] leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)]">
+            AFEELCOMPANY
+          </span>
+        </Link>
+
+        <nav className="hidden items-center gap-10 md:flex">
+          {NAV_ITEMS.map((item) => {
+            const isActive = isNavItemActive(pathname, item.href)
+
+            return (
               <Link
                 key={item.href}
                 href={item.href}
-                className="inline-flex h-10 items-center rounded-full border border-stone-900/10 px-4 transition hover:border-stone-900/20 hover:bg-stone-950 hover:text-stone-50"
+                className={`text-sm transition-colors duration-300 ${
+                  isActive
+                    ? 'font-semibold text-[#274133]'
+                    : 'text-stone-500 hover:text-[#274133]'
+                }`}
               >
                 {item.label}
               </Link>
-            ))}
+            )
+          })}
+        </nav>
+
+        <button
+          type="button"
+          className="inline-flex h-11 w-11 items-center justify-center text-stone-700 transition hover:text-[#274133] md:hidden"
+          aria-expanded={mobileOpen}
+          aria-controls="site-mobile-nav"
+          aria-label={mobileOpen ? '메뉴 닫기' : '메뉴 열기'}
+          onClick={() => setMobileOpen((open) => !open)}
+        >
+          {mobileOpen ? <X size={20} strokeWidth={1.5} /> : <Menu size={20} strokeWidth={1.5} />}
+        </button>
+      </div>
+
+      {mobileOpen ? (
+        <div
+          id="site-mobile-nav"
+          className="border-t border-stone-200/60 bg-[#fcf9f8]/95 md:hidden"
+        >
+          <nav className="mx-auto grid w-full max-w-screen-2xl gap-1 px-4 py-4 sm:px-6">
+            {NAV_ITEMS.map((item) => {
+              const isActive = isNavItemActive(pathname, item.href)
+
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={() => setMobileOpen(false)}
+                  className={`px-1 py-3 text-sm transition-colors ${
+                    isActive
+                      ? 'font-semibold text-[#274133]'
+                      : 'text-stone-600 hover:text-[#274133]'
+                  }`}
+                >
+                  {item.label}
+                </Link>
+              )
+            })}
           </nav>
         </div>
-      </div>
+      ) : null}
     </header>
   )
 }

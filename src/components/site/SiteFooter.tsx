@@ -1,5 +1,6 @@
 import Link from 'next/link'
 
+import { INSTAGRAM_PROFILE_URL } from '@/lib/site'
 import type { SiteCompanyProfile } from '@/types/site'
 
 interface SiteFooterProps {
@@ -10,45 +11,120 @@ function renderValue(value: string) {
   return value || '정보를 준비 중입니다.'
 }
 
+const STUDIO_LINKS = [
+  { href: '/about', label: 'About' },
+  { href: '/portfolio', label: 'Portfolio' },
+  { href: '/contact', label: 'Contact' },
+]
+
 export function SiteFooter({ profile }: SiteFooterProps) {
+  const description =
+    profile.aboutText ||
+    '브랜드의 이미지를 축적하고 전달하는 에디토리얼 아카이브를 운영합니다.'
+  const phone = profile.contactPhone.trim()
+  const email = profile.contactEmail.trim()
+  const connectLinks = [
+    { href: '/feed', label: 'Feed', external: false },
+    { href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true },
+    ...(email
+      ? [{ href: `mailto:${email}`, label: 'Email', external: true }]
+      : [{ href: '/contact', label: 'Contact', external: false }]),
+  ]
+
   return (
-    <footer className="mt-8 rounded-[2rem] border border-stone-900/10 bg-stone-950 px-6 py-8 text-stone-50 shadow-[0_30px_90px_rgba(26,18,10,0.18)] sm:px-8 lg:px-10">
-      <div className="grid gap-8 lg:grid-cols-[minmax(0,1.2fr)_minmax(280px,0.8fr)]">
-        <div className="grid gap-4">
-          <p className="text-xs uppercase tracking-[0.36em] text-stone-400">
-            AFEEL Company
-          </p>
-          <h2 className="max-w-2xl text-3xl tracking-[-0.05em] text-white sm:text-4xl">
-            브랜드의 인상을 남기는 스타일링 결과를 더 명확한 공개 아카이브로 정리합니다.
-          </h2>
-          <p className="max-w-xl text-sm leading-7 text-stone-300">
-            공개 사이트, PDF 소개서, 인스타그램 캐시를 같은 운영 데이터에서 이어 읽어
-            한 번의 업데이트가 여러 접점에 반영되도록 구성했습니다.
+    <footer className="border-t border-stone-900/10 bg-[#faf8f4] pb-10 pt-20 text-stone-900 sm:pt-24">
+      <div className="mx-auto grid w-full max-w-screen-2xl gap-16 px-6 md:grid-cols-3 md:gap-20 md:px-12">
+        <div className="grid gap-6">
+          <span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
+            AFEELCOMPANY
+          </span>
+          <p className="max-w-xs text-sm leading-7 text-stone-500">
+            {description}
           </p>
         </div>
 
-        <div className="grid gap-6 rounded-[1.75rem] border border-white/10 bg-white/6 p-5 backdrop-blur-sm">
-          <div className="grid gap-3 text-sm leading-6 text-stone-200">
-            <p>{renderValue(profile.contactEmail)}</p>
-            <p>{renderValue(profile.contactPhone)}</p>
-            <p>{renderValue(profile.address)}</p>
+        <div className="grid gap-8">
+          <div className="grid gap-2">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+              Atelier
+            </p>
+            <p className="whitespace-pre-line text-sm leading-7 text-stone-800">
+              {renderValue(profile.address)}
+            </p>
           </div>
-
-          <div className="flex flex-wrap gap-3 text-sm">
-            <Link
-              href="/feed"
-              className="inline-flex h-11 items-center rounded-full border border-white/14 px-4 transition hover:bg-white/10"
-            >
-              INSTAGRAM FEED
-            </Link>
-            <Link
-              href="/contact"
-              className="inline-flex h-11 items-center rounded-full bg-white px-4 font-medium text-stone-950 transition hover:bg-stone-200"
-            >
-              CONTACT
-            </Link>
+          <div className="grid gap-2">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+              Inquiries
+            </p>
+            <div className="grid gap-1 text-sm leading-7 text-stone-800">
+              {phone ? (
+                <a href={`tel:${phone}`} className="transition hover:text-[#274133]">
+                  {phone}
+                </a>
+              ) : (
+                <p>{renderValue(phone)}</p>
+              )}
+              {email ? (
+                <a
+                  href={`mailto:${email}`}
+                  className="transition hover:text-[#274133]"
+                >
+                  {email}
+                </a>
+              ) : (
+                <p>{renderValue(email)}</p>
+              )}
+            </div>
           </div>
         </div>
+
+        <div className="grid grid-cols-2 gap-8">
+          <div className="grid gap-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+              Studio
+            </p>
+            <ul className="grid gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-stone-700">
+              {STUDIO_LINKS.map((item) => (
+                <li key={item.href}>
+                  <Link href={item.href} className="transition hover:text-[#274133]">
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+          </div>
+
+          <div className="grid gap-4">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">
+              Connect
+            </p>
+            <ul className="grid gap-3 text-[0.72rem] font-semibold uppercase tracking-[0.24em] text-stone-700">
+              {connectLinks.map((item) => (
+                <li key={item.href}>
+                  {item.external ? (
+                    <a
+                      href={item.href}
+                      target={item.href.startsWith('http') ? '_blank' : undefined}
+                      rel={item.href.startsWith('http') ? 'noreferrer' : undefined}
+                      className="transition hover:text-[#274133]"
+                    >
+                      {item.label}
+                    </a>
+                  ) : (
+                    <Link href={item.href} className="transition hover:text-[#274133]">
+                      {item.label}
+                    </Link>
+                  )}
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto mt-16 flex w-full max-w-screen-2xl flex-col gap-4 border-t border-stone-900/10 px-6 pt-8 text-[0.62rem] uppercase tracking-[0.24em] text-stone-400 md:flex-row md:items-center md:justify-between md:px-12">
+        <p>© {new Date().getFullYear()} AFEELCOMPANY. ALL RIGHTS RESERVED.</p>
+        <p>Site by Digital Atelier</p>
       </div>
     </footer>
   )

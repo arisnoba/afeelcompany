@@ -1,11 +1,21 @@
 import type { Metadata } from 'next'
-import { Geist_Mono, Inter } from 'next/font/google'
+import { Geist_Mono, Inter, Manrope, Newsreader } from 'next/font/google'
 
 import './globals.css'
 
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+})
+
+const manrope = Manrope({
+  subsets: ['latin'],
+  variable: '--font-manrope',
+})
+
+const newsreader = Newsreader({
+  subsets: ['latin'],
+  variable: '--font-newsreader',
 })
 
 const geistMono = Geist_Mono({
@@ -26,7 +36,7 @@ export default function RootLayout({
   return (
     <html
       lang="ko"
-      className={`${inter.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${inter.variable} ${manrope.variable} ${newsreader.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body className="flex min-h-full flex-col font-sans">{children}</body>
     </html>

@@ -12,11 +12,13 @@ export default async function PublicLayout({
   const profile = await getSiteCompanyProfile()
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(180deg,#f8f5ef_0%,#efe9df_56%,#e7ded1_100%)] text-stone-950">
-      <div className="absolute inset-x-0 top-0 h-64 bg-[radial-gradient(circle_at_top_left,rgba(255,255,255,0.75),transparent_52%)]" />
-      <div className="relative mx-auto flex min-h-screen w-full max-w-[1440px] flex-col px-4 pb-8 sm:px-6 lg:px-10">
+    <div className="min-h-screen bg-[#fcf9f8] text-stone-950 [font-family:var(--font-manrope)]">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-80 bg-[radial-gradient(circle_at_top_left,rgba(95,123,107,0.12),transparent_42%),radial-gradient(circle_at_top_right,rgba(17,24,39,0.06),transparent_36%)]" />
+      <div className="relative flex min-h-screen flex-col">
         <SiteHeader />
-        <main className="flex-1">{children}</main>
+        <div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col px-4 sm:px-6 lg:px-10">
+          <main className="flex-1 pb-16">{children}</main>
+        </div>
         <SiteFooter profile={profile} />
       </div>
     </div>
