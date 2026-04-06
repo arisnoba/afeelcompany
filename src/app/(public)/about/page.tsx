@@ -284,6 +284,37 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      <section className="grid gap-0 overflow-hidden border border-stone-900/8 md:grid-cols-2">
+        <div className="grid place-content-center bg-stone-950 p-12 text-center text-white sm:p-16">
+          <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#ccead6]">
+            Core Expertise
+          </p>
+          <h2 className="mt-6 text-5xl italic tracking-[-0.05em] [font-family:var(--font-newsreader)] sm:text-6xl lg:text-7xl">
+            Service<br />Excellence.
+          </h2>
+        </div>
+        <div className="grid content-center bg-[#faf7f3] px-8 py-10 sm:px-12 sm:py-16">
+          <ul className="grid gap-0">
+            {[
+              'Brand Positioning',
+              'Editorial Placement',
+              'Digital Strategy',
+              'Archive Management',
+            ].map((service, index) => (
+              <li
+                key={service}
+                className="group flex items-baseline gap-6 border-b border-stone-900/10 py-6 transition-colors first:border-t hover:border-stone-400"
+              >
+                <span className="text-[0.62rem] font-semibold text-stone-400">0{index + 1}</span>
+                <span className="text-2xl tracking-[-0.03em] text-stone-800 [font-family:var(--font-newsreader)] transition-transform duration-500 group-hover:translate-x-3 sm:text-3xl">
+                  {service}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </section>
+
       <section className="grid gap-10">
         <div className="grid gap-5 md:grid-cols-[minmax(0,0.95fr)_minmax(280px,1.05fr)] md:items-end">
           <div className="grid gap-4">

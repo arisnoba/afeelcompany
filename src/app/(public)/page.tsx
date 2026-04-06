@@ -31,7 +31,7 @@ export default async function HomePage() {
 
 	return (
 		<>
-			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden bg-[#ddd] py-16 sm:py-20 lg:py-24">
+			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden bg-stone-900/8 py-16 sm:py-20 lg:py-24">
 				<ShaderGodrays className="opacity-90 [mask-image:radial-gradient(120%_90%_at_50%_4%,black_0%,black_48%,transparent_100%)]" />
 				<div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] [background-size:32px_32px]" />
 				<div className="absolute -right-16 top-24 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
@@ -51,7 +51,7 @@ export default async function HomePage() {
 								</h1>
 
 								<div className="grid gap-8 md:grid-cols-12 md:items-end">
-									<div className="grid gap-6 md:col-span-7">
+									<div className="grid gap-6 md:col-span-12">
 										<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg sm:leading-9">{heroBody}</p>
 
 										<div className="flex flex-wrap items-center gap-6">
@@ -67,16 +67,6 @@ export default async function HomePage() {
 												Latest Portfolio
 											</Link>
 										</div>
-									</div>
-
-									<div className="border-l border-stone-900/10 pl-6 md:col-span-4 md:col-start-9">
-										<p className="text-sm italic text-stone-600 [font-family:var(--font-newsreader)]">Service Excellence</p>
-										<ul className="mt-4 grid gap-2 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-500">
-											<li>Brand Positioning</li>
-											<li>Editorial Placement</li>
-											<li>Digital Strategy</li>
-											<li>Archive Management</li>
-										</ul>
 									</div>
 								</div>
 							</div>
