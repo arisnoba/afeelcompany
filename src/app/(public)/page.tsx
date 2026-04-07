@@ -17,7 +17,7 @@ export default async function HomePage() {
 
 	return (
 		<>
-			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden bg-stone-900/8 py-16 sm:py-20 lg:py-24">
+			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden bg-stone-900/8 pb-16 pt-36 sm:pb-20 sm:pt-40 lg:pb-24 lg:pt-44">
 				<ShaderGodrays className="opacity-90 [mask-image:radial-gradient(120%_90%_at_50%_4%,black_0%,black_48%,transparent_100%)]" />
 				<div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] [background-size:32px_32px]" />
 				<div className="absolute -right-16 top-24 h-80 w-80 rounded-full bg-white/30 blur-3xl" />

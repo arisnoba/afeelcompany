@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { Menu, X } from 'lucide-react'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 
 const NAV_ITEMS = [
   { href: '/', label: 'HOME' },
@@ -24,9 +24,37 @@ function isNavItemActive(pathname: string, href: string) {
 export function SiteHeader() {
   const pathname = usePathname()
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [isScrolled, setIsScrolled] = useState(false)
+  const isHome = pathname === '/'
+  const showSolidHeader = !isHome || isScrolled || mobileOpen
+
+  useEffect(() => {
+    if (!isHome) {
+      return
+    }
+
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 12)
+    }
+
+    handleScroll()
+    window.addEventListener('scroll', handleScroll, { passive: true })
+
+    return () => {
+      window.removeEventListener('scroll', handleScroll)
+    }
+  }, [isHome])
 
   return (
-    <header className="sticky top-0 z-40 border-b border-stone-200/60 bg-[#fcf9f8]/82 backdrop-blur-[20px]">
+    <header
+      className={`z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
+        showSolidHeader
+          ? 'border-b border-stone-200/60 bg-[#fcf9f8]/82 backdrop-blur-[20px]'
+          : 'border-b border-transparent bg-transparent backdrop-blur-0'
+      } ${
+        isHome ? 'fixed inset-x-0 top-0' : 'sticky top-0'
+      }`}
+    >
       <div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-6 sm:px-6 md:py-7 lg:px-10 lg:py-8">
         <Link href="/" className="text-stone-950">
           <span className="text-[1.9rem] leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)]">
