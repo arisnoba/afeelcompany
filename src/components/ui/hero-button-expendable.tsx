@@ -260,7 +260,7 @@ export default function Hero() {
                       <form onSubmit={handleSubmit} className="space-y-5">
                         <div className="space-y-1">
                           <h3 className="text-xl font-semibold text-white">Get a Demo</h3>
-                          <p className="text-sm text-blue-200">Fill out the form below and we'll contact you.</p>
+                          <p className="text-sm text-blue-200">Fill out the form below and we&apos;ll contact you.</p>
                         </div>
 
                         <div className="space-y-4">
