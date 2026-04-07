@@ -48,6 +48,16 @@ CREATE TABLE IF NOT EXISTS company_profile (
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
+-- 관리자 계정
+CREATE TABLE IF NOT EXISTS admin_users (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  email TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  is_active BOOLEAN NOT NULL DEFAULT true,
+  created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
 -- 클라이언트 브랜드 로고
 CREATE TABLE IF NOT EXISTS client_brands (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -65,3 +75,5 @@ ADD COLUMN IF NOT EXISTS brand_url TEXT;
 
 ALTER TABLE client_brands
 ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
+
+CREATE INDEX IF NOT EXISTS admin_users_email_idx ON admin_users (email);

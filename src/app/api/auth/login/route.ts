@@ -1,24 +1,53 @@
-import { createAdminSession, verifyAdminPassword } from '@/lib/auth'
+import {
+  authenticateAdmin,
+  createAdminSession,
+  isAdminBootstrapConfigured,
+} from '@/lib/auth'
+import type { AdminLoginErrorCode } from '@/types/admin'
 
 export async function POST(request: Request): Promise<Response> {
-  const password = process.env.ADMIN_PASSWORD
-
-  if (!password) {
-    return Response.json(
-      { success: false, error: 'PASSWORD_NOT_CONFIGURED' },
-      { status: 500 }
-    )
+  const body = (await request.json()) as {
+    email?: string
+    password?: string
   }
 
-  const body = (await request.json()) as { password?: string }
-
-  if (!body.password || !verifyAdminPassword(body.password)) {
+  if (!body.email || !body.password) {
     return Response.json(
-      { success: false, error: 'INVALID_PASSWORD' },
+      { success: false, error: 'INVALID_CREDENTIALS' satisfies AdminLoginErrorCode },
       { status: 401 }
     )
   }
 
-  await createAdminSession()
+  if (!(await isAdminBootstrapConfigured())) {
+    return Response.json(
+      {
+        success: false,
+        error: 'BOOTSTRAP_PASSWORD_NOT_CONFIGURED' satisfies AdminLoginErrorCode,
+      },
+      { status: 500 }
+    )
+  }
+
+  const session = await authenticateAdmin(body.email, body.password)
+
+  if (!session) {
+    return Response.json(
+      { success: false, error: 'INVALID_CREDENTIALS' satisfies AdminLoginErrorCode },
+      { status: 401 }
+    )
+  }
+
+  try {
+    await createAdminSession(session.adminId)
+  } catch {
+    return Response.json(
+      {
+        success: false,
+        error: 'SESSION_SECRET_NOT_CONFIGURED' satisfies AdminLoginErrorCode,
+      },
+      { status: 500 }
+    )
+  }
+
   return Response.json({ success: true })
 }

@@ -21,6 +21,11 @@ export const ADMIN_NAV_ITEMS: AdminNavItem[] = [
     description: '회사 프로필과 연락처 데이터를 실데이터 기준으로 관리합니다.',
   },
   {
+    href: '/admin/accounts',
+    label: '관리자 계정',
+    description: '접근 가능한 관리자 이메일과 계정 상태를 관리합니다.',
+  },
+  {
     href: '/admin/clients',
     label: '클라이언트 관리',
     description: '브랜드 리스트를 테이블과 우측 패널에서 관리합니다.',

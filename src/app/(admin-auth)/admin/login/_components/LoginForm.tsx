@@ -5,16 +5,19 @@ import { FormEvent, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
+import type { AdminLoginErrorCode } from '@/types/admin'
 
-type LoginErrorCode = 'INVALID_PASSWORD' | 'PASSWORD_NOT_CONFIGURED'
-
-const ERROR_MESSAGES: Record<LoginErrorCode, string> = {
-  INVALID_PASSWORD: '비밀번호가 올바르지 않습니다.',
-  PASSWORD_NOT_CONFIGURED: '서버에 ADMIN_PASSWORD가 설정되지 않았습니다.',
+const ERROR_MESSAGES: Record<AdminLoginErrorCode, string> = {
+  BOOTSTRAP_PASSWORD_NOT_CONFIGURED:
+    '초기 관리자 비밀번호가 아직 설정되지 않았습니다. ADMIN_PASSWORD를 확인해주세요.',
+  INVALID_CREDENTIALS: '이메일 또는 비밀번호가 올바르지 않습니다.',
+  SESSION_SECRET_NOT_CONFIGURED:
+    '서버에 ADMIN_SESSION_SECRET 또는 ADMIN_PASSWORD가 설정되지 않았습니다.',
 }
 
 export function LoginForm() {
   const router = useRouter()
+  const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [isPending, setIsPending] = useState(false)
@@ -30,15 +33,15 @@ export function LoginForm() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ password }),
+        body: JSON.stringify({ email, password }),
       })
 
       const result = (await response.json()) as
         | { success: true }
-        | { success: false; error?: LoginErrorCode }
+        | { success: false; error?: AdminLoginErrorCode }
 
       if (!response.ok || !result.success) {
-        const code = result.success ? 'INVALID_PASSWORD' : result.error
+        const code = result.success ? 'INVALID_CREDENTIALS' : result.error
         setError(code ? ERROR_MESSAGES[code] : '로그인 처리 중 오류가 발생했습니다.')
         return
       }
@@ -55,13 +58,27 @@ export function LoginForm() {
   return (
     <form className="grid gap-4" onSubmit={handleSubmit}>
       <label className="grid gap-2 text-sm font-medium text-stone-800">
+        관리자 이메일
+        <Input
+          type="email"
+          name="email"
+          value={email}
+          onChange={(event) => setEmail(event.target.value)}
+          placeholder="arisnoba@gmail.com"
+          autoComplete="username"
+          required
+          className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"
+        />
+      </label>
+
+      <label className="grid gap-2 text-sm font-medium text-stone-800">
         관리자 비밀번호
         <Input
           type="password"
           name="password"
           value={password}
           onChange={(event) => setPassword(event.target.value)}
-          placeholder="ADMIN_PASSWORD"
+          placeholder="비밀번호 입력"
           autoComplete="current-password"
           required
           className="h-11 rounded-2xl border-stone-300 bg-stone-50 px-4"

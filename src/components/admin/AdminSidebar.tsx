@@ -2,7 +2,7 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { BriefcaseBusiness, Building2, Camera, FileOutput, Images, LayoutDashboard } from 'lucide-react';
+import { BriefcaseBusiness, Building2, Camera, FileOutput, Images, LayoutDashboard, Users } from 'lucide-react';
 
 import { LogoutButton } from '@/app/admin/_components/LogoutButton';
 import {
@@ -27,6 +27,7 @@ const NAV_ICONS = {
 	'/admin': LayoutDashboard,
 	'/admin/portfolio': Images,
 	'/admin/profile': Building2,
+	'/admin/accounts': Users,
 	'/admin/clients': BriefcaseBusiness,
 	'/admin/export': FileOutput,
 	'/admin/instagram': Camera,

@@ -28,6 +28,11 @@ const FEATURE_CARDS = [
     description: '소개 문구와 연락처를 관리해 PDF와 웹 공용 데이터를 갱신합니다.',
   },
   {
+    href: '/admin/accounts',
+    title: '관리자 계정 관리',
+    description: '접근 가능한 관리자 이메일을 등록하고 활성 상태를 관리합니다.',
+  },
+  {
     href: '/admin/clients',
     title: '클라이언트 관리',
     description: '브랜드 리스트와 로고, URL, 활성 상태를 테이블과 우측 패널에서 관리합니다.',
@@ -80,7 +85,7 @@ export default function AdminDashboardPage() {
           <CardContent className="space-y-3 pb-6 text-sm text-muted-foreground">
             <p>1. 업로드에서 자산과 메타데이터를 등록합니다.</p>
             <p>2. 포트폴리오에서 노출 여부와 정렬 순서를 조정합니다.</p>
-            <p>3. 회사 정보와 클라이언트 리스트를 최신 상태로 맞춥니다.</p>
+            <p>3. 회사 정보와 관리자 계정, 클라이언트 리스트를 최신 상태로 맞춥니다.</p>
             <p>4. 인스타 큐에서 캡션을 확인하고 게시합니다.</p>
           </CardContent>
         </Card>

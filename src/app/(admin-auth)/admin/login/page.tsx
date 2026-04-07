@@ -18,7 +18,7 @@ export default async function AdminLoginPage() {
           운영 로그인
         </h1>
         <p className="mt-3 text-sm leading-6 text-stone-600">
-          업로드와 포트폴리오 편집 권한은 관리자 비밀번호 인증 뒤에만 열립니다.
+          등록된 관리자 이메일과 비밀번호가 일치할 때만 운영 메뉴 접근 권한이 열립니다.
         </p>
 
         <div className="mt-8">
