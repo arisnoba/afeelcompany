@@ -73,6 +73,7 @@ export function InstagramFeedGrid({ posts }: InstagramFeedGridProps) {
                       src={post.media_url}
                       alt={post.caption ?? 'Instagram post'}
                       fill
+                      unoptimized
                       className="object-cover transition duration-700 group-hover:scale-105"
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
@@ -112,6 +113,7 @@ export function InstagramFeedGrid({ posts }: InstagramFeedGridProps) {
                     src={post.media_url}
                     alt={post.caption ?? 'Instagram post'}
                     fill
+                    unoptimized
                     className="object-cover"
                     sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                   />

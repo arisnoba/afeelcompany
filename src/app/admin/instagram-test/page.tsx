@@ -69,6 +69,7 @@ export default async function InstagramTestPage() {
                     src={post.media_url}
                     alt={post.caption ?? 'Instagram post'}
                     fill
+                    unoptimized
                     style={{ objectFit: 'cover' }}
                     sizes="(max-width: 768px) 100vw, 33vw"
                   />
