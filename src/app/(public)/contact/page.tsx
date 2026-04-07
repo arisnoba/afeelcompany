@@ -1,3 +1,5 @@
+import ContactMap from '@/components/site/ContactMap';
+import ContactInquiryForm from '@/components/site/ContactInquiryForm'
 import { getSiteCompanyProfile } from '@/lib/site';
 
 function renderValue(value: string) {
@@ -13,26 +15,14 @@ function ContactDetail({ label, children }: { label: string; children: React.Rea
 	);
 }
 
-function ContactField({ label, name, type = 'text', placeholder }: { label: string; name: string; type?: string; placeholder: string }) {
-	return (
-		<label className="grid gap-2">
-			<span className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{label}</span>
-			<input
-				name={name}
-				type={type}
-				placeholder={placeholder}
-				className="border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
-			/>
-		</label>
-	);
-}
-
 export default async function ContactPage() {
 	const profile = await getSiteCompanyProfile();
 	const email = profile.contactEmail.trim();
 	const phone = profile.contactPhone.trim();
 	const address = profile.address.trim();
 	const mailtoHref = email ? `mailto:${email}` : undefined;
+	const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
+	const canSubmitInquiry = Boolean(email) && Boolean(process.env.RESEND_API_KEY?.trim()) && Boolean(process.env.RESEND_FROM_EMAIL?.trim())
 
 	return (
 		<div className="grid gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
@@ -43,14 +33,7 @@ export default async function ContactPage() {
 
 			<section className="grid gap-14 lg:grid-cols-12 lg:gap-20">
 				<div className="grid gap-12 lg:col-span-5 lg:gap-16">
-					<div className="relative aspect-[4/3] overflow-hidden bg-[#f0eded]">
-						<div className="absolute inset-0 bg-[linear-gradient(135deg,rgba(39,65,51,0.16),transparent_48%),linear-gradient(180deg,rgba(255,255,255,0.55),transparent_70%)]" />
-						<div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(28,27,27,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(28,27,27,0.08)_1px,transparent_1px)] [background-size:32px_32px]" />
-						<div className="absolute inset-x-0 bottom-0 grid gap-2 bg-gradient-to-t from-black/70 via-black/30 to-transparent px-6 py-6 text-white sm:px-8 sm:py-8">
-							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/70">Editorial Access</p>
-							<p className="max-w-sm text-2xl leading-tight [font-family:var(--font-newsreader)] sm:text-3xl">Private conversations, curated precisely.</p>
-						</div>
-					</div>
+					<ContactMap address={address} apiKey={googleMapsApiKey} />
 
 					<div className="grid gap-12">
 						<ContactDetail label="Address">
@@ -92,41 +75,7 @@ export default async function ContactPage() {
 						<p className="max-w-2xl text-base leading-8 text-stone-600">언제든 편안하게 말을 걸어주세요. 멋진 프로젝트를 함께 시작할 준비가 되어 있습니다.</p>
 					</div>
 
-					<form action={mailtoHref} method="post" encType="text/plain" className="grid gap-10">
-						<div className="grid gap-10 md:grid-cols-2 md:gap-12">
-							<ContactField label="Name" name="name" placeholder="Your Full Name" />
-							<ContactField label="Company" name="company" placeholder="Organization" />
-						</div>
-
-						<ContactField label="Email Address" name="email" type="email" placeholder="email@address.com" />
-
-						<label className="grid gap-2">
-							<span className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Message</span>
-							<textarea
-								name="message"
-								rows={6}
-								placeholder="Tell us about your project or inquiry"
-								className="min-h-40 resize-none border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
-							/>
-						</label>
-
-						<div className="grid gap-4 pt-4">
-							{mailtoHref ? (
-								<button
-									type="submit"
-									className="group inline-flex w-fit items-center gap-6 bg-[#274133] px-10 py-5 text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#ccead6] transition hover:bg-stone-950">
-									Submit Inquiry
-									<span aria-hidden="true" className="text-sm transition group-hover:translate-x-1">
-										↗
-									</span>
-								</button>
-							) : (
-								<p className="text-sm leading-7 text-stone-500">문의 이메일이 아직 설정되지 않았습니다. 관리자에서 회사 프로필 이메일을 먼저 입력해 주세요.</p>
-							)}
-
-							<p className="text-sm leading-7 text-stone-500">제출 시 기본 메일 앱이 열리며, 입력한 내용은 메일 초안으로 전달됩니다.</p>
-						</div>
-					</form>
+					<ContactInquiryForm canSubmit={canSubmitInquiry} />
 				</div>
 			</section>
 		</div>
