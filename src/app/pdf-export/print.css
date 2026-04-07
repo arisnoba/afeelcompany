@@ -1,87 +1,104 @@
 @page {
-  size: A4 landscape;
-  margin: 8mm;
+    size: A4 landscape;
+    margin: 8mm;
 }
 
 .pdf-document {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  gap: 24px;
-  padding: 24px 20px 48px;
-  background: #ece9e3;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 24px;
+    padding: 24px 20px 48px;
 }
 
 .pdf-sheet {
-  box-sizing: border-box;
-  flex: 0 0 auto;
-  width: min(1180px, calc(100vw - 40px));
-  max-width: 1180px;
-  aspect-ratio: 297 / 210;
-  min-height: auto;
-  margin-inline: auto;
-  background: #ffffff;
-  color: #1c1917;
-  page-break-after: always;
-  break-after: page;
+    box-sizing: border-box;
+    flex: 0 0 auto;
+    width: min(1180px, calc(100vw - 40px));
+    max-width: 1180px;
+    aspect-ratio: 297 / 210;
+    min-height: auto;
+    margin-inline: auto;
+    background: #ffffff;
+    color: #1c1917;
+    page-break-after: always;
+    break-after: page;
 }
 
+/* Slide mode shell — full remaining viewport height */
 .pdf-slide-shell {
-  width: 100%;
-  padding: 24px 20px 48px;
-  background: #ece9e3;
+    width: 100%;
+    /* 80px ≈ top-3(12px) + toolbar(~56px) + buffer */
+    height: calc(100dvh - 80px);
+    display: flex;
+    align-items: center;
+    background: #ece9e3;
 }
 
 .pdf-swiper {
-  width: min(100%, 1240px);
-  margin: 0 auto;
+    width: 100%;
+    height: 100%;
 }
 
 .pdf-swiper-slide {
-  display: flex;
-  justify-content: center;
-  align-items: flex-start;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+/*
+ * In slide mode, constrain sheet to fit both viewport width & height.
+ * 297/210 ≈ 1.4143 — when height is the limiting axis, width = height × aspect.
+ * Subtract 32px (16px vertical padding × 2) from available height.
+ */
+.pdf-slide-shell .pdf-sheet {
+    width: min(
+        calc(100% - 40px),
+        calc((100dvh - 112px) * 1.4143)
+    );
+    max-width: 1180px;
 }
 
 .screen-only {
-  display: flex;
+    display: flex;
 }
 
 @media print {
-  html,
-  body {
-    background: #ffffff;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-  }
+    html,
+    body {
+        background: #ffffff;
+        -webkit-print-color-adjust: exact;
+        print-color-adjust: exact;
+    }
 
-  .screen-only {
-    display: none !important;
-  }
+    .screen-only {
+        display: none !important;
+    }
 
-  .pdf-slide-shell {
-    display: none !important;
-  }
+    .pdf-slide-shell {
+        display: none !important;
+    }
 
-  .pdf-document {
-    gap: 0;
-    padding: 0;
-    background: transparent;
-  }
+    .pdf-document {
+        gap: 0;
+        padding: 0;
+        background: transparent;
+    }
 
-  .pdf-sheet {
-    width: 297mm;
-    height: 210mm;
-    min-height: 210mm;
-    max-height: 210mm;
-    aspect-ratio: auto;
-    margin: 0;
-    overflow: hidden;
-  }
+    .pdf-sheet {
+        width: 297mm;
+        height: 210mm;
+        min-height: 210mm;
+        max-height: 210mm;
+        aspect-ratio: auto;
+        margin: 0;
+        overflow: hidden;
+    }
 
-  .avoid-break {
-    break-inside: avoid;
-    page-break-inside: avoid;
-  }
+    .avoid-break {
+        break-inside: avoid;
+        page-break-inside: avoid;
+    }
 }

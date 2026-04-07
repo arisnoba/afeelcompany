@@ -301,8 +301,9 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
         <div className="pdf-slide-shell">
           <Swiper
             slidesPerView={1}
-            spaceBetween={24}
+            spaceBetween={0}
             className="pdf-swiper"
+            style={{ height: '100%' }}
             onSwiper={setSwiper}
             onSlideChange={(instance) => setActiveIndex(instance.activeIndex)}
           >
