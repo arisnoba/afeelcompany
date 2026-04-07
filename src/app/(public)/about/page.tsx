@@ -2,14 +2,9 @@ import Link from 'next/link';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { getBrandsWithLogos } from '@/lib/client-brands';
-import { getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
-import type { SiteClientBrand } from '@/types/site';
-
-const FALLBACK_ABOUT = '어필컴퍼니는 브랜드 이미지와 셀럽 노출의 접점을 설계하고, 축적된 작업물을 한 번의 업데이트로 여러 채널에 연결하는 방식을 지향합니다.';
+import { getSiteClientBrands } from '@/lib/site';
 
 const STORY_LINES = [
-	'2018년 봄, 어필컴퍼니는 단순한 목표 하나로 시작했습니다.',
-	"'우리가 가장 잘하는 일을, 가장 확실하게 하자.'",
 	'우리는 그저 옷을 협찬하는 데 그치지 않습니다.',
 	'스타의 고유한 분위기에 완벽히 맞는 핏을 찾습니다.',
 	'그 찰나의 순간이 대중의 열망으로 번지도록 설계합니다.',
@@ -25,9 +20,24 @@ const MOMENTUM_MILESTONES = [
 		description: '어필컴퍼니 설립',
 	},
 	{
+		year: '2018.07',
+		title: "tvN '김비서가 왜 그럴까' 황보라",
+		description: '소피앤테일러 투피스 완판',
+	},
+	{
 		year: '2019',
-		title: '드라마 패션의 판도를 바꾸다',
-		description: '주요 완판 사례 릴레이 시작',
+		title: "tvN '검색어를 입력하세요 WWW' 임수정",
+		description: '코르카 청바지 완판',
+	},
+	{
+		year: '2020.07',
+		title: "tvN '사이코지만 괜찮아' 서예지",
+		description: '고이우 귀걸이 W컨셉 1위',
+	},
+	{
+		year: '2021.01',
+		title: '제35회 골든디스크어워즈 아이유',
+		description: '브리아나 부츠 완판',
 	},
 	{
 		year: '2021',
@@ -38,6 +48,54 @@ const MOMENTUM_MILESTONES = [
 		year: '2025 현재',
 		title: '글로벌 포트폴리오 구축',
 		description: '글로벌 K-POP 아티스트와 최정상 배우 스타일링 축적',
+	},
+];
+
+const SERVICE_ITEMS = [
+	{
+		title: 'Brand Positioning',
+		headline: '브랜드 포지셔닝',
+		description: '브랜드의 미학과 정체성을 정확히 읽고, 대중의 인식 속에 가장 이상적인 자리를 설계합니다. 단순 노출이 아닌 브랜드 이미지의 전략적 구축을 목표로 합니다.',
+		icon: (
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+				<circle cx="12" cy="12" r="10" />
+				<circle cx="12" cy="12" r="6" />
+				<circle cx="12" cy="12" r="2" />
+			</svg>
+		),
+	},
+	{
+		title: 'Editorial Placement',
+		headline: '에디토리얼 플레이스먼트',
+		description: '드라마, 예능, 화보, SNS까지 모든 미디어 채널에서 브랜드가 가장 빛나는 씬(Scene)을 직접 기획하고 배치합니다. 우연한 노출은 없습니다.',
+		icon: (
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+				<rect x="3" y="3" width="18" height="18" rx="1" />
+				<path d="M3 9h18M9 21V9" />
+			</svg>
+		),
+	},
+	{
+		title: 'Digital Strategy',
+		headline: '디지털 전략',
+		description: '온라인 플랫폼의 알고리즘과 소비자 행동 데이터를 분석해 바이럴 확산 경로를 설계합니다. 연관 검색어 장악과 플랫폼 품절 대란이 전략의 결과물입니다.',
+		icon: (
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+				<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
+			</svg>
+		),
+	},
+	{
+		title: 'Archive Management',
+		headline: '아카이브 관리',
+		description: '모든 방송, SNS, 미디어 노출을 실시간으로 추적하고 영구 보존합니다. 트렌드는 휘발되지만 축적된 기록은 다음 캠페인의 가장 강력한 자산이 됩니다.',
+		icon: (
+			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
+				<polyline points="21 8 21 21 3 21 3 8" />
+				<rect x="1" y="3" width="22" height="5" />
+				<line x1="10" y1="12" x2="14" y2="12" />
+			</svg>
+		),
 	},
 ];
 
@@ -59,52 +117,13 @@ const EDGE_ITEMS = [
 	},
 ];
 
-const FALLBACK_NETWORK_NAMES = [
-	'SHIFT',
-	'HAVISM',
-	'LUCIE RYU',
-	'GLOBAL K-POP',
-	'TOP ACTOR',
-	'LEAD STYLIST',
-	'FASHION EDITOR',
-	'RUNWAY BRAND',
-	'BESTSELLER DROP',
-	'RED CARPET',
-	'DRAMA FASHION',
-	'ARCHIVE SIGNAL',
-];
-
-function buildNetworkNames(brands: SiteClientBrand[]) {
-	const names = brands
-		.map(brand => brand.name.trim())
-		.filter(Boolean)
-		.map(name => name.toUpperCase());
-
-	const merged = [...names, ...FALLBACK_NETWORK_NAMES];
-
-	return Array.from(new Set(merged));
-}
-
-function chunkNames(names: string[], size: number) {
-	const chunks: string[][] = [];
-
-	for (let index = 0; index < names.length; index += size) {
-		chunks.push(names.slice(index, index + size));
-	}
-
-	return chunks;
-}
-
 export default async function AboutPage() {
-	const [profile, brands] = await Promise.all([getSiteCompanyProfile(), getSiteClientBrands()]);
+	const brands = await getSiteClientBrands();
 
-	const aboutText = profile.aboutText || FALLBACK_ABOUT;
-	const networkNames = buildNetworkNames(brands);
-	const nameColumns = chunkNames(networkNames, Math.ceil(networkNames.length / 3));
 	const rollingBrands = getBrandsWithLogos(brands);
 
 	return (
-		<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-32 lg:py-20">
+		<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
 			<header className="grid gap-10">
 				<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
 
@@ -134,7 +153,7 @@ export default async function AboutPage() {
 								<p
 									key={line}
 									className={`max-w-3xl ${
-										index === 1
+										index === 0
 											? 'text-2xl italic leading-tight text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl'
 											: 'text-lg leading-8 text-stone-700 sm:text-[1.38rem] sm:leading-9'
 									}`}>
@@ -157,84 +176,63 @@ export default async function AboutPage() {
 				</aside>
 			</section>
 
-			<section className="relative overflow-hidden border border-stone-900/8 bg-stone-950 px-6 py-14 text-white sm:px-10 sm:py-18 lg:px-12 lg:py-20">
-				<div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,rgba(95,123,107,0.28),transparent_34%),radial-gradient(circle_at_bottom_right,rgba(255,255,255,0.08),transparent_28%)]" />
-				<div className="absolute inset-0 overflow-hidden">
-					<div className="grid h-full grid-cols-2 gap-4 px-4 opacity-18 md:grid-cols-3">
-						{nameColumns.map((column, columnIndex) => (
-							<div key={columnIndex} className="relative overflow-hidden">
-								<div className={columnIndex % 2 === 0 ? 'about-rise-track flex flex-col gap-5 py-2' : 'about-rise-track-reverse flex flex-col gap-5 py-2'}>
-									{[...column, ...column].map((name, nameIndex) => (
-										<span
-											key={`${name}-${nameIndex}`}
-											className={`whitespace-nowrap font-semibold uppercase text-white/70 ${
-												nameIndex % 3 === 0
-													? 'text-[0.68rem] tracking-[0.38em]'
-													: nameIndex % 3 === 1
-														? 'text-[1.05rem] tracking-[0.18em] [font-family:var(--font-newsreader)]'
-														: 'text-[0.78rem] tracking-[0.3em]'
-											}`}>
-											{name}
-										</span>
-									))}
-								</div>
-							</div>
+			<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
+				<div className="grid gap-4 lg:sticky lg:top-24 lg:self-start">
+					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Visualizing Momentum</p>
+					<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">The Accumulation Line</h2>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
+						수치 그래프 대신 시간을 시각화합니다. 쌓여온 사례의 밀도, 연결된 이름의 압력, 그리고 계속 상승하는 현상을 하나의 흐름으로 보여줍니다.
+					</p>
+				</div>
+
+				<div className="relative">
+					<div className="absolute left-[5px] top-0 h-full w-px bg-stone-900/15" />
+
+					<div className="grid gap-6">
+						{MOMENTUM_MILESTONES.map(milestone => (
+							<article key={milestone.year} className="relative ml-8 border border-stone-900/8 bg-white px-6 py-5">
+								<div className="absolute -left-[1.625rem] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
+								<p className="text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{milestone.year}</p>
+								<h3 className="mt-2 text-xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-2xl">{milestone.title}</h3>
+								<p className="mt-2 text-sm leading-7 text-stone-600">{milestone.description}</p>
+							</article>
 						))}
 					</div>
-				</div>
-
-				<div className="relative z-10 grid gap-12 lg:grid-cols-[minmax(280px,0.42fr)_minmax(0,1fr)]">
-					<div className="grid gap-5">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Visualizing Momentum</p>
-						<h2 className="text-4xl leading-none tracking-[-0.06em] text-white [font-family:var(--font-newsreader)] sm:text-5xl">The Accumulation Line</h2>
-						<p className="max-w-md text-sm leading-7 text-stone-300 sm:text-base">
-							수치 그래프 대신 시간을 시각화합니다. 쌓여온 사례의 밀도, 연결된 이름의 압력, 그리고 계속 상승하는 현상을 하나의 흐름으로 보여줍니다.
-						</p>
-					</div>
-
-					<div className="relative">
-						<div className="absolute left-3 top-0 h-full w-px bg-white/14 sm:left-4" />
-						<div className="grid gap-10">
-							{MOMENTUM_MILESTONES.map((milestone, index) => (
-								<article
-									key={milestone.year}
-									className={`relative ml-10 max-w-2xl border border-white/10 bg-white/6 p-6 backdrop-blur-sm sm:ml-14 sm:p-7 ${index % 2 === 1 ? 'lg:ml-24' : ''}`}>
-									<div className="absolute -left-[2.15rem] top-7 h-3 w-3 rounded-full border border-[#ccead6] bg-[#ccead6] shadow-[0_0_18px_rgba(204,234,214,0.7)] sm:-left-[2.85rem]" />
-									<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">{milestone.year}</p>
-									<h3 className="mt-3 text-2xl tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-3xl">{milestone.title}</h3>
-									<p className="mt-3 text-sm leading-7 text-stone-300 sm:text-base">{milestone.description}</p>
-								</article>
-							))}
-						</div>
-					</div>
-				</div>
-			</section>
-
-			<section className="grid gap-0 overflow-hidden border border-stone-900/8 md:grid-cols-2">
-				<div className="grid place-content-center bg-stone-950 p-12 text-center text-white sm:p-16">
-					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#ccead6]">Core Expertise</p>
-					<h2 className="mt-6 text-5xl italic tracking-[-0.05em] [font-family:var(--font-newsreader)] sm:text-6xl lg:text-7xl">
-						Service
-						<br />
-						Excellence.
-					</h2>
-				</div>
-				<div className="grid content-center bg-[#faf7f3] px-8 py-10 sm:px-12 sm:py-16">
-					<ul className="grid gap-0">
-						{['Brand Positioning', 'Editorial Placement', 'Digital Strategy', 'Archive Management'].map((service, index) => (
-							<li key={service} className="group flex items-baseline gap-6 border-b border-stone-900/10 py-6 transition-colors first:border-t hover:border-stone-400">
-								<span className="text-[0.62rem] font-semibold text-stone-400">0{index + 1}</span>
-								<span className="text-2xl tracking-[-0.03em] text-stone-800 [font-family:var(--font-newsreader)] transition-transform duration-500 group-hover:translate-x-3 sm:text-3xl">
-									{service}
-								</span>
-							</li>
-						))}
-					</ul>
 				</div>
 			</section>
 
 			<section className="grid gap-10">
-				<div className="grid gap-5 md:grid-cols-[minmax(0,0.95fr)_minmax(280px,1.05fr)] md:items-end">
+				<div className="grid gap-5 md:grid-cols-2 md:items-end">
+					<div className="grid gap-4">
+						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
+						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+							Service
+							<br />
+							Excellence.
+						</h2>
+					</div>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
+						브랜드 포지셔닝부터 디지털 전략까지, 어필컴퍼니의 4가지 핵심 서비스는 하나의 목표로 수렴합니다. 브랜드와 셀럽이 만나는 최적의 접점을 설계하고, 그 결과를 지속 가능한 자산으로
+						축적합니다.
+					</p>
+				</div>
+
+				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 sm:grid-cols-2">
+					{SERVICE_ITEMS.map(item => (
+						<article key={item.title} className="grid gap-6 bg-[#faf7f3] p-7 sm:p-8">
+							<div className="flex items-center gap-4">
+								<div className="flex h-10 w-10 items-center justify-center border border-stone-900/10 bg-white text-[#715a3e]">{item.icon}</div>
+								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
+							</div>
+							<h3 className="text-2xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl">{item.headline}</h3>
+							<p className="text-sm leading-8 text-stone-600 sm:text-base">{item.description}</p>
+						</article>
+					))}
+				</div>
+			</section>
+
+			<section className="grid gap-10">
+				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
 						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Why AFEEL</h2>
@@ -255,16 +253,13 @@ export default async function AboutPage() {
 				</div>
 			</section>
 
-			<section className="grid gap-10 border border-stone-900/8 bg-[#f5f1ec] px-6 py-12 sm:px-10 sm:py-14 lg:px-12 lg:py-16">
-				<div className="grid gap-5 md:grid-cols-[minmax(0,0.9fr)_minmax(280px,1.1fr)] md:items-end">
+			<section className="grid gap-10">
+				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
 						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Trusted by the Best</h2>
 					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-						숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다. 다음 시즌의 메가 히트를 준비하는 브랜드와, 완벽한 룩이 필요한 스타일리스트가 같은 이유로 어필컴퍼니를
-						찾습니다.
-					</p>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
 				</div>
 
 				<ClientLogoMarquee
@@ -278,7 +273,9 @@ export default async function AboutPage() {
 				<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
 					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
 					<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-						다음 시즌의 메가 히트를 준비하는 브랜드 매니저. 완벽한 레드카펫 룩이 당장 필요한 스타일리스트. 어필컴퍼니는 당신의 가장 든든하고 확실한 파트너입니다.
+						다음 시즌의 메가 히트를 준비하는 브랜드 매니저.
+						<br /> 완벽한 레드카펫 룩이 당장 필요한 스타일리스트.
+						<br /> 어필컴퍼니는 당신의 가장 든든하고 확실한 파트너입니다.
 					</p>
 					<div>
 						<Link
