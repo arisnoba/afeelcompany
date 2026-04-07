@@ -87,8 +87,9 @@ export async function getPdfDocument(): Promise<PdfDocument> {
     }
 
     const profile = profileResult.rows[0]
-    const clientBrands = getBrandsWithLogos(mapClientBrands(brandResult.rows))
-    const brandLogoUrlMap = buildBrandLogoUrlMap(clientBrands)
+    // PDF에서는 로고 없는 브랜드도 이름으로 표시하므로 전체를 사용
+    const allClientBrands = mapClientBrands(brandResult.rows)
+    const brandLogoUrlMap = buildBrandLogoUrlMap(getBrandsWithLogos(allClientBrands))
     const workItems = mapWorkItems(workResult.rows, brandLogoUrlMap)
 
     return {
@@ -102,7 +103,7 @@ export async function getPdfDocument(): Promise<PdfDocument> {
         address: profile?.address ?? pdfFixtureDocument.contact.address,
       },
       workItems,
-      clientBrands: clientBrands.length > 0 ? clientBrands : pdfFixtureDocument.clientBrands,
+      clientBrands: allClientBrands.length > 0 ? allClientBrands : pdfFixtureDocument.clientBrands,
       sectionOrder: SECTION_ORDER,
     }
   } catch {
