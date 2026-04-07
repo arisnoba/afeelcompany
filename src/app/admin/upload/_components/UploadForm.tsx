@@ -99,7 +99,7 @@ function ImageDropZone({ label, kind, previewUrl, previewAlt, disabled, onFile, 
 				onDragLeave={handleDragLeave}
 				onDrop={handleDrop}
 				className={[
-					'relative flex aspect-[4/5] w-full cursor-pointer select-none flex-col items-center justify-center overflow-hidden rounded-[20px] border-2 transition-all',
+					'relative flex aspect-square w-full cursor-pointer select-none flex-col items-center justify-center overflow-hidden rounded-[20px] border-2 transition-all',
 					previewUrl ? 'border-transparent' : isDragging ? 'border-[#18e299] bg-[#18e299]/8' : 'border-dashed border-black/15 bg-[#f7fbf8] hover:border-[#18e299]/60 hover:bg-[#f0fdf6]',
 					disabled ? 'pointer-events-none opacity-60' : '',
 				].join(' ')}>

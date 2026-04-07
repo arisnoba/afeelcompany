@@ -5,8 +5,8 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   brand_name TEXT NOT NULL,
   celebrity_name TEXT,
   category TEXT NOT NULL,            -- 상의/하의/신발/악세서리/기타
-  image_url TEXT NOT NULL,
-  thumbnail_url TEXT,
+  image_url TEXT NOT NULL,          -- normal 이미지
+  thumbnail_url TEXT,               -- hover 이미지
   show_on_web BOOLEAN DEFAULT true,
   show_on_pdf BOOLEAN DEFAULT true,
   sort_order INTEGER DEFAULT 0,

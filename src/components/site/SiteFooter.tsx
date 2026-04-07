@@ -33,14 +33,21 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 			<div className="mx-auto grid w-full max-w-screen-2xl gap-14 px-6 py-20 md:grid-cols-[minmax(0,1.4fr)_minmax(260px,1.15fr)_180px_180px] md:gap-x-16 md:px-12 md:py-24 lg:gap-x-24">
 				<div className="grid content-start gap-10">
 					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
-						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" />
+						<Image
+							src="/images/logo.svg"
+							alt="afeelcompany"
+							width={230}
+							height={100}
+							className="invert"
+							style={{ height: 'auto' }}
+						/>
 					</span>
 					<p className="max-w-md text-[1.02rem] leading-[1.7] text-stone-500">{description}</p>
 				</div>
 
 				<div className="grid content-start gap-12">
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Atelier</p>
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">address</p>
 						<p className="whitespace-pre-line text-[1.02rem] leading-[1.7] text-stone-800">{renderValue(profile.address)}</p>
 					</div>
 					<div className="grid gap-4">

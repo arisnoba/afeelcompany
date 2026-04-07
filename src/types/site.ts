@@ -20,5 +20,6 @@ export interface PublicPortfolioItem {
   category: string
   imageUrl: string
   thumbnailUrl: string | null
+  hoverImageUrl: string | null
   sortOrder: number
 }

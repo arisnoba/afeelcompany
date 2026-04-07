@@ -25,6 +25,7 @@ function mapPortfolioRow(row: PortfolioPageRow): PortfolioAdminItem {
     category: row.category,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
+    hoverImageUrl: row.thumbnail_url,
     showOnWeb: row.show_on_web,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
