@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { getCachedFeed } from '@/lib/instagram'
+import { getDisplayFeed } from '@/lib/instagram'
 import type { CachedPost } from '@/types/instagram'
 import { SyncButton } from './_components/SyncButton'
 
@@ -7,7 +7,7 @@ import { SyncButton } from './_components/SyncButton'
 export const dynamic = 'force-dynamic'
 
 export default async function InstagramTestPage() {
-  const posts: CachedPost[] = await getCachedFeed()
+  const posts: CachedPost[] = await getDisplayFeed()
   const lastSync = posts[0]?.fetched_at ?? null
 
   return (

@@ -11,6 +11,7 @@ const INSTAGRAM_API_BASE = 'https://graph.instagram.com/v25.0'
 const INSTAGRAM_REFRESH_BASE = 'https://graph.instagram.com'
 const INSTAGRAM_PUBLISH_BASE = 'https://graph.facebook.com/v25.0'
 const FEED_FIELDS = 'id,caption,media_url,thumbnail_url,timestamp,media_type,permalink'
+const FEED_CACHE_REFRESH_INTERVAL_MS = 1000 * 60 * 60 * 6
 // Token warning threshold: 7 days in ms (per D-12)
 const TOKEN_WARN_DAYS = 7
 
@@ -208,4 +209,48 @@ export async function getCachedFeed(): Promise<CachedPost[]> {
     LIMIT 20
   `
   return result.rows
+}
+
+function isFeedCacheStale(posts: CachedPost[]): boolean {
+  if (posts.length === 0) {
+    return true
+  }
+
+  const lastFetchedAt = new Date(posts[0].fetched_at)
+  if (Number.isNaN(lastFetchedAt.getTime())) {
+    return true
+  }
+
+  return Date.now() - lastFetchedAt.getTime() >= FEED_CACHE_REFRESH_INTERVAL_MS
+}
+
+/**
+ * Read cached feed for rendering and refresh stale image URLs on demand.
+ * This keeps media_url values current without forcing a full API call on every page load.
+ */
+export async function getDisplayFeed(): Promise<CachedPost[]> {
+  const cachedPosts = await getCachedFeed()
+
+  if (!isFeedCacheStale(cachedPosts)) {
+    return cachedPosts
+  }
+
+  const token = process.env.INSTAGRAM_ACCESS_TOKEN
+  if (!token) {
+    return cachedPosts
+  }
+
+  checkTokenExpiry()
+
+  try {
+    const freshPosts = await fetchFeed(token)
+    await syncToDb(freshPosts)
+    return await getCachedFeed()
+  } catch (error: unknown) {
+    console.warn(
+      '[Instagram] Failed to refresh stale feed cache, falling back to cached rows:',
+      error
+    )
+    return cachedPosts
+  }
 }
