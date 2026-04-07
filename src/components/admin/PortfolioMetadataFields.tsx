@@ -4,7 +4,6 @@ import {
 	ComboboxChip,
 	ComboboxChips,
 	ComboboxChipsInput,
-	ComboboxCollection,
 	ComboboxContent,
 	ComboboxEmpty,
 	ComboboxGroup,
@@ -65,7 +64,7 @@ export function PortfolioMetadataFields({ value, idPrefix, disabled = false, onC
 					}}>
 					<ComboboxChips ref={categoryAnchor} aria-disabled={disabled} className={disabled ? 'bg-input/50' : undefined}>
 						{value.category.map(category => (
-							<ComboboxChip key={category} value={category} showRemove={!disabled}>
+							<ComboboxChip key={category} showRemove={!disabled}>
 								{category}
 							</ComboboxChip>
 						))}
@@ -78,13 +77,11 @@ export function PortfolioMetadataFields({ value, idPrefix, disabled = false, onC
 					<ComboboxContent anchor={categoryAnchor}>
 						<ComboboxList>
 							<ComboboxGroup>
-								<ComboboxCollection items={PORTFOLIO_CATEGORIES}>
-									{category => (
-										<ComboboxItem key={category} value={category}>
-											{category}
-										</ComboboxItem>
-									)}
-								</ComboboxCollection>
+								{PORTFOLIO_CATEGORIES.map(category => (
+									<ComboboxItem key={category} value={category}>
+										{category}
+									</ComboboxItem>
+								))}
 							</ComboboxGroup>
 							<ComboboxEmpty>검색 결과가 없습니다.</ComboboxEmpty>
 						</ComboboxList>
