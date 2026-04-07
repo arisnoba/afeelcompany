@@ -1,34 +1,19 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
+import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { ShaderGodrays } from '@/components/ui/shader-godrays';
+import { getBrandsWithLogos } from '@/lib/client-brands';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 import { formatPortfolioCategories } from '@/types/portfolio';
 
 const FALLBACK_ABOUT = '브랜드와 셀럽의 접점을 설계하고, 한 번 정리한 포트폴리오를 웹과 소개서, 소셜까지 이어 붙이는 패션 PR 스튜디오입니다.';
 
-const FALLBACK_BRANDS = ['VALENCE', 'ORIZON', 'ETERNEL', 'STUDIO NOIR', 'LARCHIVE', 'AESTHET'];
-
-function getClientNames(names: string[]) {
-	return names.length > 0 ? names : FALLBACK_BRANDS;
-}
-
-function getClientNameClassName(index: number) {
-	const styles = [
-		'text-[1.6rem] tracking-[-0.06em] [font-family:var(--font-newsreader)]',
-		'text-[0.9rem] font-medium uppercase tracking-[0.42em]',
-		'text-[1.5rem] italic tracking-[-0.05em] [font-family:var(--font-newsreader)]',
-		'text-[0.82rem] font-semibold uppercase tracking-[0.34em]',
-	];
-
-	return styles[index % styles.length];
-}
-
 export default async function HomePage() {
 	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(6), getSiteClientBrands()]);
 
 	const heroBody = profile.aboutText || FALLBACK_ABOUT;
-	const clientNames = getClientNames(clientBrands.map(brand => brand.name));
+	const clientLogoBrands = getBrandsWithLogos(clientBrands);
 
 	return (
 		<>
@@ -130,19 +115,17 @@ export default async function HomePage() {
 
 				<section className="grid gap-12 border-t border-stone-900/8 pt-20">
 					<div className="grid justify-items-center gap-4 text-center">
-						<h2 className="text-4xl italic tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Clientèle</h2>
+						<h2 className="text-4xl italic tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Clients</h2>
 						<div className="h-px w-12 bg-[#715a3e]/40" />
 					</div>
 
-					<div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
-						<div className="home-marquee-track flex min-w-max items-center gap-16 whitespace-nowrap py-4">
-							{[...clientNames, ...clientNames].map((name, index) => (
-								<span key={`${name}-${index}`} className={`${getClientNameClassName(index)} text-stone-400/80 transition hover:text-stone-800`}>
-									{name}
-								</span>
-							))}
-						</div>
-					</div>
+					<ClientLogoMarquee
+						brands={clientLogoBrands}
+						className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+						trackClassName="home-marquee-track flex min-w-max items-center gap-16 whitespace-nowrap py-4"
+						logoClassName="relative h-12 w-36 shrink-0 opacity-70 transition hover:opacity-100"
+						imageClassName="object-contain grayscale"
+					/>
 				</section>
 
 				<section className="grid justify-items-center gap-8 py-6 text-center sm:py-10">

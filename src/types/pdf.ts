@@ -10,6 +10,7 @@ export interface PdfPortfolioItem {
   id: string
   title: string
   brandName: string
+  brandLogoUrl: string | null
   celebrityName: string | null
   category: string
   imageUrl: string

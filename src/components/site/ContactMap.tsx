@@ -143,12 +143,14 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 
 		loadGoogleMapsScript(apiKey)
 			.then(() => {
-				if (cancelled || !mapRef.current || !window.google?.maps) {
+				const maps = window.google?.maps;
+				const mapElement = mapRef.current;
+
+				if (cancelled || !mapElement || !maps) {
 					return;
 				}
 
-				const google = window.google;
-				const geocoder = new google.maps.Geocoder();
+				const geocoder = new maps.Geocoder();
 
 				geocoder.geocode({ address }, (results, status) => {
 					if (cancelled) {
@@ -160,7 +162,7 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 						return;
 					}
 
-					const map = new google.maps.Map(mapRef.current, {
+					const map = new maps.Map(mapElement, {
 						center: location,
 						zoom: 16,
 						backgroundColor: '#f5f3ef',
@@ -172,12 +174,12 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 						styles: WHITE_MAP_STYLES,
 					});
 
-					new google.maps.Marker({
+					new maps.Marker({
 						map,
 						position: location,
 						title: address,
 						icon: {
-							path: google.maps.SymbolPath.CIRCLE,
+							path: maps.SymbolPath.CIRCLE,
 							scale: 9,
 							fillColor: '#171717',
 							fillOpacity: 1,

@@ -1,6 +1,7 @@
-import Image from 'next/image'
 import Link from 'next/link'
 
+import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee'
+import { getBrandsWithLogos } from '@/lib/client-brands'
 import { getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site'
 import type { SiteClientBrand } from '@/types/site'
 
@@ -98,34 +99,6 @@ function chunkNames(names: string[], size: number) {
   return chunks
 }
 
-function renderBrandMark(brand: SiteClientBrand, index: number) {
-  if (brand.logoUrl) {
-    return (
-      <div
-        key={`${brand.id}-${index}`}
-        className="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
-      >
-        <Image
-          src={brand.logoUrl}
-          alt={brand.name}
-          fill
-          className="object-contain grayscale"
-          sizes="128px"
-        />
-      </div>
-    )
-  }
-
-  return (
-    <span
-      key={`${brand.id}-${index}`}
-      className="shrink-0 text-[0.82rem] font-semibold uppercase tracking-[0.32em] text-stone-400"
-    >
-      {brand.name}
-    </span>
-  )
-}
-
 export default async function AboutPage() {
   const [profile, brands] = await Promise.all([
     getSiteCompanyProfile(),
@@ -135,7 +108,7 @@ export default async function AboutPage() {
   const aboutText = profile.aboutText || FALLBACK_ABOUT
   const networkNames = buildNetworkNames(brands)
   const nameColumns = chunkNames(networkNames, Math.ceil(networkNames.length / 3))
-  const rollingBrands = brands.length > 0 ? brands : []
+  const rollingBrands = getBrandsWithLogos(brands)
 
   return (
     <div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-32 lg:py-20">
@@ -365,22 +338,13 @@ export default async function AboutPage() {
           </p>
         </div>
 
-        <div className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]">
-          <div className="about-logo-marquee-track flex min-w-max items-center gap-14">
-            {rollingBrands.length > 0
-              ? [...rollingBrands, ...rollingBrands].map((brand, index) =>
-                  renderBrandMark(brand, index)
-                )
-              : [...networkNames, ...networkNames].map((name, index) => (
-                  <span
-                    key={`${name}-${index}`}
-                    className="shrink-0 text-[0.82rem] font-semibold uppercase tracking-[0.32em] text-stone-400"
-                  >
-                    {name}
-                  </span>
-                ))}
-          </div>
-        </div>
+        <ClientLogoMarquee
+          brands={rollingBrands}
+          className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+          trackClassName="about-logo-marquee-track flex min-w-max items-center gap-14"
+          logoClassName="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
+          imageClassName="object-contain grayscale"
+        />
 
         <div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
           <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">
