@@ -1,15 +1,14 @@
 'use client'
 
 import Image from 'next/image'
-import { ChangeEvent, FormEvent, useMemo, useState } from 'react'
+import { DragEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react'
+import { ImagePlus, X } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { resizePortfolioImage } from '@/lib/image'
-import type { PortfolioAdminItem } from '@/types/portfolio'
 import {
-  PORTFOLIO_CATEGORIES,
+  serializePortfolioCategories,
+  type PortfolioAdminItem,
 } from '@/types/portfolio'
 import {
   PortfolioMetadataFields,
@@ -26,7 +25,7 @@ const INITIAL_FORM: PortfolioMetadataValue = {
   title: '',
   brandName: '',
   celebrityName: '',
-  category: PORTFOLIO_CATEGORIES[0],
+  category: [],
   showOnWeb: true,
   showOnPdf: true,
 }
@@ -35,10 +34,143 @@ interface UploadFormProps {
   onSuccess?: (item: PortfolioAdminItem) => void
 }
 
+type UploadImageKey = 'normal' | 'hover'
+
+const EMPTY_SELECTED_FILES: Record<UploadImageKey, File | null> = {
+  normal: null,
+  hover: null,
+}
+
+const EMPTY_PREVIEW_URLS: Record<UploadImageKey, string | null> = {
+  normal: null,
+  hover: null,
+}
+
+interface ImageDropZoneProps {
+  label: string
+  kind: UploadImageKey
+  previewUrl: string | null
+  previewAlt: string
+  disabled: boolean
+  onFile: (kind: UploadImageKey, file: File) => void
+  onClear: (kind: UploadImageKey) => void
+}
+
+function ImageDropZone({ label, kind, previewUrl, previewAlt, disabled, onFile, onClear }: ImageDropZoneProps) {
+  const inputRef = useRef<HTMLInputElement>(null)
+  const [isDragging, setIsDragging] = useState(false)
+
+  function handleDragOver(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    if (!disabled) setIsDragging(true)
+  }
+
+  function handleDragLeave(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    setIsDragging(false)
+  }
+
+  function handleDrop(e: DragEvent<HTMLDivElement>) {
+    e.preventDefault()
+    setIsDragging(false)
+    if (disabled) return
+    const file = e.dataTransfer.files[0]
+    if (file && file.type.startsWith('image/')) {
+      onFile(kind, file)
+    }
+  }
+
+  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0]
+    if (file) onFile(kind, file)
+    e.target.value = ''
+  }
+
+  return (
+    <div className="grid gap-2">
+      <div className="flex items-center justify-between gap-3">
+        <p className="text-sm font-medium text-foreground">{label}</p>
+        <span className="text-xs text-muted-foreground">JPEG, PNG, WEBP</span>
+      </div>
+
+      <div
+        role="button"
+        tabIndex={disabled ? -1 : 0}
+        aria-label={`${label} 업로드`}
+        onClick={() => !disabled && inputRef.current?.click()}
+        onKeyDown={(e) => { if (!disabled && (e.key === 'Enter' || e.key === ' ')) inputRef.current?.click() }}
+        onDragOver={handleDragOver}
+        onDragLeave={handleDragLeave}
+        onDrop={handleDrop}
+        className={[
+          'relative flex aspect-[4/5] w-full cursor-pointer select-none flex-col items-center justify-center overflow-hidden rounded-[20px] border-2 transition-all',
+          previewUrl
+            ? 'border-transparent'
+            : isDragging
+              ? 'border-[#18e299] bg-[#18e299]/8'
+              : 'border-dashed border-black/15 bg-[#f7fbf8] hover:border-[#18e299]/60 hover:bg-[#f0fdf6]',
+          disabled ? 'pointer-events-none opacity-60' : '',
+        ].join(' ')}
+      >
+        {previewUrl ? (
+          <>
+            <Image
+              src={previewUrl}
+              alt={`${previewAlt} ${kind}`}
+              fill
+              unoptimized
+              className="object-cover"
+              sizes="220px"
+            />
+            <div className="absolute inset-0 flex items-end justify-center bg-gradient-to-t from-black/40 via-transparent to-transparent p-3 opacity-0 transition-opacity hover:opacity-100">
+              <span className="rounded-full bg-white/90 px-3 py-1 text-xs font-medium text-foreground">
+                클릭하여 변경
+              </span>
+            </div>
+            <button
+              type="button"
+              aria-label="이미지 제거"
+              onClick={(e) => { e.stopPropagation(); onClear(kind) }}
+              className="absolute right-2 top-2 flex h-6 w-6 items-center justify-center rounded-full bg-black/50 text-white transition-colors hover:bg-black/70"
+            >
+              <X size={12} />
+            </button>
+          </>
+        ) : (
+          <div className="flex flex-col items-center gap-3 px-4 text-center">
+            <div className={[
+              'flex h-10 w-10 items-center justify-center rounded-full transition-colors',
+              isDragging ? 'bg-[#18e299]/20 text-[#0f7b54]' : 'bg-black/6 text-muted-foreground',
+            ].join(' ')}>
+              <ImagePlus size={20} />
+            </div>
+            <div className="grid gap-1">
+              <p className="text-xs font-medium text-foreground">
+                {isDragging ? '여기에 놓으세요' : '드래그 앤 드롭'}
+              </p>
+              <p className="text-[11px] text-muted-foreground">또는 클릭하여 파일 선택</p>
+            </div>
+          </div>
+        )}
+      </div>
+
+      <input
+        ref={inputRef}
+        type="file"
+        accept="image/jpeg,image/png,image/webp"
+        className="sr-only"
+        tabIndex={-1}
+        onChange={handleInputChange}
+        disabled={disabled}
+      />
+    </div>
+  )
+}
+
 export function UploadForm({ onSuccess }: UploadFormProps = {}) {
   const [form, setForm] = useState(INITIAL_FORM)
-  const [selectedFile, setSelectedFile] = useState<File | null>(null)
-  const [previewUrl, setPreviewUrl] = useState<string | null>(null)
+  const [selectedFiles, setSelectedFiles] = useState(EMPTY_SELECTED_FILES)
+  const [previewUrls, setPreviewUrls] = useState(EMPTY_PREVIEW_URLS)
   const [isPending, setIsPending] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
@@ -48,22 +180,30 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
     [form.brandName, form.title]
   )
 
-  function updatePreview(file: File | null) {
-    setPreviewUrl((current) => {
-      if (current) {
-        URL.revokeObjectURL(current)
-      }
+  useEffect(() => {
+    return () => {
+      Object.values(previewUrls).forEach((url) => {
+        if (url) URL.revokeObjectURL(url)
+      })
+    }
+  }, [previewUrls])
 
-      return file ? URL.createObjectURL(file) : null
+  function handleFile(kind: UploadImageKey, file: File) {
+    setSelectedFiles((current) => ({ ...current, [kind]: file }))
+    setPreviewUrls((current) => {
+      if (current[kind]) URL.revokeObjectURL(current[kind]!)
+      return { ...current, [kind]: URL.createObjectURL(file) }
     })
-  }
-
-  function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0] ?? null
-    setSelectedFile(file)
-    updatePreview(file)
     setError(null)
     setSuccess(null)
+  }
+
+  function handleClear(kind: UploadImageKey) {
+    setSelectedFiles((current) => ({ ...current, [kind]: null }))
+    setPreviewUrls((current) => {
+      if (current[kind]) URL.revokeObjectURL(current[kind]!)
+      return { ...current, [kind]: null }
+    })
   }
 
   function updateForm(patch: Partial<PortfolioMetadataValue>) {
@@ -73,8 +213,8 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
 
-    if (!selectedFile) {
-      setError('업로드할 이미지를 먼저 선택해 주세요.')
+    if (!selectedFiles.normal || !selectedFiles.hover) {
+      setError('normal 이미지와 hover 이미지를 모두 선택해 주세요.')
       return
     }
 
@@ -83,14 +223,18 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
     setSuccess(null)
 
     try {
-      const resizedFile = await resizePortfolioImage(selectedFile)
+      const [resizedNormalFile, resizedHoverFile] = await Promise.all([
+        resizePortfolioImage(selectedFiles.normal),
+        resizePortfolioImage(selectedFiles.hover),
+      ])
       const payload = new FormData()
 
-      payload.set('file', resizedFile)
+      payload.set('normalFile', resizedNormalFile)
+      payload.set('hoverFile', resizedHoverFile)
       payload.set('title', form.title)
       payload.set('brandName', form.brandName)
       payload.set('celebrityName', form.celebrityName)
-      payload.set('category', form.category)
+      payload.set('category', serializePortfolioCategories(form.category))
       payload.set('showOnWeb', String(form.showOnWeb))
       payload.set('showOnPdf', String(form.showOnPdf))
 
@@ -106,8 +250,9 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
       }
 
       setForm(INITIAL_FORM)
-      setSelectedFile(null)
-      updatePreview(null)
+      setSelectedFiles(EMPTY_SELECTED_FILES)
+      handleClear('normal')
+      handleClear('hover')
 
       if (onSuccess) {
         onSuccess(result.data)
@@ -126,50 +271,30 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
 
   return (
     <form className="grid gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
-      <div className="grid gap-3">
-        <div className="flex items-center justify-between gap-3">
-          <Label htmlFor="upload-file" className="text-sm font-medium text-foreground">
-            이미지 파일
-          </Label>
-          <span className="text-xs text-muted-foreground">JPEG, PNG, WEBP</span>
-        </div>
-        <Input
-          id="upload-file"
-          type="file"
-          accept="image/jpeg,image/png,image/webp"
-          onChange={handleFileChange}
+      <div className="grid gap-4 sm:grid-cols-2">
+        <ImageDropZone
+          label="Normal 이미지"
+          kind="normal"
+          previewUrl={previewUrls.normal}
+          previewAlt={previewAlt}
           disabled={isPending}
+          onFile={handleFile}
+          onClear={handleClear}
         />
-        <p className="text-xs text-muted-foreground">
-          서버 업로드 한도 4.5MB, 클라이언트에서 2000px JPEG 0.8 품질로 리사이즈합니다.
-        </p>
+        <ImageDropZone
+          label="Hover 이미지"
+          kind="hover"
+          previewUrl={previewUrls.hover}
+          previewAlt={previewAlt}
+          disabled={isPending}
+          onFile={handleFile}
+          onClear={handleClear}
+        />
       </div>
 
-      <div className="grid gap-4 rounded-[24px] border border-black/6 bg-white p-4">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">미리보기</p>
-          <p className="text-xs text-muted-foreground">
-            선택한 이미지는 저장 전까지 로컬에서만 표시됩니다.
-          </p>
-        </div>
-
-        <div className="relative aspect-[4/5] overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
-          {previewUrl ? (
-            <Image
-              src={previewUrl}
-              alt={previewAlt}
-              fill
-              unoptimized
-              className="object-cover"
-              sizes="(max-width: 768px) 100vw, 560px"
-            />
-          ) : (
-            <div className="flex h-full items-center justify-center px-6 text-center text-sm text-muted-foreground">
-              이미지를 선택하면 여기에서 미리보기를 확인할 수 있습니다.
-            </div>
-          )}
-        </div>
-      </div>
+      <p className="text-xs text-muted-foreground">
+        각 파일은 서버 업로드 한도 4.5MB이며, 클라이언트에서 2000px JPEG 0.8 품질로 리사이즈합니다.
+      </p>
 
       <div className="grid gap-4 rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
         <div className="flex flex-col gap-1">
@@ -198,7 +323,11 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
         </div>
       ) : null}
 
-      <Button type="submit" size="lg" disabled={isPending || !selectedFile}>
+      <Button
+        type="submit"
+        size="lg"
+        disabled={isPending || !selectedFiles.normal || !selectedFiles.hover}
+      >
         {isPending ? '업로드 중...' : '포트폴리오 생성'}
       </Button>
     </form>
