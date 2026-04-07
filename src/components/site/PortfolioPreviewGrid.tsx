@@ -1,13 +1,17 @@
+import Link from 'next/link'
 import Image from 'next/image'
 
-import { formatPortfolioCategories } from '@/types/portfolio'
 import type { PublicPortfolioItem } from '@/types/site'
 
 interface PortfolioPreviewGridProps {
   items: PublicPortfolioItem[]
+  href?: string
 }
 
-export function PortfolioPreviewGrid({ items }: PortfolioPreviewGridProps) {
+export function PortfolioPreviewGrid({
+  items,
+  href = '/portfolio',
+}: PortfolioPreviewGridProps) {
   if (items.length === 0) {
     return (
       <div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">
@@ -17,20 +21,20 @@ export function PortfolioPreviewGrid({ items }: PortfolioPreviewGridProps) {
   }
 
   return (
-    <div className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+    <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
       {items.slice(0, 6).map((item, index) => (
-        <article
+        <Link
           key={item.id}
-          className={`group overflow-hidden rounded-[1.75rem] border border-stone-900/8 bg-stone-100 shadow-[0_18px_48px_rgba(56,36,19,0.06)] transition hover:-translate-y-1 hover:shadow-[0_28px_70px_rgba(56,36,19,0.12)] ${
-            index === 0 ? 'md:col-span-2 xl:col-span-1' : ''
-          }`}
+          href={href}
+          className="group relative aspect-square overflow-hidden bg-stone-200"
         >
-          <div className="relative aspect-[4/5] overflow-hidden bg-stone-200">
+          <div className="relative h-full w-full overflow-hidden">
             <Image
               src={item.imageUrl}
               alt={item.title}
               fill
-              className="object-cover transition duration-500 group-hover:scale-[1.04]"
+              className="object-cover transition duration-300 group-hover:scale-[1.05]"
+              loading={index < 3 ? 'eager' : 'lazy'}
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
             {item.hoverImageUrl ? (
@@ -38,21 +42,21 @@ export function PortfolioPreviewGrid({ items }: PortfolioPreviewGridProps) {
                 src={item.hoverImageUrl}
                 alt={`${item.title} hover`}
                 fill
-                className="object-cover opacity-0 transition duration-500 group-hover:opacity-100 group-hover:scale-[1.04]"
+                className="object-cover opacity-0 transition duration-300 group-hover:opacity-100"
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
               />
             ) : null}
           </div>
-          <div className="grid gap-2 px-5 py-5">
-            <p className="text-[0.7rem] uppercase tracking-[0.34em] text-stone-500">
-              {formatPortfolioCategories(item.category)}
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0" />
+          <div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 sm:px-6 sm:py-6">
+            <p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/72">
+              {item.brandName}
             </p>
-            <h3 className="text-2xl tracking-[-0.04em] text-stone-950">
-              {item.title}
-            </h3>
-            <p className="text-sm text-stone-600">{item.brandName}</p>
+            <p className="text-lg tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-xl">
+              {item.celebrityName ?? item.title}
+            </p>
           </div>
-        </article>
+        </Link>
       ))}
     </div>
   )

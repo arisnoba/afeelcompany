@@ -21,7 +21,7 @@ import {
 	SidebarSeparator,
 } from '@/components/ui/sidebar';
 
-import { ADMIN_NAV_ITEMS, isAdminHrefActive } from './admin-navigation';
+import { ADMIN_NAV_GROUPS, isAdminHrefActive } from './admin-navigation';
 
 const NAV_ICONS = {
 	'/admin': LayoutDashboard,
@@ -49,27 +49,33 @@ export function AdminSidebar() {
 			</SidebarHeader>
 
 			<SidebarContent>
-				<SidebarGroup>
-					<SidebarGroupLabel>관리</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<SidebarMenu>
-							{ADMIN_NAV_ITEMS.map(item => {
-								const isActive = isAdminHrefActive(pathname, item.href);
-								const Icon = NAV_ICONS[item.href as keyof typeof NAV_ICONS];
+				{ADMIN_NAV_GROUPS.map((group, groupIndex) => (
+					<div key={group.label}>
+						<SidebarGroup>
+							<SidebarGroupLabel>{group.label}</SidebarGroupLabel>
+							<SidebarGroupContent>
+								<SidebarMenu>
+									{group.items.map(item => {
+										const isActive = isAdminHrefActive(pathname, item.href);
+										const Icon = NAV_ICONS[item.href as keyof typeof NAV_ICONS];
 
-								return (
-									<SidebarMenuItem key={item.href}>
-										<SidebarMenuButton render={<Link href={item.href} />} isActive={isActive} tooltip={item.label}>
-											<Icon />
-											<span>{item.label}</span>
-										</SidebarMenuButton>
-										{isActive ? <SidebarMenuBadge>현재</SidebarMenuBadge> : null}
-									</SidebarMenuItem>
-								);
-							})}
-						</SidebarMenu>
-					</SidebarGroupContent>
-				</SidebarGroup>
+										return (
+											<SidebarMenuItem key={item.href}>
+												<SidebarMenuButton render={<Link href={item.href} />} isActive={isActive} tooltip={item.label}>
+													<Icon />
+													<span>{item.label}</span>
+												</SidebarMenuButton>
+												{isActive ? <SidebarMenuBadge>현재</SidebarMenuBadge> : null}
+											</SidebarMenuItem>
+										);
+									})}
+								</SidebarMenu>
+							</SidebarGroupContent>
+						</SidebarGroup>
+
+						{groupIndex < ADMIN_NAV_GROUPS.length - 1 ? <SidebarSeparator /> : null}
+					</div>
+				))}
 
 				<SidebarSeparator />
 
