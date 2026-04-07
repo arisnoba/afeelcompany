@@ -217,7 +217,7 @@ export default function Hero() {
                   <div className="mt-auto pt-8 border-t border-white/20">
                     <figure>
                       <blockquote className="text-xl font-medium leading-relaxed mb-6">
-                        "Nexus transformed how we ship software. We went from weekly releases to daily deployments with zero downtime."
+                        &ldquo;Nexus transformed how we ship software. We went from weekly releases to daily deployments with zero downtime.&rdquo;
                       </blockquote>
                       <figcaption className="flex items-center gap-4">
                         <div className="h-12 w-12 rounded-full bg-gradient-to-tr from-orange-400 to-pink-500 flex items-center justify-center text-lg font-bold text-white">
