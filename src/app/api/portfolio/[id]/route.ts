@@ -2,7 +2,10 @@ import { del } from '@vercel/blob'
 
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
-import type { PortfolioAdminItem } from '@/types/portfolio'
+import {
+  isSerializedPortfolioCategories,
+  type PortfolioAdminItem,
+} from '@/types/portfolio'
 
 interface PortfolioMutationBody {
   title?: string
@@ -36,6 +39,7 @@ function mapPortfolioRow(row: PortfolioMutationRow): PortfolioAdminItem {
     category: row.category,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
+    hoverImageUrl: row.thumbnail_url,
     showOnWeb: row.show_on_web,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
@@ -57,6 +61,7 @@ export async function PATCH(
     !body.title ||
     !body.brandName ||
     !body.category ||
+    !isSerializedPortfolioCategories(body.category) ||
     typeof body.showOnWeb !== 'boolean' ||
     typeof body.showOnPdf !== 'boolean' ||
     typeof body.sortOrder !== 'number'

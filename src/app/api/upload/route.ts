@@ -2,9 +2,8 @@ import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
 import {
-  PORTFOLIO_CATEGORIES,
+  isSerializedPortfolioCategories,
   type PortfolioAdminItem,
-  type PortfolioCategory,
 } from '@/types/portfolio'
 
 function toBoolean(value: FormDataEntryValue | null): boolean | null {
@@ -17,10 +16,6 @@ function toBoolean(value: FormDataEntryValue | null): boolean | null {
   }
 
   return null
-}
-
-function isPortfolioCategory(value: string): value is PortfolioCategory {
-  return PORTFOLIO_CATEGORIES.some((category) => category === value)
 }
 
 interface PortfolioUploadRow {
@@ -45,6 +40,7 @@ function mapPortfolioRow(row: PortfolioUploadRow): PortfolioAdminItem {
     category: row.category,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
+    hoverImageUrl: row.thumbnail_url,
     showOnWeb: row.show_on_web,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
@@ -57,7 +53,8 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   const formData = await request.formData()
-  const file = formData.get('file')
+  const normalFile = formData.get('normalFile')
+  const hoverFile = formData.get('hoverFile')
   const title = formData.get('title')?.toString().trim()
   const brandName = formData.get('brandName')?.toString().trim()
   const celebrityName = formData.get('celebrityName')?.toString().trim() || null
@@ -65,20 +62,26 @@ export async function POST(request: Request): Promise<Response> {
   const showOnWeb = toBoolean(formData.get('showOnWeb'))
   const showOnPdf = toBoolean(formData.get('showOnPdf'))
 
-  if (!(file instanceof File)) {
-    return Response.json({ success: false, error: 'FILE_REQUIRED' }, { status: 400 })
+  if (!(normalFile instanceof File) || !(hoverFile instanceof File)) {
+    return Response.json(
+      { success: false, error: 'NORMAL_AND_HOVER_FILES_REQUIRED' },
+      { status: 400 }
+    )
   }
 
   if (!title || !brandName || !category || showOnWeb === null || showOnPdf === null) {
     return Response.json({ success: false, error: 'INVALID_FORM_DATA' }, { status: 400 })
   }
 
-  if (!isPortfolioCategory(category)) {
+  if (!isSerializedPortfolioCategories(category)) {
     return Response.json({ success: false, error: 'INVALID_CATEGORY' }, { status: 400 })
   }
 
   try {
-    const uploaded = await uploadPublicImage(file, 'portfolio')
+    const [uploadedNormal, uploadedHover] = await Promise.all([
+      uploadPublicImage(normalFile, 'portfolio'),
+      uploadPublicImage(hoverFile, 'portfolio'),
+    ])
     const result = await sql<PortfolioUploadRow>`
       INSERT INTO portfolio_items (
         title,
@@ -96,8 +99,8 @@ export async function POST(request: Request): Promise<Response> {
         ${brandName},
         ${celebrityName},
         ${category},
-        ${uploaded.url},
-        ${uploaded.url},
+        ${uploadedNormal.url},
+        ${uploadedHover.url},
         ${showOnWeb},
         ${showOnPdf},
         (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM portfolio_items)

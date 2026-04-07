@@ -4,8 +4,7 @@ import Image from 'next/image';
 import { useEffect, useState } from 'react';
 
 import { Button } from '@/components/ui/button';
-import type { PortfolioAdminItem } from '@/types/portfolio';
-import type { PortfolioCategory } from '@/types/portfolio';
+import { parsePortfolioCategories, serializePortfolioCategories, type PortfolioAdminItem } from '@/types/portfolio';
 import { PortfolioMetadataFields, type PortfolioMetadataValue } from '@/components/admin/PortfolioMetadataFields';
 
 interface PortfolioMutationResponse {
@@ -25,7 +24,7 @@ function toFormValue(item: PortfolioAdminItem): PortfolioMetadataValue {
 		title: item.title,
 		brandName: item.brandName,
 		celebrityName: item.celebrityName ?? '',
-		category: item.category as PortfolioCategory,
+		category: parsePortfolioCategories(item.category),
 		showOnWeb: item.showOnWeb,
 		showOnPdf: item.showOnPdf,
 	};
@@ -63,7 +62,7 @@ export function PortfolioEditorForm({ item, onDeleteSuccess, onSaveSuccess }: Po
 					title: form.title,
 					brandName: form.brandName,
 					celebrityName: form.celebrityName || null,
-					category: form.category,
+					category: serializePortfolioCategories(form.category),
 					showOnWeb: form.showOnWeb,
 					showOnPdf: form.showOnPdf,
 					sortOrder: item.sortOrder,
@@ -121,12 +120,19 @@ export function PortfolioEditorForm({ item, onDeleteSuccess, onSaveSuccess }: Po
 			</div>
 
 			<div className="grid gap-4 rounded-[24px] border border-black/6 bg-white p-4">
-				<div className="relative aspect-[4/5] overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
-					<Image src={item.thumbnailUrl ?? item.imageUrl} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 560px" />
-				</div>
-				<div className="flex flex-col gap-1 text-sm text-muted-foreground">
-					<p>순서 {item.sortOrder + 1}</p>
-					<p>이미지는 현재 업로드 데이터를 그대로 사용합니다.</p>
+				<div className="grid gap-4 sm:grid-cols-2">
+					<div className="grid gap-2">
+						<p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Normal</p>
+						<div className="relative mx-auto aspect-square w-full overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
+							<Image src={item.imageUrl} alt={`${item.title} normal`} fill className="object-cover" sizes="180px" />
+						</div>
+					</div>
+					<div className="grid gap-2">
+						<p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Hover</p>
+						<div className="relative mx-auto aspect-square w-full overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
+							<Image src={item.hoverImageUrl ?? item.imageUrl} alt={`${item.title} hover`} fill className="object-cover" sizes="180px" />
+						</div>
+					</div>
 				</div>
 			</div>
 
