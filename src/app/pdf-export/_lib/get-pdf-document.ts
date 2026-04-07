@@ -1,3 +1,4 @@
+import { buildBrandLogoUrlMap, findBrandLogoUrl, getBrandsWithLogos } from '@/lib/client-brands'
 import { sql } from '@/lib/db'
 import type { PdfClientBrand, PdfDocument, PdfPortfolioItem } from '@/types/pdf'
 
@@ -32,11 +33,12 @@ interface ClientBrandRow {
   sort_order: number
 }
 
-function mapWorkItems(rows: PortfolioItemRow[]): PdfPortfolioItem[] {
+function mapWorkItems(rows: PortfolioItemRow[], brandLogoUrlMap: Map<string, string>): PdfPortfolioItem[] {
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
     brandName: row.brand_name,
+    brandLogoUrl: findBrandLogoUrl(row.brand_name, brandLogoUrlMap),
     celebrityName: row.celebrity_name,
     category: row.category,
     imageUrl: row.image_url,
@@ -69,14 +71,14 @@ export async function getPdfDocument(): Promise<PdfDocument> {
         FROM portfolio_items
         WHERE show_on_pdf = true
         ORDER BY sort_order ASC, created_at DESC
-        LIMIT 8
+        LIMIT 200
       `,
       sql<ClientBrandRow>`
         SELECT id, name, logo_url, sort_order
         FROM client_brands
         WHERE is_active = true
         ORDER BY sort_order ASC, created_at ASC
-        LIMIT 12
+        LIMIT 200
       `,
     ])
 
@@ -85,8 +87,9 @@ export async function getPdfDocument(): Promise<PdfDocument> {
     }
 
     const profile = profileResult.rows[0]
-    const workItems = mapWorkItems(workResult.rows)
-    const clientBrands = mapClientBrands(brandResult.rows)
+    const clientBrands = getBrandsWithLogos(mapClientBrands(brandResult.rows))
+    const brandLogoUrlMap = buildBrandLogoUrlMap(clientBrands)
+    const workItems = mapWorkItems(workResult.rows, brandLogoUrlMap)
 
     return {
       title: pdfFixtureDocument.title,

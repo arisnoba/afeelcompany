@@ -16,20 +16,25 @@ import type { Swiper as SwiperInstance } from 'swiper'
 
 import { Button, buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
-import type { PdfSectionId } from '@/types/pdf'
 
 type PreviewMode = 'scroll' | 'slide'
 
-const SECTION_LABELS: Record<PdfSectionId, string> = {
-  cover: 'Cover',
-  about: 'About',
-  work: 'Work',
-  client: 'Client',
-  contact: 'Contact',
+function getSectionLabel(id: string): string {
+  if (id === 'cover') return 'Cover'
+  if (id === 'about') return 'About'
+  if (id === 'contact') return 'Contact'
+
+  const workMatch = id.match(/^work-(\d+)-(\d+)$/)
+  if (workMatch) return `Work ${workMatch[1]}/${workMatch[2]}`
+
+  const clientMatch = id.match(/^client-(\d+)-(\d+)$/)
+  if (clientMatch) return `Client ${clientMatch[1]}/${clientMatch[2]}`
+
+  return id
 }
 
 interface PdfPreviewSection {
-  id: PdfSectionId
+  id: string
   node: ReactNode
 }
 
@@ -214,7 +219,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
                 {String(sections.length).padStart(2, '0')}
               </span>
               <span className="hidden text-black/25 sm:inline">/</span>
-              <span className="hidden sm:inline">{SECTION_LABELS[activeSection]}</span>
+              <span className="hidden sm:inline">{getSectionLabel(activeSection)}</span>
             </div>
 
             <div className="flex items-center rounded-full border border-black/10 bg-white p-1">
