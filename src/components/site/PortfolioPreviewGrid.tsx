@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { formatPortfolioCategories } from '@/types/portfolio'
 import type { PublicPortfolioItem } from '@/types/site'
 
 interface PortfolioPreviewGridProps {
@@ -32,10 +33,19 @@ export function PortfolioPreviewGrid({ items }: PortfolioPreviewGridProps) {
               className="object-cover transition duration-500 group-hover:scale-[1.04]"
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
+            {item.hoverImageUrl ? (
+              <Image
+                src={item.hoverImageUrl}
+                alt={`${item.title} hover`}
+                fill
+                className="object-cover opacity-0 transition duration-500 group-hover:opacity-100 group-hover:scale-[1.04]"
+                sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+              />
+            ) : null}
           </div>
           <div className="grid gap-2 px-5 py-5">
             <p className="text-[0.7rem] uppercase tracking-[0.34em] text-stone-500">
-              {item.category}
+              {formatPortfolioCategories(item.category)}
             </p>
             <h3 className="text-2xl tracking-[-0.04em] text-stone-950">
               {item.title}

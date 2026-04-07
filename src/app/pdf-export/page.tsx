@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ReactNode } from 'react'
 
+import { formatPortfolioCategories } from '@/types/portfolio'
 import type { PdfSectionId } from '@/types/pdf'
 
 import { BrochureSheet } from './_components/BrochureSheet'
@@ -84,7 +85,7 @@ export default async function PdfExportPage() {
               <div className="space-y-2 p-5">
                 <p className="text-xs uppercase tracking-[0.24em] text-black/45">{item.brandName}</p>
                 <h2 className="text-xl font-semibold text-black">{item.title}</h2>
-                <p className="text-sm text-black/55">{item.category}</p>
+                <p className="text-sm text-black/55">{formatPortfolioCategories(item.category)}</p>
               </div>
             </article>
           ))}

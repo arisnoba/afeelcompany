@@ -8,6 +8,7 @@ import {
   DialogDescription,
   DialogTitle,
 } from '@/components/ui/dialog'
+import { formatPortfolioCategories } from '@/types/portfolio'
 import type { PublicPortfolioItem } from '@/types/site'
 
 interface PortfolioLightboxProps {
@@ -42,7 +43,7 @@ export function PortfolioLightbox({
             <div className="grid gap-5 px-6 py-6 sm:px-7 sm:py-7">
               <div className="grid gap-3">
                 <p className="text-[0.7rem] uppercase tracking-[0.34em] text-stone-500">
-                  {item.category}
+                  {formatPortfolioCategories(item.category)}
                 </p>
                 <DialogTitle className="text-3xl tracking-[-0.05em] text-stone-950">
                   {item.title}
@@ -63,7 +64,7 @@ export function PortfolioLightbox({
                   <span className="text-[0.7rem] uppercase tracking-[0.3em] text-stone-500">
                     Category
                   </span>
-                  <span>{item.category}</span>
+                  <span>{formatPortfolioCategories(item.category)}</span>
                 </div>
                 {item.celebrityName ? (
                   <div className="grid gap-1">

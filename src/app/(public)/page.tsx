@@ -3,6 +3,7 @@ import Link from 'next/link';
 
 import { ShaderGodrays } from '@/components/ui/shader-godrays';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
+import { formatPortfolioCategories } from '@/types/portfolio';
 
 const FALLBACK_ABOUT = '브랜드와 셀럽의 접점을 설계하고, 한 번 정리한 포트폴리오를 웹과 소개서, 소셜까지 이어 붙이는 패션 PR 스튜디오입니다.';
 
@@ -101,6 +102,15 @@ export default async function HomePage() {
 										className="object-cover grayscale transition duration-700 group-hover:scale-[1.04] group-hover:grayscale-0"
 										sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
 									/>
+									{item.hoverImageUrl ? (
+										<Image
+											src={item.hoverImageUrl}
+											alt={`${item.title} hover`}
+											fill
+											className="object-cover opacity-0 transition duration-700 group-hover:scale-[1.04] group-hover:opacity-100"
+											sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+										/>
+									) : null}
 									<div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.64))]" />
 									<div className="absolute inset-0 flex items-center justify-center opacity-0 transition duration-300 group-hover:opacity-100">
 										<Link href="/portfolio" className="border border-white/40 bg-black/45 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white backdrop-blur-sm">
@@ -108,7 +118,7 @@ export default async function HomePage() {
 										</Link>
 									</div>
 									<div className="absolute inset-x-0 bottom-0 grid gap-2 px-5 py-5 text-white sm:px-6">
-										<p className="text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-white/72">{item.category}</p>
+										<p className="text-[0.62rem] font-semibold uppercase tracking-[0.28em] text-white/72">{formatPortfolioCategories(item.category)}</p>
 										<p className="text-xl tracking-[-0.04em] [font-family:var(--font-newsreader)]">{item.title}</p>
 										<p className="text-[0.72rem] uppercase tracking-[0.24em] text-white/70">{item.brandName}</p>
 									</div>

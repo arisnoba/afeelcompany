@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { formatPortfolioCategories } from '@/types/portfolio';
 import type { PortfolioAdminItem } from '@/types/portfolio';
 
 interface PortfolioTableProps {
@@ -180,7 +181,7 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 											type="button"
 											onClick={() => openEditSheet(item.id)}
 											className="relative aspect-[4/5] overflow-hidden rounded-[18px] border border-black/6 bg-[#f7fbf8] text-left transition-transform hover:scale-[1.01]">
-											<Image src={item.thumbnailUrl ?? item.imageUrl} alt={item.title} fill className="object-cover" sizes="120px" />
+											<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="120px" />
 										</button>
 
 										<div className="flex min-w-0 flex-col gap-4">
@@ -201,7 +202,7 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 												<div className="flex flex-wrap items-center gap-2">
 													<Badge variant="secondary" className="rounded-full bg-black/4 text-foreground">
-														{item.category}
+														{formatPortfolioCategories(item.category)}
 													</Badge>
 													<Badge variant="outline" className={item.showOnWeb ? 'rounded-full border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]' : 'rounded-full border-black/6'}>
 														웹 {item.showOnWeb ? 'ON' : 'OFF'}
