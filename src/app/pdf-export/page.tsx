@@ -19,8 +19,8 @@ interface PdfImageProps {
 function PdfImage({ src, alt, className }: PdfImageProps) {
   if (!src) {
     return (
-      <div className={`${className} flex items-center justify-center rounded-[20px] border border-dashed border-black/20 bg-black/[0.03] text-xs font-medium tracking-[0.24em] text-black/40`}>
-        IMAGE MISSING
+      <div className={`${className} flex items-center justify-center border border-dashed border-stone-200 bg-stone-50 text-[10px] font-medium uppercase tracking-[0.24em] text-stone-300`}>
+        NO IMAGE
       </div>
     )
   }
@@ -30,118 +30,293 @@ function PdfImage({ src, alt, className }: PdfImageProps) {
 
 export default async function PdfExportPage() {
   const brochure = await getPdfDocument()
+
   const sectionNodes: Record<PdfSectionId, ReactNode> = {
     cover: (
       <BrochureSheet sectionId="cover">
-        <div className="grid min-h-full gap-8 md:grid-cols-[1.15fr_0.85fr]">
-          <div className="flex flex-col justify-between rounded-[18px] bg-[#f0ece3] p-8">
-            <div>
-              <p className="text-xs font-medium uppercase tracking-[0.32em] text-black/40">Company Brochure</p>
-              <h1 className="mt-4 max-w-[12ch] text-5xl font-semibold leading-[1.02] text-black">
-                {brochure.title}
+        <div className="grid h-full" style={{ gridTemplateColumns: '38% 62%' }}>
+          {/* Left — hero image */}
+          <div className="relative overflow-hidden">
+            <PdfImage
+              src={brochure.heroImageUrl}
+              alt={`${brochure.title} cover`}
+              className="h-full w-full object-cover"
+            />
+          </div>
+
+          {/* Right — identity panel */}
+          <div className="flex h-full flex-col justify-between px-12 py-10">
+            {/* Top label */}
+            <div className="flex items-center gap-4">
+              <span className="h-px w-10 bg-[#715a3e]" />
+              <span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">
+                Fashion PR Agency
+              </span>
+            </div>
+
+            {/* Center — title */}
+            <div className="grid gap-4">
+              <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-stone-400">
+                Company Brochure
+              </p>
+              <h1
+                className="text-[4.2rem] leading-[0.92] tracking-[-0.04em] text-stone-950"
+                style={{ fontFamily: 'var(--font-brochure-serif)' }}
+              >
+                AFEEL<br />
+                <span className="italic">Company.</span>
               </h1>
+              <p className="mt-2 max-w-[34ch] text-[13px] leading-7 text-stone-500">
+                브랜드와 셀럽의 접점을 설계하고,<br />
+                한 번 정리한 포트폴리오를 웹·소개서·소셜까지 이어 붙이는 패션 PR 스튜디오.
+              </p>
             </div>
-            <div className="space-y-2">
-              <p className="text-sm uppercase tracking-[0.24em] text-black/45">Issue Date</p>
-              <p className="text-xl font-medium text-black">{brochure.issueDate}</p>
+
+            {/* Bottom — date */}
+            <div className="flex items-end justify-between border-t border-stone-100 pt-6">
+              <div>
+                <p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Issue Date</p>
+                <p className="mt-1 text-[15px] font-medium text-stone-950">{brochure.issueDate}</p>
+              </div>
+              <p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">
+                afeelcompany.com
+              </p>
             </div>
           </div>
-          <PdfImage
-            src={brochure.heroImageUrl}
-            alt={`${brochure.title} cover hero`}
-            className="h-full min-h-[420px] w-full rounded-[18px] object-cover"
-          />
         </div>
       </BrochureSheet>
     ),
+
     about: (
-      <BrochureSheet sectionId="about" title="ABOUT">
-        <div className="grid min-h-full gap-8 md:grid-cols-[0.8fr_1.2fr]">
-          <div className="rounded-[18px] bg-black p-8 text-white">
-            <p className="text-sm uppercase tracking-[0.32em] text-white/55">ABOUT</p>
-            <p className="mt-6 text-3xl font-semibold leading-tight">
-              원소스 멀티유즈를 위한 패션 PR 브로셔 스파이크
-            </p>
-          </div>
-          <div className="flex items-center rounded-[18px] border border-black/10 bg-[#faf7f2] p-8">
-            <p className="text-lg leading-9 text-black/72">{brochure.aboutText}</p>
-          </div>
-        </div>
-      </BrochureSheet>
-    ),
-    work: (
-      <BrochureSheet sectionId="work" title="WORK">
-        <div className="grid gap-5 md:grid-cols-2">
-          {brochure.workItems.slice(0, 4).map((item) => (
-            <article
-              key={item.id}
-              className="avoid-break overflow-hidden rounded-[16px] border border-black/10 bg-[#fbf8f3]"
-            >
-              <PdfImage
-                src={item.imageUrl}
-                alt={item.title}
-                className="h-[280px] w-full object-cover"
-              />
-              <div className="space-y-2 p-5">
-                <p className="text-xs uppercase tracking-[0.24em] text-black/45">{item.brandName}</p>
-                <h2 className="text-xl font-semibold text-black">{item.title}</h2>
-                <p className="text-sm text-black/55">{formatPortfolioCategories(item.category)}</p>
-              </div>
-            </article>
-          ))}
-        </div>
-      </BrochureSheet>
-    ),
-    client: (
-      <BrochureSheet sectionId="client" title="CLIENT">
-        <div className="grid min-h-full gap-5 md:grid-cols-2 xl:grid-cols-3">
-          {brochure.clientBrands.map((brand) => (
-            <article
-              key={brand.id}
-              className="avoid-break flex min-h-[180px] flex-col justify-between rounded-[16px] border border-black/10 bg-[#f8f4ed] p-6"
-            >
-              <PdfImage
-                src={brand.logoUrl}
-                alt={brand.name}
-                className="h-[96px] w-full rounded-[14px] object-cover"
-              />
-              <p className="mt-6 text-sm font-semibold uppercase tracking-[0.24em] text-black/55">
-                {brand.name}
-              </p>
-            </article>
-          ))}
-        </div>
-      </BrochureSheet>
-    ),
-    contact: (
-      <BrochureSheet sectionId="contact" title="CONTACT">
-        <div className="grid min-h-full gap-8 md:grid-cols-[1fr_0.9fr]">
-          <div className="flex flex-col justify-between rounded-[18px] bg-[#f0ece3] p-8">
-            <div>
-              <p className="text-xs uppercase tracking-[0.32em] text-black/45">CONTACT</p>
-              <p className="mt-6 text-4xl font-semibold leading-tight text-black">
-                브랜드와 셀럽을 연결하는 소개 흐름을 하나의 브로셔로 정리합니다.
+      <BrochureSheet sectionId="about">
+        <div className="grid h-full" style={{ gridTemplateColumns: '40% 60%' }}>
+          {/* Left — dark editorial panel */}
+          <div className="flex flex-col justify-between bg-stone-950 px-10 py-10">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-6 bg-[#715a3e]" />
+              <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-500">
+                About
               </p>
             </div>
-            <p className="text-sm leading-7 text-black/60">
-              PDF 출력 전용 라우트에서 한글 폰트, 이미지, 페이지 브레이크를 함께 검증합니다.
+            <div className="grid gap-5">
+              <h2
+                className="text-[2.6rem] leading-[1.05] tracking-[-0.03em] text-white"
+                style={{ fontFamily: 'var(--font-brochure-serif)' }}
+              >
+                브랜드와 셀럽을<br />
+                <span className="italic text-stone-400">연결하는</span><br />
+                패션 PR.
+              </h2>
+              <p className="text-[11px] leading-6 text-stone-500">
+                원소스 멀티유즈 전략으로 포트폴리오 한 번으로<br />
+                웹·소개서·소셜까지 모두 커버합니다.
+              </p>
+            </div>
+            <p className="text-[9px] uppercase tracking-[0.24em] text-stone-700">
+              AFEEL Company
             </p>
           </div>
-          <div className="rounded-[18px] border border-black/10 bg-white p-8">
-            <dl className="space-y-6">
-              <div>
-                <dt className="text-xs uppercase tracking-[0.28em] text-black/40">이메일</dt>
-                <dd className="mt-2 text-2xl font-medium text-black">{brochure.contact.email}</dd>
+
+          {/* Right — text content */}
+          <div className="flex flex-col justify-center px-12 py-10">
+            <div className="grid gap-8">
+              <p className="text-[15px] leading-9 text-stone-600">
+                {brochure.aboutText}
+              </p>
+              <div className="grid gap-3">
+                <div className="h-px bg-stone-100" />
+                <div className="flex items-center gap-6">
+                  <div>
+                    <p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Services</p>
+                    <p className="mt-1 text-[11px] font-medium text-stone-800">PR 기획 · 스타일링 · 소개서 제작</p>
+                  </div>
+                  <div className="h-8 w-px bg-stone-150" />
+                  <div>
+                    <p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Focus</p>
+                    <p className="mt-1 text-[11px] font-medium text-stone-800">패션 브랜드 × 셀럽 연결</p>
+                  </div>
+                </div>
               </div>
-              <div>
-                <dt className="text-xs uppercase tracking-[0.28em] text-black/40">전화</dt>
-                <dd className="mt-2 text-2xl font-medium text-black">{brochure.contact.phone}</dd>
+            </div>
+          </div>
+        </div>
+      </BrochureSheet>
+    ),
+
+    work: (
+      <BrochureSheet sectionId="work">
+        <div className="flex h-full flex-col px-8 py-7">
+          {/* Header */}
+          <div className="mb-5 flex items-center justify-between border-b border-stone-100 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-6 bg-[#715a3e]" />
+              <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-400">
+                Work
+              </p>
+            </div>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-stone-300">
+              Selected Portfolio
+            </p>
+          </div>
+
+          {/* 2×2 grid — constrained to remaining height */}
+          <div className="grid flex-1 gap-4" style={{ gridTemplateColumns: '1fr 1fr', gridTemplateRows: '1fr 1fr' }}>
+            {brochure.workItems.slice(0, 4).map((item) => (
+              <article
+                key={item.id}
+                className="avoid-break flex overflow-hidden rounded-[14px] border border-stone-100 bg-stone-50"
+              >
+                {/* Image — fixed width, full height */}
+                <div className="relative w-[38%] shrink-0 overflow-hidden">
+                  <PdfImage
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="h-full w-full object-cover"
+                  />
+                </div>
+
+                {/* Info */}
+                <div className="flex flex-1 flex-col justify-between px-5 py-4">
+                  <div className="grid gap-2">
+                    {item.brandLogoUrl ? (
+                      <img
+                        src={item.brandLogoUrl}
+                        alt={`${item.brandName} logo`}
+                        className="h-6 max-w-[110px] object-contain object-left"
+                      />
+                    ) : (
+                      <p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-500">
+                        {item.brandName}
+                      </p>
+                    )}
+                    <h2 className="text-[15px] font-medium leading-snug text-stone-950">
+                      {item.title}
+                    </h2>
+                    {item.celebrityName ? (
+                      <p className="text-[10px] text-stone-500">{item.celebrityName}</p>
+                    ) : null}
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    <span className="h-px w-4 bg-[#715a3e]" />
+                    <p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">
+                      {formatPortfolioCategories(item.category)}
+                    </p>
+                  </div>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </BrochureSheet>
+    ),
+
+    client: (
+      <BrochureSheet sectionId="client">
+        <div className="flex h-full flex-col px-8 py-7">
+          {/* Header */}
+          <div className="mb-5 flex items-center justify-between border-b border-stone-100 pb-4">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-6 bg-[#715a3e]" />
+              <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-400">
+                Client
+              </p>
+            </div>
+            <p className="text-[9px] uppercase tracking-[0.2em] text-stone-300">
+              {brochure.clientBrands.length} Brands
+            </p>
+          </div>
+
+          {/* Brand logo grid */}
+          <div
+            className="grid flex-1 gap-3"
+            style={{ gridTemplateColumns: 'repeat(4, 1fr)', gridAutoRows: '1fr' }}
+          >
+            {brochure.clientBrands.slice(0, 12).map((brand) => (
+              <article
+                key={brand.id}
+                className="avoid-break flex flex-col items-center justify-center gap-3 overflow-hidden rounded-[12px] border border-stone-100 bg-stone-50 px-4 py-4"
+              >
+                {brand.logoUrl ? (
+                  <img
+                    src={brand.logoUrl}
+                    alt={brand.name}
+                    className="h-10 w-full object-contain"
+                  />
+                ) : (
+                  <p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-400">
+                    {brand.name}
+                  </p>
+                )}
+              </article>
+            ))}
+          </div>
+        </div>
+      </BrochureSheet>
+    ),
+
+    contact: (
+      <BrochureSheet sectionId="contact">
+        <div className="grid h-full" style={{ gridTemplateColumns: '52% 48%' }}>
+          {/* Left — brand statement */}
+          <div className="flex flex-col justify-between bg-stone-950 px-12 py-10">
+            <div className="flex items-center gap-3">
+              <span className="h-px w-6 bg-[#715a3e]" />
+              <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-500">
+                Contact
+              </p>
+            </div>
+
+            <div className="grid gap-5">
+              <h2
+                className="text-[2.8rem] leading-[1.04] tracking-[-0.03em] text-white"
+                style={{ fontFamily: 'var(--font-brochure-serif)' }}
+              >
+                브랜드의 이야기를<br />
+                <span className="italic text-stone-400">함께</span> 써드립니다.
+              </h2>
+              <p className="text-[11px] leading-7 text-stone-500">
+                어필컴퍼니는 패션 브랜드와 셀럽 사이의 접점을 설계합니다.<br />
+                새로운 협업이나 PR 문의는 아래 연락처로 보내주세요.
+              </p>
+            </div>
+
+            <p className="text-[9px] uppercase tracking-[0.24em] text-stone-700">
+              AFEEL Company · Seoul, Korea
+            </p>
+          </div>
+
+          {/* Right — contact details */}
+          <div className="flex flex-col justify-center px-12 py-10">
+            <dl className="grid gap-7">
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
+                <dd className="text-[18px] font-medium text-stone-950">
+                  {brochure.contact.email}
+                </dd>
               </div>
-              <div>
-                <dt className="text-xs uppercase tracking-[0.28em] text-black/40">주소</dt>
-                <dd className="mt-2 text-2xl font-medium text-black">{brochure.contact.address}</dd>
+              <div className="h-px bg-stone-100" />
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
+                <dd className="text-[18px] font-medium text-stone-950">
+                  {brochure.contact.phone}
+                </dd>
+              </div>
+              <div className="h-px bg-stone-100" />
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
+                <dd className="text-[18px] font-medium text-stone-950">
+                  {brochure.contact.address}
+                </dd>
               </div>
             </dl>
+
+            <div className="mt-8 flex items-center gap-3 border-t border-stone-100 pt-6">
+              <span className="h-px w-6 bg-[#715a3e]" />
+              <p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">
+                afeelcompany.com
+              </p>
+            </div>
           </div>
         </div>
       </BrochureSheet>

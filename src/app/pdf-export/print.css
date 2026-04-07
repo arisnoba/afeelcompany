@@ -8,9 +8,9 @@
   flex-direction: column;
   align-items: center;
   width: 100%;
-  gap: 28px;
-  padding: 28px 20px 56px;
-  background: #f5f1ea;
+  gap: 24px;
+  padding: 24px 20px 48px;
+  background: #ece9e3;
 }
 
 .pdf-sheet {
@@ -22,15 +22,15 @@
   min-height: auto;
   margin-inline: auto;
   background: #ffffff;
-  color: #111111;
+  color: #1c1917;
   page-break-after: always;
   break-after: page;
 }
 
 .pdf-slide-shell {
   width: 100%;
-  padding: 28px 20px 56px;
-  background: #f5f1ea;
+  padding: 24px 20px 48px;
+  background: #ece9e3;
 }
 
 .pdf-swiper {
@@ -72,9 +72,12 @@
 
   .pdf-sheet {
     width: 297mm;
+    height: 210mm;
     min-height: 210mm;
+    max-height: 210mm;
     aspect-ratio: auto;
     margin: 0;
+    overflow: hidden;
   }
 
   .avoid-break {
