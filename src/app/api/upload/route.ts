@@ -24,11 +24,37 @@ interface PortfolioUploadRow {
   brand_name: string
   celebrity_name: string | null
   category: string
+  instagram_url: string | null
   image_url: string
   thumbnail_url: string | null
   show_on_web: boolean
   show_on_pdf: boolean
   sort_order: number
+}
+
+function normalizePortfolioUrl(input: string | null): string | null {
+  if (!input) {
+    return null
+  }
+
+  const trimmed = input.trim()
+
+  if (!trimmed) {
+    return null
+  }
+
+  const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
+  const url = new URL(withProtocol)
+
+  if (!['http:', 'https:'].includes(url.protocol)) {
+    throw new Error('인스타그램 URL은 http 또는 https 주소만 사용할 수 있습니다.')
+  }
+
+  if (!(url.hostname === 'instagram.com' || url.hostname.endsWith('.instagram.com'))) {
+    throw new Error('인스타그램 게시물 URL만 사용할 수 있습니다.')
+  }
+
+  return url.toString()
 }
 
 function mapPortfolioRow(row: PortfolioUploadRow): PortfolioAdminItem {
@@ -38,6 +64,7 @@ function mapPortfolioRow(row: PortfolioUploadRow): PortfolioAdminItem {
     brandName: row.brand_name,
     celebrityName: row.celebrity_name,
     category: row.category,
+    instagramUrl: row.instagram_url,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
     hoverImageUrl: row.thumbnail_url,
@@ -59,6 +86,7 @@ export async function POST(request: Request): Promise<Response> {
   const brandName = formData.get('brandName')?.toString().trim()
   const celebrityName = formData.get('celebrityName')?.toString().trim() || null
   const category = formData.get('category')?.toString().trim()
+  const instagramUrlRaw = formData.get('instagramUrl')?.toString() ?? null
   const showOnWeb = toBoolean(formData.get('showOnWeb'))
   const showOnPdf = toBoolean(formData.get('showOnPdf'))
 
@@ -78,6 +106,7 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
+    const instagramUrl = normalizePortfolioUrl(instagramUrlRaw)
     const [uploadedNormal, uploadedHover] = await Promise.all([
       uploadPublicImage(normalFile, 'portfolio'),
       uploadPublicImage(hoverFile, 'portfolio'),
@@ -88,6 +117,7 @@ export async function POST(request: Request): Promise<Response> {
         brand_name,
         celebrity_name,
         category,
+        instagram_url,
         image_url,
         thumbnail_url,
         show_on_web,
@@ -99,6 +129,7 @@ export async function POST(request: Request): Promise<Response> {
         ${brandName},
         ${celebrityName},
         ${category},
+        ${instagramUrl},
         ${uploadedNormal.url},
         ${uploadedHover.url},
         ${showOnWeb},
@@ -111,6 +142,7 @@ export async function POST(request: Request): Promise<Response> {
         brand_name,
         celebrity_name,
         category,
+        instagram_url,
         image_url,
         thumbnail_url,
         show_on_web,
@@ -124,6 +156,7 @@ export async function POST(request: Request): Promise<Response> {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'UPLOAD_FAILED'
-    return Response.json({ success: false, error: message }, { status: 500 })
+    const status = message.includes('인스타그램') ? 400 : 500
+    return Response.json({ success: false, error: message }, { status })
   }
 }

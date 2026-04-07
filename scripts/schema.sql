@@ -5,6 +5,7 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   brand_name TEXT NOT NULL,
   celebrity_name TEXT,
   category TEXT NOT NULL,            -- 상의/하의/신발/악세서리/기타
+  instagram_url TEXT,
   image_url TEXT NOT NULL,          -- normal 이미지
   thumbnail_url TEXT,               -- hover 이미지
   show_on_web BOOLEAN DEFAULT true,
@@ -13,6 +14,9 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW()
 );
+
+ALTER TABLE portfolio_items
+ADD COLUMN IF NOT EXISTS instagram_url TEXT;
 
 -- 인스타그램 게시 대기열
 CREATE TABLE IF NOT EXISTS instagram_queue (

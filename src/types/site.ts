@@ -18,6 +18,7 @@ export interface PublicPortfolioItem {
   brandName: string
   celebrityName: string | null
   category: string
+  instagramUrl: string | null
   imageUrl: string
   thumbnailUrl: string | null
   hoverImageUrl: string | null

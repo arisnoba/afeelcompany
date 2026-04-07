@@ -8,6 +8,7 @@ interface PortfolioListRow {
   brand_name: string
   celebrity_name: string | null
   category: string
+  instagram_url: string | null
   image_url: string
   thumbnail_url: string | null
   show_on_web: boolean
@@ -22,6 +23,7 @@ function mapPortfolioRow(row: PortfolioListRow): PortfolioAdminItem {
     brandName: row.brand_name,
     celebrityName: row.celebrity_name,
     category: row.category,
+    instagramUrl: row.instagram_url,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
     hoverImageUrl: row.thumbnail_url,
@@ -43,6 +45,7 @@ export async function GET(): Promise<Response> {
       brand_name,
       celebrity_name,
       category,
+      instagram_url,
       image_url,
       thumbnail_url,
       show_on_web,

@@ -20,6 +20,7 @@ const INITIAL_FORM: PortfolioMetadataValue = {
 	brandName: '',
 	celebrityName: '',
 	category: [],
+	instagramUrl: '',
 	showOnWeb: true,
 	showOnPdf: true,
 };
@@ -202,6 +203,7 @@ export function UploadForm({ onSuccess }: UploadFormProps = {}) {
 			payload.set('brandName', form.brandName);
 			payload.set('celebrityName', form.celebrityName);
 			payload.set('category', serializePortfolioCategories(form.category));
+			payload.set('instagramUrl', form.instagramUrl);
 			payload.set('showOnWeb', String(form.showOnWeb));
 			payload.set('showOnPdf', String(form.showOnPdf));
 

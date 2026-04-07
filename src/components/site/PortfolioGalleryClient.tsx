@@ -29,6 +29,15 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 	const activeItem = filteredItems.find(item => item.id === activeItemId) ?? null;
 	const canLoadMore = visibleCount < filteredItems.length;
 
+	function handleItemClick(item: PublicPortfolioItem) {
+		if (item.instagramUrl) {
+			window.open(item.instagramUrl, '_blank', 'noopener,noreferrer');
+			return;
+		}
+
+		setActiveItemId(item.id);
+	}
+
 	return (
 		<section className="grid gap-10">
 			<div className="flex flex-wrap items-center gap-x-8 gap-y-4">
@@ -61,7 +70,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
 
 						return (
-							<button key={item.id} type="button" onClick={() => setActiveItemId(item.id)} className="group relative aspect-square overflow-hidden bg-stone-200 text-left">
+							<button key={item.id} type="button" onClick={() => handleItemClick(item)} className="group relative aspect-square overflow-hidden bg-stone-200 text-left">
 								<div className="relative h-full w-full overflow-hidden">
 									<Image
 										src={item.imageUrl}

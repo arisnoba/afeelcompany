@@ -25,6 +25,7 @@ function toFormValue(item: PortfolioAdminItem): PortfolioMetadataValue {
 		brandName: item.brandName,
 		celebrityName: item.celebrityName ?? '',
 		category: parsePortfolioCategories(item.category),
+		instagramUrl: item.instagramUrl ?? '',
 		showOnWeb: item.showOnWeb,
 		showOnPdf: item.showOnPdf,
 	};
@@ -63,6 +64,7 @@ export function PortfolioEditorForm({ item, onDeleteSuccess, onSaveSuccess }: Po
 					brandName: form.brandName,
 					celebrityName: form.celebrityName || null,
 					category: serializePortfolioCategories(form.category),
+					instagramUrl: form.instagramUrl || null,
 					showOnWeb: form.showOnWeb,
 					showOnPdf: form.showOnPdf,
 					sortOrder: item.sortOrder,

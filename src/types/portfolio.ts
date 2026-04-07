@@ -64,9 +64,10 @@ export function includesPortfolioCategory(
   value: string | readonly PortfolioCategory[],
   category: PortfolioCategory
 ): boolean {
-  const categories = Array.isArray(value)
-    ? normalizePortfolioCategories(value)
-    : parsePortfolioCategories(value)
+  const categories =
+    typeof value === 'string'
+      ? parsePortfolioCategories(value)
+      : normalizePortfolioCategories(value)
 
   return categories.includes(category)
 }
@@ -74,9 +75,10 @@ export function includesPortfolioCategory(
 export function formatPortfolioCategories(
   value: string | readonly PortfolioCategory[]
 ): string {
-  const categories = Array.isArray(value)
-    ? normalizePortfolioCategories(value)
-    : parsePortfolioCategories(value)
+  const categories =
+    typeof value === 'string'
+      ? parsePortfolioCategories(value)
+      : normalizePortfolioCategories(value)
 
   if (categories.length > 0) {
     return categories.join(' · ')
@@ -91,6 +93,7 @@ export interface PortfolioItemRecord {
   brand_name: string
   celebrity_name: string | null
   category: PortfolioCategory | string
+  instagram_url: string | null
   image_url: string
   thumbnail_url: string | null
   show_on_web: boolean
@@ -106,6 +109,7 @@ export interface PortfolioAdminItem {
   brandName: string
   celebrityName: string | null
   category: PortfolioCategory | string
+  instagramUrl: string | null
   imageUrl: string
   thumbnailUrl: string | null
   hoverImageUrl: string | null

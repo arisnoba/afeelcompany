@@ -20,6 +20,7 @@ export interface PortfolioMetadataValue {
 	brandName: string;
 	celebrityName: string;
 	category: PortfolioCategory[];
+	instagramUrl: string;
 	showOnWeb: boolean;
 	showOnPdf: boolean;
 }
@@ -87,6 +88,18 @@ export function PortfolioMetadataFields({ value, idPrefix, disabled = false, onC
 						</ComboboxList>
 					</ComboboxContent>
 				</Combobox>
+			</div>
+
+			<div className="flex flex-col gap-2">
+				<Label htmlFor={`${idPrefix}-instagram-url`}>인스타그램 게시물 URL</Label>
+				<Input
+					id={`${idPrefix}-instagram-url`}
+					type="url"
+					value={value.instagramUrl}
+					onChange={event => onChange({ instagramUrl: event.target.value })}
+					placeholder="https://www.instagram.com/p/..."
+					disabled={disabled}
+				/>
 			</div>
 
 			<div className="grid gap-3 sm:grid-cols-2">
