@@ -1,11 +1,21 @@
+import type { Metadata } from 'next';
+
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { PortfolioPreviewGrid } from '@/components/site/PortfolioPreviewGrid';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { ShaderGodrays } from '@/components/ui/shader-godrays';
 import { getBrandsWithLogos } from '@/lib/client-brands';
+import { createPageMetadata } from '@/lib/seo';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 
 const FALLBACK_ABOUT = '브랜드와 셀럽의 접점을 설계하고, 한 번 정리한 포트폴리오를 웹과 소개서, 소셜까지 이어 붙이는 패션 PR 스튜디오입니다.';
+
+export const metadata: Metadata = createPageMetadata({
+	title: '패션 PR 에이전시와 셀럽 협업 포트폴리오',
+	description: '브랜드와 셀럽을 연결하는 패션 PR 에이전시 AFEEL Company의 대표 포트폴리오와 협업 브랜드를 확인할 수 있습니다.',
+	path: '/',
+	keywords: ['패션 PR 에이전시', '셀럽 협업', '브랜드 포트폴리오'],
+});
 
 export default async function HomePage() {
 	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(6), getSiteClientBrands()]);

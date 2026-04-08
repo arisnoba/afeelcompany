@@ -1,9 +1,12 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
+import { BlurFade } from '@/components/ui/blur-fade';
 import { TextRevealByWord } from '@/components/ui/text-reveal';
 import { getBrandsWithLogos } from '@/lib/client-brands';
+import { createPageMetadata } from '@/lib/seo';
 import { getSiteClientBrands } from '@/lib/site';
 
 const STORY_LINES = [
@@ -118,6 +121,13 @@ const EDGE_ITEMS = [
 	},
 ];
 
+export const metadata: Metadata = createPageMetadata({
+	title: '회사 소개',
+	description: 'AFEEL Company의 패션 PR 철학, 브랜드 포지셔닝 방식, 셀럽 협업 이력과 핵심 서비스를 소개합니다.',
+	path: '/about',
+	keywords: ['회사 소개', '패션 PR 회사', '브랜드 포지셔닝'],
+});
+
 export default async function AboutPage() {
 	const brands = await getSiteClientBrands();
 
@@ -175,13 +185,15 @@ export default async function AboutPage() {
 					<div className="absolute left-[5px] top-0 h-full w-px bg-stone-900/15" />
 
 					<div className="grid gap-6">
-						{MOMENTUM_MILESTONES.map(milestone => (
-							<article key={milestone.year} className="relative ml-8 border border-stone-900/8 bg-white px-6 py-5">
-								<div className="absolute -left-[1.625rem] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
-								<p className="text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{milestone.year}</p>
-								<h3 className="mt-2 text-xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-2xl">{milestone.title}</h3>
-								<p className="mt-2 text-sm leading-7 text-stone-600">{milestone.description}</p>
-							</article>
+						{MOMENTUM_MILESTONES.map((milestone, index) => (
+							<BlurFade key={milestone.year} delay={Math.min(index * 0.06, 0.3)} className="ml-8">
+								<article className="relative border border-stone-900/8 bg-white px-6 py-5">
+									<div className="absolute -left-[2em] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
+									<p className="text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{milestone.year}</p>
+									<h3 className="mt-2 text-xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-2xl">{milestone.title}</h3>
+									<p className="mt-2 text-sm leading-7 text-stone-600">{milestone.description}</p>
+								</article>
+							</BlurFade>
 						))}
 					</div>
 				</div>

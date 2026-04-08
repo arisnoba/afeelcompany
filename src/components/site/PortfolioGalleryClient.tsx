@@ -5,6 +5,7 @@ import { useState } from 'react';
 import { ChevronRight } from 'lucide-react';
 
 import { PortfolioLightbox } from '@/components/site/PortfolioLightbox';
+import { BlurFade } from '@/components/ui/blur-fade';
 import { PORTFOLIO_CATEGORIES, includesPortfolioCategory, type PortfolioCategory } from '@/types/portfolio';
 import type { PublicPortfolioItem } from '@/types/site';
 
@@ -70,33 +71,35 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
 
 						return (
-							<button key={item.id} type="button" onClick={() => handleItemClick(item)} className="group relative aspect-square overflow-hidden bg-stone-200 text-left">
-								<div className="relative h-full w-full overflow-hidden">
-									<Image
-										src={item.imageUrl}
-										alt={item.title}
-										fill
-										className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
-										loading={index < 3 ? 'eager' : 'lazy'}
-										sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-									/>
-									{item.hoverImageUrl ? (
+							<BlurFade key={item.id} delay={Math.min(index * 0.05, 0.25)} className="w-full">
+								<button type="button" onClick={() => handleItemClick(item)} className="group relative block w-full aspect-square overflow-hidden bg-stone-200 text-left">
+									<div className="relative h-full w-full overflow-hidden">
 										<Image
-											src={hoverImageUrl}
-											alt={`${item.title} hover`}
+											src={item.imageUrl}
+											alt={item.title}
 											fill
-											className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
+											className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
+											loading={index < 3 ? 'eager' : 'lazy'}
 											sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
 										/>
-									) : null}
-								</div>
+										{item.hoverImageUrl ? (
+											<Image
+												src={hoverImageUrl}
+												alt={`${item.title} hover`}
+												fill
+												className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
+												sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+											/>
+										) : null}
+									</div>
 
-								<div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0 group-active:opacity-0" />
-								<div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 group-active:opacity-0 sm:px-6 sm:py-6">
-									<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/72">{item.brandName}</p>
-									<p className="text-lg tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-xl">{item.celebrityName ?? ''}</p>
-								</div>
-							</button>
+									<div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0 group-active:opacity-0" />
+									<div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 group-active:opacity-0 sm:px-6 sm:py-6">
+										<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/72">{item.brandName}</p>
+										<p className="text-lg tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-xl">{item.celebrityName ?? ''}</p>
+									</div>
+								</button>
+							</BlurFade>
 						);
 					})}
 				</div>

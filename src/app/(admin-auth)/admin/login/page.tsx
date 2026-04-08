@@ -1,7 +1,11 @@
+import type { Metadata } from 'next'
 import { redirect } from 'next/navigation'
 
 import { LoginForm } from '@/app/(admin-auth)/admin/login/_components/LoginForm'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { createNoIndexMetadata } from '@/lib/seo'
+
+export const metadata: Metadata = createNoIndexMetadata('운영 로그인')
 
 export default async function AdminLoginPage() {
   if (await isAdminAuthenticated()) {

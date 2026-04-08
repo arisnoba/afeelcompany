@@ -1,6 +1,9 @@
+import type { Metadata } from 'next';
+
 import ContactMap from '@/components/site/ContactMap';
 import ContactInquiryForm from '@/components/site/ContactInquiryForm';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
+import { createPageMetadata } from '@/lib/seo';
 import { getSiteCompanyProfile } from '@/lib/site';
 
 function renderValue(value: string) {
@@ -15,6 +18,13 @@ function ContactDetail({ label, children }: { label: string; children: React.Rea
 		</section>
 	);
 }
+
+export const metadata: Metadata = createPageMetadata({
+	title: '문의하기',
+	description: '브랜드 협업, 스타일링, 패션 PR 운영 문의를 AFEEL Company에 직접 남길 수 있는 연락 페이지입니다.',
+	path: '/contact',
+	keywords: ['문의하기', '패션 PR 문의', '브랜드 협업 문의'],
+});
 
 export default async function ContactPage() {
 	const profile = await getSiteCompanyProfile();

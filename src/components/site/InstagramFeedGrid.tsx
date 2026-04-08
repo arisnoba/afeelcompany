@@ -1,5 +1,6 @@
 import Image from 'next/image'
 
+import { BlurFade } from '@/components/ui/blur-fade'
 import type { CachedPost } from '@/types/instagram'
 
 interface InstagramFeedGridProps {
@@ -52,17 +53,55 @@ export function InstagramFeedGrid({ posts }: InstagramFeedGridProps) {
         const dateLabel = formatPostDate(post.post_timestamp)
 
         return (
-          <article
-            key={post.post_id}
-            className="group relative overflow-hidden bg-stone-100"
-          >
-            {post.permalink ? (
-              <a
-                href={post.permalink}
-                target="_blank"
-                rel="noreferrer"
-                className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#274133] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fcf9f8]"
-              >
+          <BlurFade key={post.post_id} delay={Math.min(index * 0.04, 0.24)}>
+            <article className="group relative overflow-hidden bg-stone-100">
+              {post.permalink ? (
+                <a
+                  href={post.permalink}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#274133] focus-visible:ring-offset-4 focus-visible:ring-offset-[#fcf9f8]"
+                >
+                  <div className="relative aspect-square bg-stone-200">
+                    {isVideo ? (
+                      <div className="grid h-full w-full place-items-center bg-stone-950 text-sm uppercase tracking-[0.34em] text-stone-50">
+                        VIDEO
+                      </div>
+                    ) : (
+                      <Image
+                        src={post.media_url}
+                        alt={post.caption ?? 'Instagram post'}
+                        fill
+                        unoptimized
+                        className="object-cover transition duration-700 group-hover:scale-105"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-black/18 opacity-0 transition duration-300 group-hover:opacity-100" />
+                    <div className="absolute inset-x-0 bottom-0 grid gap-3 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 py-5 text-white">
+                      <div className="flex items-start justify-between gap-4">
+                        <div className="grid gap-2">
+                          <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/70">
+                            Post {String(index + 1).padStart(2, '0')}
+                          </p>
+                          <p className="max-w-[18rem] text-sm leading-6 text-white">
+                            {preview}
+                          </p>
+                        </div>
+                        <span
+                          aria-hidden="true"
+                          className="pt-1 text-base transition group-hover:translate-x-1 group-hover:-translate-y-1"
+                        >
+                          ↗
+                        </span>
+                      </div>
+                      <p className="text-[0.62rem] uppercase tracking-[0.28em] text-white/65">
+                        {dateLabel}
+                      </p>
+                    </div>
+                  </div>
+                </a>
+              ) : (
                 <div className="relative aspect-square bg-stone-200">
                   {isVideo ? (
                     <div className="grid h-full w-full place-items-center bg-stone-950 text-sm uppercase tracking-[0.34em] text-stone-50">
@@ -74,64 +113,25 @@ export function InstagramFeedGrid({ posts }: InstagramFeedGridProps) {
                       alt={post.caption ?? 'Instagram post'}
                       fill
                       unoptimized
-                      className="object-cover transition duration-700 group-hover:scale-105"
+                      className="object-cover"
                       sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
                     />
                   )}
-                  <div className="absolute inset-0 bg-black/18 opacity-0 transition duration-300 group-hover:opacity-100" />
-                  <div className="absolute inset-x-0 bottom-0 grid gap-3 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 py-5 text-white">
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="grid gap-2">
-                        <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/70">
-                          Post {String(index + 1).padStart(2, '0')}
-                        </p>
-                        <p className="max-w-[18rem] text-sm leading-6 text-white">
-                          {preview}
-                        </p>
-                      </div>
-                      <span
-                        aria-hidden="true"
-                        className="pt-1 text-base transition group-hover:translate-x-1 group-hover:-translate-y-1"
-                      >
-                        ↗
-                      </span>
-                    </div>
+                  <div className="absolute inset-x-0 bottom-0 grid gap-2 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 py-5 text-white">
+                    <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/70">
+                      Post {String(index + 1).padStart(2, '0')}
+                    </p>
+                    <p className="max-w-[18rem] text-sm leading-6 text-white">
+                      {preview}
+                    </p>
                     <p className="text-[0.62rem] uppercase tracking-[0.28em] text-white/65">
                       {dateLabel}
                     </p>
                   </div>
                 </div>
-              </a>
-            ) : (
-              <div className="relative aspect-square bg-stone-200">
-                {isVideo ? (
-                  <div className="grid h-full w-full place-items-center bg-stone-950 text-sm uppercase tracking-[0.34em] text-stone-50">
-                    VIDEO
-                  </div>
-                ) : (
-                  <Image
-                    src={post.media_url}
-                    alt={post.caption ?? 'Instagram post'}
-                    fill
-                    unoptimized
-                    className="object-cover"
-                    sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
-                  />
-                )}
-                <div className="absolute inset-x-0 bottom-0 grid gap-2 bg-gradient-to-t from-black/80 via-black/25 to-transparent px-5 py-5 text-white">
-                  <p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-white/70">
-                    Post {String(index + 1).padStart(2, '0')}
-                  </p>
-                  <p className="max-w-[18rem] text-sm leading-6 text-white">
-                    {preview}
-                  </p>
-                  <p className="text-[0.62rem] uppercase tracking-[0.28em] text-white/65">
-                    {dateLabel}
-                  </p>
-                </div>
-              </div>
-            )}
-          </article>
+              )}
+            </article>
+          </BlurFade>
         )
       })}
     </section>

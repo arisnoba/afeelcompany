@@ -1,7 +1,17 @@
+import type { Metadata } from 'next';
+
 import { InstagramFeedGrid } from '@/components/site/InstagramFeedGrid';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { getDisplayFeed } from '@/lib/instagram';
+import { createPageMetadata } from '@/lib/seo';
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
+
+export const metadata: Metadata = createPageMetadata({
+	title: '인스타그램 아카이브',
+	description: 'AFEEL Company가 큐레이션한 스타일링 현장과 브랜드 비주얼 아카이브를 인스타그램 피드 형식으로 확인할 수 있습니다.',
+	path: '/feed',
+	keywords: ['인스타그램 아카이브', '스타일링 아카이브', '패션 비주얼'],
+});
 
 export default async function FeedPage() {
 	const posts = await getDisplayFeed();

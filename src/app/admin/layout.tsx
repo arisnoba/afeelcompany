@@ -1,10 +1,14 @@
+import type { Metadata } from 'next'
+
 import { requireAdminSession } from '@/lib/auth'
 import { AdminSidebar } from '@/components/admin/AdminSidebar'
 import { AdminTopbar } from '@/components/admin/AdminTopbar'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { TooltipProvider } from '@/components/ui/tooltip'
+import { createNoIndexMetadata } from '@/lib/seo'
 
 export const dynamic = 'force-dynamic'
+export const metadata: Metadata = createNoIndexMetadata('관리자')
 
 export default async function AdminLayout({
   children,
