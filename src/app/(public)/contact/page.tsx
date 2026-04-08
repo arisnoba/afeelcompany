@@ -1,5 +1,5 @@
 import ContactMap from '@/components/site/ContactMap';
-import ContactInquiryForm from '@/components/site/ContactInquiryForm'
+import ContactInquiryForm from '@/components/site/ContactInquiryForm';
 import { getSiteCompanyProfile } from '@/lib/site';
 
 function renderValue(value: string) {
@@ -22,7 +22,7 @@ export default async function ContactPage() {
 	const address = profile.address.trim();
 	const mailtoHref = email ? `mailto:${email}` : undefined;
 	const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim();
-	const canSubmitInquiry = Boolean(email) && Boolean(process.env.RESEND_API_KEY?.trim()) && Boolean(process.env.RESEND_FROM_EMAIL?.trim())
+	const canSubmitInquiry = Boolean(email) && Boolean(process.env.RESEND_API_KEY?.trim()) && Boolean(process.env.RESEND_FROM_EMAIL?.trim());
 
 	return (
 		<div className="grid gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
@@ -68,11 +68,14 @@ export default async function ContactPage() {
 					<div className="grid gap-4">
 						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Inquiry</p>
 						<h2 className="text-4xl leading-tight tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-							다음 트렌드의 주인공.
+							다음 트렌드의 주인공이
 							<br />
-							당신의 브랜드입니다.
+							당신의 브랜드가 되도록.
 						</h2>
-						<p className="max-w-2xl text-base leading-8 text-stone-600">언제든 편안하게 말을 걸어주세요. 멋진 프로젝트를 함께 시작할 준비가 되어 있습니다.</p>
+						<p className="max-w-2xl text-base leading-6 text-stone-600 text-balance">
+							브랜드 협업, 스타일링 문의 모두 환영합니다. <br />
+							보내주신 내용을 확인 후 연락드리겠습니다.
+						</p>
 					</div>
 
 					<ContactInquiryForm canSubmit={canSubmitInquiry} />

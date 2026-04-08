@@ -48,12 +48,8 @@ export default async function HomePage() {
 				<section className="grid gap-12">
 					<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 						<div>
-							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Latest Work</p>
-							<h2 className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl">
-								Endless stars. Endless brands
-								<br />
-								One vision to unite them.
-							</h2>
+							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
+							<h2 className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl">The work speaks for itself.</h2>
 						</div>
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Selected Campaigns</p>
 					</div>
@@ -67,8 +63,8 @@ export default async function HomePage() {
 
 				<section className="grid gap-12 border-t border-stone-900/8 pt-20">
 					<div className="grid justify-items-center gap-4 text-center">
-						<h2 className="text-4xl italic tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Clients</h2>
-						<div className="h-px w-12 bg-[#715a3e]/40" />
+						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
+						<h2 className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Collaborated Brands</h2>
 					</div>
 
 					<ClientLogoMarquee

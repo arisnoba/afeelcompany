@@ -6,12 +6,11 @@ import { getBrandsWithLogos } from '@/lib/client-brands';
 import { getSiteClientBrands } from '@/lib/site';
 
 const STORY_LINES = [
-	'옷을 협찬하는 것에서 끝나지 않습니다.',
-	'스타의 분위기에 맞는 핏을 찾는 일부터 시작합니다.',
-	'그 한 장면이 사람들의 관심으로 이어지도록 설계합니다.',
-	'지표를 꾸미기보다, 실제로 일어나는 일에 집중합니다.',
-	'오늘도 더 많은 브랜드와 스타일리스트가',
-	'우리를 찾고 있다는 것이 그 증거입니다.',
+	'의류 협찬에서 끝내지 않습니다.',
+	'스타의 이미지와 브랜드의 미학을 먼저 읽습니다.',
+	'그 만남이 자연스러운 콘텐츠가 되도록 배치합니다.',
+	'숫자를 부풀리기보다, 실제로 일어나는 일에 집중합니다.',
+	'이것이 브랜드와 스타일리스트들이 우리를 찾는 이유입니다.',
 ];
 
 const MOMENTUM_MILESTONES = [
@@ -56,7 +55,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Brand Positioning',
 		headline: '브랜드 포지셔닝',
-		description: '브랜드의 미학과 정체성을 정확히 읽고, 대중의 인식 속에 가장 이상적인 자리를 설계합니다. 단순 노출이 아닌 브랜드 이미지의 전략적 구축을 목표로 합니다.',
+		description: '브랜드가 어떤 이미지로 기억되어야 할지를 먼저 정리합니다. 단순 노출이 아닌, 인식을 만드는 방향으로 작업합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<circle cx="12" cy="12" r="10" />
@@ -68,7 +67,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Editorial Placement',
 		headline: '에디토리얼 플레이스먼트',
-		description: '드라마, 예능, 화보, SNS까지 모든 미디어 채널에서 브랜드가 가장 빛나는 씬(Scene)을 직접 기획하고 배치합니다. 우연한 노출은 없습니다.',
+		description: '드라마, 예능, 화보, SNS — 각 채널에서 브랜드가 자연스럽게 보이는 장면을 직접 기획합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<rect x="3" y="3" width="18" height="18" rx="1" />
@@ -79,7 +78,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Digital Strategy',
 		headline: '디지털 전략',
-		description: '온라인 플랫폼의 알고리즘과 소비자 행동 데이터를 분석해 바이럴 확산 경로를 설계합니다. 연관 검색어 장악과 플랫폼 품절 대란이 전략의 결과물입니다.',
+		description: '플랫폼별 소비자 흐름을 파악해 브랜드 노출 경로를 설계합니다. 실제로 검색량이 늘고 재고가 소진되는 결과로 이어진 작업들이 있습니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -89,7 +88,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Archive Management',
 		headline: '아카이브 관리',
-		description: '모든 방송, SNS, 미디어 노출을 실시간으로 추적하고 영구 보존합니다. 트렌드는 휘발되지만 축적된 기록은 다음 캠페인의 가장 강력한 자산이 됩니다.',
+		description: '방송, SNS, 미디어 노출을 빠짐없이 기록하고 보존합니다. 쌓인 아카이브는 다음 협업을 위한 실질적인 레퍼런스가 됩니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<polyline points="21 8 21 21 3 21 3 8" />
@@ -104,17 +103,17 @@ const EDGE_ITEMS = [
 	{
 		title: 'Strategic Curation',
 		headline: '기획된 우연',
-		description: '우연한 노출은 없습니다. 브랜드의 미학과 셀럽의 페르소나를 예리하게 매칭해 대중의 시선을 사로잡는 결정적 씬(Scene)을 만듭니다.',
+		description: '우연한 노출은 없습니다. 브랜드의 미학과 셀럽의 이미지를 매칭해 대중이 주목하는 순간을 만듭니다.',
 	},
 	{
 		title: 'Endless Archive',
 		headline: '집요한 기록',
-		description: '트렌드는 휘발되지만 기록은 남습니다. 모든 방송, SNS, 미디어 노출을 실시간으로 추적하고 바이럴 자산으로 영구히 보존합니다.',
+		description: '트렌드는 사라지고 기록은 남습니다. 모든 미디어 노출을 꼼꼼히 추적해 레퍼런스로 보존합니다.',
 	},
 	{
 		title: 'Proven Impact',
 		headline: '확실한 결과',
-		description: '단순히 예쁜 사진 한 장을 넘어서, 연관 검색어 장악과 플랫폼 품절 대란이라는 실질적인 상업적 임팩트로 증명합니다.',
+		description: '사진 한 장에서 끝나지 않습니다. 검색량 증가, 재고 소진 — 실제 판매 지표로 이어진 작업을 합니다.',
 	},
 ];
 
@@ -132,13 +131,12 @@ export default async function AboutPage() {
 				<div className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.7fr)] md:items-end">
 					<div className="grid gap-6">
 						<h1 className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">
-							True impact,
+							Real impact.
 							<br />
-							beyond the numbers.
+							Measured differently.
 						</h1>
 						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-							트렌드의 시작, 스타와 브랜드가 만나는 완벽한 씬(Scene)을 설계하며
-							<br /> 무형의 모멘텀을 축적 가능한 신뢰로 바꾸는 방식으로 움직입니다.
+							스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
 						</p>
 					</div>
 				</div>
@@ -149,7 +147,7 @@ export default async function AboutPage() {
 				<div className="absolute inset-x-[22%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.9),transparent_72%)] blur-3xl" />
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 					<div className="grid justify-items-center gap-6 px-4 pt-12 text-center sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">Our Story & Philosophy</p>
+						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">How We Work</p>
 						<p className="max-w-2xl text-sm leading-7 text-stone-600 sm:text-base sm:leading-8">
 							텍스트가 한 줄씩 드러나듯, 어필컴퍼니의 철학도 결과로 증명됩니다. 브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.
 						</p>
@@ -162,11 +160,9 @@ export default async function AboutPage() {
 
 			<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
 				<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
-					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Visualizing Momentum</p>
+					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
 					<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">The Accumulation Line</h2>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-						수치 그래프 대신 시간을 시각화합니다. 쌓여온 사례의 밀도, 연결된 이름의 압력, 그리고 계속 상승하는 현상을 하나의 흐름으로 보여줍니다.
-					</p>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">어떤 브랜드, 어떤 배우, 어떤 결과였는지.</p>
 				</div>
 
 				<div className="relative">
@@ -189,16 +185,9 @@ export default async function AboutPage() {
 				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
-							Service
-							<br />
-							Excellence.
-						</h2>
+						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">What We Do</h2>
 					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-						브랜드 포지셔닝부터 디지털 전략까지, 어필컴퍼니의 4가지 핵심 서비스는 하나의 목표로 수렴합니다. 브랜드와 셀럽이 만나는 최적의 접점을 설계하고, 그 결과를 지속 가능한 자산으로
-						축적합니다.
-					</p>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
 				</div>
 
 				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 sm:grid-cols-2">
@@ -209,7 +198,7 @@ export default async function AboutPage() {
 								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
 							</div>
 							<h3 className="text-2xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl">{item.headline}</h3>
-							<p className="text-sm leading-8 text-stone-600 sm:text-base">{item.description}</p>
+							<p className="text-sm leading-8 text-stone-600 sm:text-base text-balance">{item.description}</p>
 						</article>
 					))}
 				</div>
@@ -221,9 +210,7 @@ export default async function AboutPage() {
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
 						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Why AFEEL</h2>
 					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-						타깃이 가장 궁금해하는 질문에는 짧고 단단한 단어로 답합니다. 미학, 기록, 상업적 결과까지 전부 연결하는 팀이라는 점이 우리의 차별점입니다.
-					</p>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
 				</div>
 
 				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
@@ -241,9 +228,9 @@ export default async function AboutPage() {
 				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Trusted by the Best</h2>
+						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Our Clients</h2>
 					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
+					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
 				</div>
 
 				<ClientLogoMarquee
@@ -259,7 +246,7 @@ export default async function AboutPage() {
 					<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
 						다음 시즌의 메가 히트를 준비하는 브랜드 매니저.
 						<br /> 완벽한 레드카펫 룩이 당장 필요한 스타일리스트.
-						<br /> 어필컴퍼니는 당신의 가장 든든하고 확실한 파트너입니다.
+						<br /> 어필컴퍼니와 함께 시작하세요.
 					</p>
 					<div>
 						<Link

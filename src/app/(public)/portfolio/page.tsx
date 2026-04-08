@@ -15,10 +15,6 @@ export default async function PortfolioPage() {
 						Made together.
 					</h1>
 				</div>
-
-				<p className="max-w-xl text-sm leading-7 text-stone-500 sm:text-base">
-					카테고리별 작업을 정제된 3열 그리드로 정리했습니다. 카드 선택 시 기존 라이트박스에서 상세 이미지를 이어서 확인할 수 있습니다.
-				</p>
 			</section>
 
 			<PortfolioGalleryClient items={items} />

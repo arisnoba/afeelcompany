@@ -13,34 +13,24 @@ function renderValue(value: string) {
 }
 
 const STUDIO_LINKS = [
-	{ href: '/portfolio', label: 'Archive' },
-	{ href: '/about', label: 'Process' },
-	{ href: '/about#our-edge', label: 'Vision' },
+	{ href: '/portfolio', label: 'portfolio' },
+	{ href: '/about', label: 'about' },
+	{ href: '/feed', label: 'feed' },
+	{ href: '/contact', label: 'contact' },
 ];
 
 export function SiteFooter({ profile }: SiteFooterProps) {
 	const description = profile.aboutText || '브랜드의 이미지를 축적하고 전달하는 에디토리얼 아카이브를 운영합니다.';
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
-	const connectLinks = [
-		{ href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true },
-		{ href: '/contact', label: 'Contact', external: false },
-		...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : []),
-	];
+	const connectLinks = [{ href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true }, ...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : [])];
 
 	return (
 		<footer className="border-t border-stone-900/8 bg-[#faf7f3] text-stone-900">
 			<div className="mx-auto grid w-full max-w-screen-2xl gap-14 px-6 py-20 md:grid-cols-[minmax(0,1.4fr)_minmax(260px,1.15fr)_180px_180px] md:gap-x-16 md:px-12 md:py-24 lg:gap-x-24">
 				<div className="grid content-start gap-10">
 					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
-						<Image
-							src="/images/logo.svg"
-							alt="afeelcompany"
-							width={230}
-							height={100}
-							className="invert"
-							style={{ height: 'auto' }}
-						/>
+						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" style={{ height: 'auto' }} />
 					</span>
 					<p className="max-w-md text-[1.02rem] leading-[1.7] text-stone-500">{description}</p>
 				</div>
@@ -72,7 +62,7 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 				</div>
 
 				<div className="grid content-start gap-5">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Studio</p>
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Site</p>
 					<ul className="grid gap-5 text-[0.92rem] font-semibold uppercase tracking-[0.18em] text-stone-700">
 						{STUDIO_LINKS.map(item => (
 							<li key={item.href}>

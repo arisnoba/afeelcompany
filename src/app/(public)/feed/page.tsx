@@ -24,10 +24,7 @@ export default async function FeedPage() {
 					<p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#5f7b6b]">Social Archive</p>
 					<div className="grid gap-4">
 						<h1 className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">@a_feel_company</h1>
-						{/* <p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">
-              큐레이션된 비주얼 내러티브와 스타일링 현장의 무드를, 캐시된 인스타그램
-              아카이브로 차분하게 정리해 보여줍니다.
-            </p> */}
+						{/* <p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">큐레이션된 비주얼 내러티브와 스타일링 현장의 무드를 아카이브로 정리합니다.</p> */}
 					</div>
 				</div>
 
@@ -40,11 +37,8 @@ export default async function FeedPage() {
 						Follow Us
 					</a>
 					<div className="grid gap-2 text-sm leading-7 text-stone-500 md:max-w-xs md:text-right">
-						<p>{lastSync ? `마지막 동기화: ${formatLastSync(lastSync)}` : '캐시된 인스타그램 데이터가 아직 없습니다.'}</p>
-						{/* <p>
-              방문자 페이지는 관리자 화면에서 동기화한 인스타그램 캐시만 노출하며,
-              페이지 진입 시 실시간 API 호출은 하지 않습니다.
-            </p> */}
+						{/* <p>{lastSync ? `마지막 동기화: ${formatLastSync(lastSync)}` : '캐시된 인스타그램 데이터가 아직 없습니다.'}</p> */}
+						<p>큐레이션된 비주얼 내러티브와 스타일링 현장의 무드를 아카이브로 정리합니다.</p>
 					</div>
 				</div>
 			</section>
