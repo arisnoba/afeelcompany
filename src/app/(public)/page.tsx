@@ -73,7 +73,7 @@ export default async function HomePage() {
 					{featuredItems.length === 0 ? (
 						<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>
 					) : (
-						<PortfolioPreviewGrid items={featuredItems} />
+						<PortfolioPreviewGrid items={featuredItems} gridClassName="xl:grid-cols-4" />
 					)}
 				</section>
 

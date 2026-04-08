@@ -2,20 +2,22 @@ import Link from 'next/link';
 import Image from 'next/image';
 
 import { BlurFade } from '@/components/ui/blur-fade';
+import { cn } from '@/lib/utils';
 import type { PublicPortfolioItem } from '@/types/site';
 
 interface PortfolioPreviewGridProps {
 	items: PublicPortfolioItem[];
 	href?: string;
+	gridClassName?: string;
 }
 
-export function PortfolioPreviewGrid({ items, href = '/portfolio' }: PortfolioPreviewGridProps) {
+export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName }: PortfolioPreviewGridProps) {
 	if (items.length === 0) {
 		return <div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>;
 	}
 
 	return (
-		<div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+		<div className={cn('grid gap-6 md:grid-cols-2 xl:grid-cols-3', gridClassName)}>
 			{items.slice(0, 6).map((item, index) => (
 				<BlurFade key={item.id} delay={Math.min(index * 0.07, 0.35)} className="w-full">
 					<Link href={href} className="group relative block w-full aspect-square overflow-hidden bg-stone-200">
