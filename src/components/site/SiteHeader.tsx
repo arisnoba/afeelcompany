@@ -51,7 +51,7 @@ export function SiteHeader() {
 			className={`z-40 transition-[background-color,border-color,backdrop-filter] duration-300 ${
 				showSolidHeader ? 'border-b border-stone-200/60 bg-[#fcf9f8]/82 backdrop-blur-[20px]' : 'border-b border-transparent bg-transparent backdrop-blur-0'
 			} ${isHome ? 'fixed inset-x-0 top-0' : 'sticky top-0'}`}>
-			<div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-6 sm:px-6 md:py-7 lg:px-10 lg:py-8">
+			<div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-4 sm:px-6 md:py-5 lg:px-10 lg:py-6">
 				<Link href="/" className="text-stone-950">
 					<span className="sr-only text-[1.9rem] leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)]">AFEELCOMPANY</span>
 					<Image src="/images/symbol.svg" alt="afeelcompany" width={32} height={32} className="invert" style={{ height: 'auto' }} />
@@ -62,7 +62,10 @@ export function SiteHeader() {
 						const isActive = isNavItemActive(pathname, item.href);
 
 						return (
-							<Link key={item.href} href={item.href} className={`text-sm transition-colors duration-300 ${isActive ? 'font-semibold text-[#274133]' : 'text-stone-500 hover:text-[#274133]'}`}>
+							<Link
+								key={item.href}
+								href={item.href}
+								className={`text-sm font-semibold transition-colors duration-300 ${isActive ? 'font-semibold text-[#274133]' : 'text-stone-500 hover:text-[#274133]'}`}>
 								{item.label}
 							</Link>
 						);
@@ -91,7 +94,7 @@ export function SiteHeader() {
 									key={item.href}
 									href={item.href}
 									onClick={() => setMobileOpen(false)}
-									className={`px-1 py-3 text-sm transition-colors ${isActive ? 'font-semibold text-[#274133]' : 'text-stone-600 hover:text-[#274133]'}`}>
+									className={`px-1 py-3 text-sm font-semibold transition-colors ${isActive ? 'font-semibold text-[#274133]' : 'text-stone-600 font-semibold hover:text-[#274133]'}`}>
 									{item.label}
 								</Link>
 							);

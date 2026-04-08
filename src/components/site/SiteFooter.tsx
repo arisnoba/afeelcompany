@@ -23,7 +23,11 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 	const description = profile.aboutText || '브랜드의 이미지를 축적하고 전달하는 에디토리얼 아카이브를 운영합니다.';
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
-	const connectLinks = [{ href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true }, ...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : [])];
+	const connectLinks = [
+		{ href: INSTAGRAM_PROFILE_URL, label: '@Afeelcompany', external: true },
+		{ href: 'https://www.instagram.com/kstar_trend/', label: '@K-Star Trend', external: true },
+		...(email ? [{ href: `mailto:${email}`, label: 'Email', external: true }] : []),
+	];
 
 	return (
 		<footer className="border-t border-stone-900/8 bg-[#faf7f3] text-stone-900">
@@ -32,17 +36,17 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
 						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" style={{ height: 'auto' }} />
 					</span>
-					<p className="max-w-md text-[1.02rem] leading-[1.7] text-stone-500">{description}</p>
+					<p className="max-w-md text-[1.02rem] leading-normal text-stone-500">{description}</p>
 				</div>
 
 				<div className="grid content-start gap-12">
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">address</p>
-						<p className="whitespace-pre-line text-[1.02rem] leading-[1.7] text-stone-800">{renderValue(profile.address)}</p>
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">address</p>
+						<p className="whitespace-pre-line text-[1.02rem] leading-normal text-stone-800">{renderValue(profile.address)}</p>
 					</div>
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Inquiries</p>
-						<div className="grid gap-1 text-[1.02rem] leading-[1.7] text-stone-800">
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Inquiries</p>
+						<div className="grid gap-1 text-[1.02rem] leading-normal text-stone-800">
 							{phone ? (
 								<a href={`tel:${phone}`} className="transition hover:text-stone-950">
 									{phone}
@@ -61,9 +65,9 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 					</div>
 				</div>
 
-				<div className="grid content-start gap-5">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Site</p>
-					<ul className="grid gap-5 text-[0.92rem] font-semibold uppercase tracking-[0.18em] text-stone-700">
+				<div className="grid content-start gap-4">
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Site</p>
+					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
 						{STUDIO_LINKS.map(item => (
 							<li key={item.href}>
 								<Link href={item.href} className="transition hover:text-stone-950">
@@ -74,9 +78,9 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 					</ul>
 				</div>
 
-				<div className="grid content-start gap-5">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Connect</p>
-					<ul className="grid gap-5 text-[0.92rem] font-semibold uppercase tracking-[0.18em] text-stone-700">
+				<div className="grid content-start gap-4">
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Connect</p>
+					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
 						{connectLinks.map(item => (
 							<li key={item.href}>
 								{item.external ? (
