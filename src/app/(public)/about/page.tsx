@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
+import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { TextRevealByWord } from '@/components/ui/text-reveal';
 import { getBrandsWithLogos } from '@/lib/client-brands';
 import { getSiteClientBrands } from '@/lib/site';
@@ -130,11 +131,10 @@ export default async function AboutPage() {
 
 				<div className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.7fr)] md:items-end">
 					<div className="grid gap-6">
-						<h1 className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">
-							Real impact.
-							<br />
-							Measured differently.
-						</h1>
+						<AnimatedPageTitle
+							lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
+							className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+						/>
 						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
 							스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
 						</p>
@@ -161,7 +161,13 @@ export default async function AboutPage() {
 			<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
 				<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
 					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
-					<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">The Accumulation Line</h2>
+					<AnimatedPageTitle
+						as="h2"
+						lines={[{ text: 'The Accumulation Line' }]}
+						delay={0.04}
+						duration={0.42}
+						className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+					/>
 					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">어떤 브랜드, 어떤 배우, 어떤 결과였는지.</p>
 				</div>
 
@@ -185,7 +191,13 @@ export default async function AboutPage() {
 				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">What We Do</h2>
+						<AnimatedPageTitle
+							as="h2"
+							lines={[{ text: 'What We Do' }]}
+							delay={0.04}
+							duration={0.42}
+							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+						/>
 					</div>
 					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
 				</div>
@@ -208,7 +220,13 @@ export default async function AboutPage() {
 				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Why AFEEL</h2>
+						<AnimatedPageTitle
+							as="h2"
+							lines={[{ text: 'Why AFEEL' }]}
+							delay={0.04}
+							duration={0.42}
+							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+						/>
 					</div>
 					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
 				</div>
@@ -228,7 +246,13 @@ export default async function AboutPage() {
 				<div className="grid gap-5 md:grid-cols-2 md:items-end">
 					<div className="grid gap-4">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
-						<h2 className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Our Clients</h2>
+						<AnimatedPageTitle
+							as="h2"
+							lines={[{ text: 'Our Clients' }]}
+							delay={0.04}
+							duration={0.42}
+							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+						/>
 					</div>
 					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
 				</div>

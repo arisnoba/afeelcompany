@@ -1,21 +1,10 @@
 import { InstagramFeedGrid } from '@/components/site/InstagramFeedGrid';
+import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { getDisplayFeed } from '@/lib/instagram';
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 
-function formatLastSync(value: string | null) {
-	if (!value) {
-		return null;
-	}
-
-	return new Intl.DateTimeFormat('ko-KR', {
-		dateStyle: 'long',
-		timeStyle: 'short',
-	}).format(new Date(value));
-}
-
 export default async function FeedPage() {
 	const posts = await getDisplayFeed();
-	const lastSync = posts[0]?.fetched_at ?? null;
 
 	return (
 		<div className="grid gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
@@ -23,7 +12,10 @@ export default async function FeedPage() {
 				<div className="grid gap-8">
 					<p className="text-sm font-semibold uppercase tracking-[0.34em] text-[#5f7b6b]">Social Archive</p>
 					<div className="grid gap-4">
-						<h1 className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">@a_feel_company</h1>
+						<AnimatedPageTitle
+							lines={[{ text: '@a_feel_company' }]}
+							className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+						/>
 						{/* <p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">큐레이션된 비주얼 내러티브와 스타일링 현장의 무드를 아카이브로 정리합니다.</p> */}
 					</div>
 				</div>

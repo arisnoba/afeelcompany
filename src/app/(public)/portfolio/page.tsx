@@ -1,4 +1,5 @@
 import { PortfolioGalleryClient } from '@/components/site/PortfolioGalleryClient';
+import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { getPublicPortfolioItems } from '@/lib/site';
 
 export default async function PortfolioPage() {
@@ -9,11 +10,10 @@ export default async function PortfolioPage() {
 			<section className="flex flex-col gap-8 md:flex-row md:items-end md:justify-between">
 				<div className="max-w-3xl">
 					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Archives</p>
-					<h1 className="mt-5 text-5xl font-light leading-none tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-6xl md:text-7xl">
-						Select work.
-						<br />
-						Made together.
-					</h1>
+					<AnimatedPageTitle
+						lines={[{ text: 'Select work.' }, { text: 'Made together.' }]}
+						className="mt-5 text-5xl font-light leading-none tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-6xl md:text-7xl"
+					/>
 				</div>
 			</section>
 

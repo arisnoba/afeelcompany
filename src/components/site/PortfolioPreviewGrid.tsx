@@ -33,7 +33,7 @@ export function PortfolioPreviewGrid({
               src={item.imageUrl}
               alt={item.title}
               fill
-              className="object-cover transition duration-300 group-hover:scale-[1.05]"
+              className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
               loading={index < 3 ? 'eager' : 'lazy'}
               sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
             />
@@ -42,13 +42,13 @@ export function PortfolioPreviewGrid({
                 src={item.hoverImageUrl}
                 alt={`${item.title} hover`}
                 fill
-                className="object-cover opacity-0 transition duration-300 group-hover:opacity-100"
+                className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
                 sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
               />
             ) : null}
           </div>
-          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0" />
-          <div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 sm:px-6 sm:py-6">
+          <div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0 group-active:opacity-0" />
+          <div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 group-active:opacity-0 sm:px-6 sm:py-6">
             <p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/72">
               {item.brandName}
             </p>

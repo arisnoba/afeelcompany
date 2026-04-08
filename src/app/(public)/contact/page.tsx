@@ -1,5 +1,6 @@
 import ContactMap from '@/components/site/ContactMap';
 import ContactInquiryForm from '@/components/site/ContactInquiryForm';
+import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { getSiteCompanyProfile } from '@/lib/site';
 
 function renderValue(value: string) {
@@ -28,7 +29,10 @@ export default async function ContactPage() {
 		<div className="grid gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
 			<header className="grid gap-5 border-b border-stone-900/10 pb-12 md:pb-16">
 				<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Connect With Us</p>
-				<h1 className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]">Get In Touch.</h1>
+				<AnimatedPageTitle
+					lines={[{ text: 'Get In Touch.' }]}
+					className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+				/>
 			</header>
 
 			<section className="grid gap-14 lg:grid-cols-12 lg:gap-20">
@@ -67,11 +71,14 @@ export default async function ContactPage() {
 				<div className="grid gap-8 border border-stone-900/10 bg-[#f6f3f2] p-8 sm:p-10 lg:col-span-7 lg:p-12">
 					<div className="grid gap-4">
 						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Inquiry</p>
-						<h2 className="text-4xl leading-tight tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl">
-							다음 트렌드의 주인공이
-							<br />
-							당신의 브랜드가 되도록.
-						</h2>
+						<AnimatedPageTitle
+							as="h2"
+							lines={[{ text: '다음 트렌드의 주인공이' }, { text: '당신의 브랜드가 되도록.' }]}
+							delay={0.04}
+							duration={0.42}
+							lineStagger={0.1}
+							className="text-4xl leading-tight tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl"
+						/>
 						<p className="max-w-2xl text-base leading-6 text-stone-600 text-balance">
 							브랜드 협업, 스타일링 문의 모두 환영합니다. <br />
 							보내주신 내용을 확인 후 연락드리겠습니다.

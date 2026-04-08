@@ -1,7 +1,6 @@
-import Link from 'next/link';
-
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { PortfolioPreviewGrid } from '@/components/site/PortfolioPreviewGrid';
+import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { ShaderGodrays } from '@/components/ui/shader-godrays';
 import { getBrandsWithLogos } from '@/lib/client-brands';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
@@ -30,9 +29,10 @@ export default async function HomePage() {
 						</div>
 
 						<div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.42fr)] lg:items-end">
-							<h1 className="max-w-5xl text-[clamp(3.4rem,9vw,7.8rem)] font-light leading-[0.93] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)]">
-								The Architect of <span className="italic">Spotlight</span>.
-							</h1>
+							<AnimatedPageTitle
+								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.', className: 'italic' }]}
+								className="max-w-5xl text-[clamp(3.4rem,9vw,7.8rem)] font-light leading-[0.93] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)]"
+							/>
 
 							<div className="grid gap-8 md:grid-cols-12 md:items-end">
 								<div className="grid gap-6 md:col-span-12">
@@ -49,7 +49,13 @@ export default async function HomePage() {
 					<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 						<div>
 							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
-							<h2 className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl">The work speaks for itself.</h2>
+							<AnimatedPageTitle
+								as="h2"
+								lines={[{ text: 'The work speaks for itself.' }]}
+								delay={0.04}
+								duration={0.42}
+								className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
+							/>
 						</div>
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Selected Campaigns</p>
 					</div>
@@ -64,7 +70,13 @@ export default async function HomePage() {
 				<section className="grid gap-12 border-t border-stone-900/8 pt-20">
 					<div className="grid justify-items-center gap-4 text-center">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
-						<h2 className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">Collaborated Brands</h2>
+						<AnimatedPageTitle
+							as="h2"
+							lines={[{ text: 'Collaborated Brands' }]}
+							delay={0.04}
+							duration={0.42}
+							className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+						/>
 					</div>
 
 					<ClientLogoMarquee

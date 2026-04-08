@@ -183,6 +183,23 @@
   }
 }
 
+@keyframes hero-godrays-drift {
+  0% {
+    opacity: 0.84;
+    transform: translate3d(-1.5%, 0, 0) scale(1.02);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translate3d(1.25%, -2%, 0) scale(1.08);
+  }
+
+  100% {
+    opacity: 0.84;
+    transform: translate3d(-1.5%, 0, 0) scale(1.02);
+  }
+}
+
 @layer utilities {
   .home-marquee-track {
     animation: home-marquee 34s linear infinite;
@@ -202,5 +219,11 @@
   .about-logo-marquee-track {
     animation: about-logo-marquee 30s linear infinite;
     will-change: transform;
+  }
+
+  .hero-godrays-drift {
+    /* 셰이더 자체의 시간 변화 외에 레이어 전체를 아주 느리게 흔들어 정적인 인상을 줄인다. */
+    animation: hero-godrays-drift 16s ease-in-out infinite;
+    will-change: transform, opacity;
   }
 }

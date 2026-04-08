@@ -4,22 +4,22 @@ import { GodRays } from '@paper-design/shaders-react';
 
 export function ShaderGodrays({ className }: { className?: string; intensity?: number }) {
 	return (
-		<div className={`absolute inset-0 pointer-events-none ${className}`}>
+		<div className={`hero-godrays-drift absolute inset-0 pointer-events-none ${className}`}>
 			<GodRays
 				colorBack="#00000000"
-				colors={['#ffffffb3', '#e4c09066', '#ffffff66', '#ffffff4d']} // 아까의 선명도와 방금 전의 맑은 느낌의 중간
+				// 밝기 대비를 조금 올려서 광막보다 빛줄기 움직임이 먼저 읽히도록 맞춘 값들이다.
+				colors={['#fff7ebd9', '#ebcfa980', '#fffdf38c', '#ffffff52']}
 				colorBloom="#ffffff"
-				offsetX={0.8}
-				offsetY={-1.0} // 원점을 화면 밖으로 빼되 너무 멀지 않게 조정
-				intensity={1.1} // 폭발적이지 않되 존재감은 확실하게
-				spotty={0.3} // 질감이 살짝 있으면서도 빛의 뻗음이 유지되는 중간점
-				midSize={12}
-				midIntensity={0}
-				density={0.7} // 레이(Ray)들이 적당히 채워지면서 여백도 돌도록
-				bloom={0.25} // 줄기가 뭉개지지 않으면서 뽀얀 느낌만 살리는 번짐 수치
-				speed={0.4}
-				scale={1.5} // 화면을 부드럽게 덮는 스케일
-				frame={1000}
+				offsetX={0.74}
+				offsetY={-0.94}
+				intensity={0.92}
+				spotty={0.5}
+				midSize={0.18}
+				midIntensity={0.06}
+				density={0.58}
+				bloom={0.34}
+				speed={0.82}
+				scale={1.42}
 				style={{
 					height: '100%',
 					width: '100%',
