@@ -40,7 +40,7 @@ export default async function HomePage() {
 
 						<div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.42fr)] lg:items-end">
 							<AnimatedPageTitle
-								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.', className: 'italic' }]}
+								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.' }]}
 								className="max-w-5xl text-[clamp(3.4rem,9vw,7.8rem)] font-light leading-[0.93] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)]"
 							/>
 

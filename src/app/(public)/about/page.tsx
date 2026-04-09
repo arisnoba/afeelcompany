@@ -139,16 +139,14 @@ export default async function AboutPage() {
 			<header className="grid gap-10">
 				<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
 
-				<div className="grid gap-10 md:grid-cols-[minmax(0,1.1fr)_minmax(280px,0.7fr)] md:items-end">
-					<div className="grid gap-6">
-						<AnimatedPageTitle
-							lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
-							className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
-						/>
-						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-							스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
-						</p>
-					</div>
+				<div className="grid gap-6">
+					<AnimatedPageTitle
+						lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
+						className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+					/>
+					<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
+						스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
+					</p>
 				</div>
 			</header>
 
