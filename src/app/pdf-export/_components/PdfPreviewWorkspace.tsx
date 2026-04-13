@@ -24,6 +24,9 @@ function getSectionLabel(id: string): string {
   if (id === 'about') return 'About'
   if (id === 'contact') return 'Contact'
 
+  const aboutMatch = id.match(/^about-(\d+)-(\d+)$/)
+  if (aboutMatch) return `About ${aboutMatch[1]}/${aboutMatch[2]}`
+
   const workMatch = id.match(/^work-(\d+)-(\d+)$/)
   if (workMatch) return `Work ${workMatch[1]}/${workMatch[2]}`
 

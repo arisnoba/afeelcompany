@@ -2,6 +2,8 @@
 // PDF Brochure — Print & Preview Styles
 // ─────────────────────────────────────────────
 
+@use 'sass:math';
+
 // ── Variables ────────────────────────────────
 
 $page-size:          A4 landscape;
@@ -10,7 +12,7 @@ $page-margin:        8mm;
 // A4 landscape dimensions
 $a4-width:           297mm;
 $a4-height:          210mm;
-$a4-aspect:          297 / 210; // ≈ 1.4143
+$a4-aspect:          math.div(297, 210); // ≈ 1.4143
 
 // Screen preview
 $sheet-max-width:    1180px;
@@ -131,6 +133,13 @@ $color-text:         #1c1917;
     aspect-ratio: auto;
     margin: 0;
     overflow: hidden;
+  }
+
+  // Reset canvas scale — print layout is driven by .pdf-sheet dimensions
+  .pdf-sheet-canvas {
+    width: 100% !important;
+    height: 100% !important;
+    transform: none !important;
   }
 
   .avoid-break {
