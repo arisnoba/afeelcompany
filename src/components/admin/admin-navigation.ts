@@ -33,11 +33,6 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
         label: '클라이언트 관리',
         description: '브랜드 리스트를 테이블과 우측 패널에서 관리합니다.',
       },
-      {
-        href: '/admin/instagram',
-        label: '인스타 큐',
-        description: '게시 대기열을 만들고 수동 publish 이력을 추적합니다.',
-      },
     ],
   },
   {
