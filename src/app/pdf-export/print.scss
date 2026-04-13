@@ -142,6 +142,16 @@ $color-text:         #1c1917;
     transform: none !important;
   }
 
+  // WebGL shader canvas — not renderable in print
+  .hero-godrays-drift {
+    display: none !important;
+  }
+
+  // iframe (Google Maps) — not printable, hide gracefully
+  iframe {
+    display: none !important;
+  }
+
   .avoid-break {
     break-inside: avoid;
     page-break-inside: avoid;

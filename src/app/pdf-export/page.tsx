@@ -1,6 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ReactNode } from 'react'
 
+import { ShaderGodrays } from '@/components/ui/shader-godrays'
 import type { PdfClientBrand, PdfPortfolioItem } from '@/types/pdf'
 
 import { BrochureSheet } from './_components/BrochureSheet'
@@ -740,43 +741,59 @@ export default async function PdfExportPage() {
     id: 'cover',
     node: (
       <BrochureSheet sectionId="cover">
-        <div className="grid h-full" style={{ gridTemplateColumns: '38% 62%' }}>
-          <div className="relative overflow-hidden">
-            <PdfImage
-              src={brochure.heroImageUrl}
-              alt={`${brochure.title} cover`}
-              className="h-full w-full object-cover"
-            />
+        <div className="relative h-full overflow-hidden">
+          {/* Left background: gradient + shader */}
+          <div className="absolute inset-y-0 left-0 w-[55%] bg-[linear-gradient(160deg,#f7f1ea_0%,#fcfaf7_40%,#f3ece5_100%)]">
+            <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:32px_32px]" />
+            <div className="absolute inset-x-[10%] top-0 h-36 bg-[radial-gradient(circle_at_center,rgba(255,251,245,0.9),transparent_72%)] blur-2xl" />
+            <ShaderGodrays className="opacity-80 [mask-image:radial-gradient(130%_100%_at_60%_0%,black_0%,black_55%,transparent_100%)]" />
           </div>
-          <div className="flex h-full flex-col justify-between px-12 py-10">
-            <div className="flex items-center gap-4">
-              <span className="h-px w-10 bg-[#715a3e]" />
-              <span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">
-                Fashion PR Agency
-              </span>
-            </div>
-            <div className="grid gap-4">
-              <p className="text-[10px] font-medium uppercase tracking-[0.32em] text-stone-400">
-                Company Brochure
-              </p>
-              <h1
-                className="text-[4.2rem] leading-[0.92] tracking-[-0.04em] text-stone-950"
-                style={{ fontFamily: 'var(--font-brochure-serif)' }}
-              >
-                AFEEL<br />
-                <span className="italic">Company.</span>
-              </h1>
-              <p className="mt-2 max-w-[34ch] text-[13px] leading-7 text-stone-500">
-                브랜드와 셀럽의 접점을 설계하고,<br />
-                한 번 정리한 포트폴리오를 웹·소개서·소셜까지 이어 붙이는 패션 PR 스튜디오.
-              </p>
-            </div>
-            <div className="flex items-end justify-between border-t border-stone-100 pt-6">
-              <div>
-                <p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Issue Date</p>
-                <p className="mt-1 text-[15px] font-medium text-stone-950">{brochure.issueDate}</p>
+
+          {/* Content grid */}
+          <div className="relative z-10 grid h-full" style={{ gridTemplateColumns: '55% 45%' }}>
+            {/* Left: Text */}
+            <div className="flex h-full flex-col justify-between px-12 py-10">
+              <div className="flex items-center gap-4">
+                <span className="h-px w-10 bg-[#715a3e]" />
+                <span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">
+                  Fashion PR Agency
+                </span>
               </div>
-              <p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
+
+              <div className="grid gap-5">
+                <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">
+                  Company Brochure
+                </p>
+                <h1
+                  className="text-[5rem] leading-[0.91] tracking-[-0.05em] text-stone-950"
+                  style={{ fontFamily: 'var(--font-brochure-serif)' }}
+                >
+                  The Architect
+                  <br />
+                  <span className="italic text-[#715a3e]">of Spotlight.</span>
+                </h1>
+                <p className="max-w-[32ch] text-[13px] leading-7 text-stone-600">
+                  스타와 브랜드가 자연스럽게 연결되는 장면을 설계하고,
+                  <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
+                </p>
+              </div>
+
+              <div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
+                <div>
+                  <p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Issue Date</p>
+                  <p className="mt-1 text-[15px] font-medium text-stone-950">{brochure.issueDate}</p>
+                </div>
+                <p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
+              </div>
+            </div>
+
+            {/* Right: Hero image */}
+            <div className="relative overflow-hidden">
+              <PdfImage
+                src={brochure.heroImageUrl}
+                alt={`${brochure.title} cover`}
+                className="h-full w-full object-cover"
+              />
             </div>
           </div>
         </div>
@@ -881,11 +898,14 @@ export default async function PdfExportPage() {
   })
 
   // Contact
+  const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(brochure.contact.address)}&output=embed&hl=ko&z=15`
+
   sections.push({
     id: 'contact',
     node: (
       <BrochureSheet sectionId="contact">
-        <div className="grid h-full" style={{ gridTemplateColumns: '52% 48%' }}>
+        <div className="grid h-full" style={{ gridTemplateColumns: '46% 54%' }}>
+          {/* Left: Dark copy */}
           <div className="flex flex-col justify-between bg-stone-950 px-12 py-10">
             <div className="flex items-center gap-3">
               <span className="h-px w-6 bg-[#715a3e]" />
@@ -896,36 +916,56 @@ export default async function PdfExportPage() {
                 className="text-[2.8rem] leading-[1.04] tracking-[-0.03em] text-white"
                 style={{ fontFamily: 'var(--font-brochure-serif)' }}
               >
-                브랜드의 이야기를<br />
-                <span className="italic text-stone-400">함께</span> 써드립니다.
+                브랜드의 다음 장면,
+                <br />
+                <span className="italic text-[#715a3e]">지금 시작합니다.</span>
               </h2>
-              <p className="text-[11px] leading-7 text-stone-500">
-                어필컴퍼니는 패션 브랜드와 셀럽 사이의 접점을 설계합니다.<br />
-                새로운 협업이나 PR 문의는 아래 연락처로 보내주세요.
+              <p className="text-[11px] leading-7 text-stone-400">
+                어필컴퍼니는 패션 브랜드와 셀럽 사이의
+                <br />모든 접점을 설계하고 기록합니다.
               </p>
             </div>
             <p className="text-[9px] uppercase tracking-[0.24em] text-stone-700">
               AFEEL Company · Seoul, Korea
             </p>
           </div>
-          <div className="flex flex-col justify-center px-12 py-10">
-            <dl className="grid gap-7">
-              <div className="grid gap-1.5">
-                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.email}</dd>
-              </div>
-              <div className="h-px bg-stone-100" />
-              <div className="grid gap-1.5">
-                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.phone}</dd>
-              </div>
-              <div className="h-px bg-stone-100" />
-              <div className="grid gap-1.5">
-                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.address}</dd>
-              </div>
-            </dl>
-            <div className="mt-8 flex items-center gap-3 border-t border-stone-100 pt-6">
+
+          {/* Right: Contact info + map */}
+          <div className="flex h-full flex-col">
+            {/* Contact details */}
+            <div className="px-10 py-8">
+              <dl className="grid gap-4">
+                <div className="grid gap-1">
+                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
+                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.email}</dd>
+                </div>
+                <div className="h-px bg-stone-100" />
+                <div className="grid gap-1">
+                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
+                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.phone}</dd>
+                </div>
+                <div className="h-px bg-stone-100" />
+                <div className="grid gap-1">
+                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
+                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.address}</dd>
+                </div>
+              </dl>
+            </div>
+
+            {/* Google Maps */}
+            <div className="relative flex-1 overflow-hidden border-t border-stone-100">
+              {/* eslint-disable-next-line @next/next/no-img-element */}
+              <iframe
+                src={mapEmbedUrl}
+                className="h-full w-full border-0"
+                title="AFEEL Company 위치"
+                loading="lazy"
+                referrerPolicy="no-referrer-when-downgrade"
+              />
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center gap-3 border-t border-stone-100 px-10 py-4">
               <span className="h-px w-6 bg-[#715a3e]" />
               <p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">afeelcompany.com</p>
             </div>
