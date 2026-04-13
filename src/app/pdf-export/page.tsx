@@ -5,6 +5,7 @@ import { ShaderGodrays } from '@/components/ui/shader-godrays'
 import type { PdfClientBrand, PdfPortfolioItem } from '@/types/pdf'
 
 import { BrochureSheet } from './_components/BrochureSheet'
+import { PdfContactMap } from './_components/PdfContactMap'
 import { PdfPreviewWorkspace } from './_components/PdfPreviewWorkspace'
 import { getPdfDocument } from './_lib/get-pdf-document'
 
@@ -898,74 +899,63 @@ export default async function PdfExportPage() {
   })
 
   // Contact
-  const mapEmbedUrl = `https://maps.google.com/maps?q=${encodeURIComponent(brochure.contact.address)}&output=embed&hl=ko&z=15`
+  const googleMapsApiKey = process.env.NEXT_PUBLIC_GOOGLE_MAPS_API_KEY?.trim()
 
   sections.push({
     id: 'contact',
     node: (
       <BrochureSheet sectionId="contact">
-        <div className="grid h-full" style={{ gridTemplateColumns: '46% 54%' }}>
-          {/* Left: Dark copy */}
-          <div className="flex flex-col justify-between bg-stone-950 px-12 py-10">
-            <div className="flex items-center gap-3">
-              <span className="h-px w-6 bg-[#715a3e]" />
-              <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-500">Contact</p>
-            </div>
-            <div className="grid gap-5">
-              <h2
-                className="text-[2.8rem] leading-[1.04] tracking-[-0.03em] text-white"
-                style={{ fontFamily: 'var(--font-brochure-serif)' }}
-              >
-                브랜드의 다음 장면,
-                <br />
-                <span className="italic text-[#715a3e]">지금 시작합니다.</span>
-              </h2>
-              <p className="text-[11px] leading-7 text-stone-400">
-                어필컴퍼니는 패션 브랜드와 셀럽 사이의
-                <br />모든 접점을 설계하고 기록합니다.
+        <div className="grid h-full" style={{ gridTemplateColumns: '52% 48%' }}>
+          {/* Left: Map background + dark overlay + copy */}
+          <div className="relative overflow-hidden">
+            <PdfContactMap address={brochure.contact.address} apiKey={googleMapsApiKey} />
+            {/* Gradient overlay: dark at edges, lighter in center to let map show through */}
+            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(12,10,9,0.88)_0%,rgba(12,10,9,0.72)_40%,rgba(12,10,9,0.72)_60%,rgba(12,10,9,0.88)_100%)]" />
+
+            <div className="relative z-10 flex h-full flex-col justify-between px-12 py-10">
+              <div className="flex items-center gap-3">
+                <span className="h-px w-6 bg-[#715a3e]" />
+                <p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-500">Contact</p>
+              </div>
+              <div className="grid gap-5">
+                <h2
+                  className="text-[2.8rem] leading-[1.04] tracking-[-0.03em] text-white"
+                  style={{ fontFamily: 'var(--font-brochure-serif)' }}
+                >
+                  브랜드의 다음 장면,
+                  <br />
+                  <span className="italic text-[#715a3e]">지금 시작합니다.</span>
+                </h2>
+                <p className="text-[11px] leading-7 text-stone-400">
+                  어필컴퍼니는 패션 브랜드와 셀럽 사이의
+                  <br />모든 접점을 설계하고 기록합니다.
+                </p>
+              </div>
+              <p className="text-[9px] uppercase tracking-[0.24em] text-stone-600">
+                AFEEL Company · Seoul, Korea
               </p>
             </div>
-            <p className="text-[9px] uppercase tracking-[0.24em] text-stone-700">
-              AFEEL Company · Seoul, Korea
-            </p>
           </div>
 
-          {/* Right: Contact info + map */}
-          <div className="flex h-full flex-col">
-            {/* Contact details */}
-            <div className="px-10 py-8">
-              <dl className="grid gap-4">
-                <div className="grid gap-1">
-                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
-                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.email}</dd>
-                </div>
-                <div className="h-px bg-stone-100" />
-                <div className="grid gap-1">
-                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
-                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.phone}</dd>
-                </div>
-                <div className="h-px bg-stone-100" />
-                <div className="grid gap-1">
-                  <dt className="text-[8px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
-                  <dd className="text-[15px] font-medium text-stone-950">{brochure.contact.address}</dd>
-                </div>
-              </dl>
-            </div>
-
-            {/* Google Maps */}
-            <div className="relative flex-1 overflow-hidden border-t border-stone-100">
-              {/* eslint-disable-next-line @next/next/no-img-element */}
-              <iframe
-                src={mapEmbedUrl}
-                className="h-full w-full border-0"
-                title="AFEEL Company 위치"
-                loading="lazy"
-                referrerPolicy="no-referrer-when-downgrade"
-              />
-            </div>
-
-            {/* Footer */}
-            <div className="flex items-center gap-3 border-t border-stone-100 px-10 py-4">
+          {/* Right: Contact details */}
+          <div className="flex flex-col justify-center px-12 py-10">
+            <dl className="grid gap-7">
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
+                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.email}</dd>
+              </div>
+              <div className="h-px bg-stone-100" />
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
+                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.phone}</dd>
+              </div>
+              <div className="h-px bg-stone-100" />
+              <div className="grid gap-1.5">
+                <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
+                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.address}</dd>
+              </div>
+            </dl>
+            <div className="mt-8 flex items-center gap-3 border-t border-stone-100 pt-6">
               <span className="h-px w-6 bg-[#715a3e]" />
               <p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">afeelcompany.com</p>
             </div>

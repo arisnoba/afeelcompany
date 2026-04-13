@@ -147,11 +147,6 @@ $color-text:         #1c1917;
     display: none !important;
   }
 
-  // iframe (Google Maps) — not printable, hide gracefully
-  iframe {
-    display: none !important;
-  }
-
   .avoid-break {
     break-inside: avoid;
     page-break-inside: avoid;
