@@ -7,7 +7,7 @@
 // ── Variables ────────────────────────────────
 
 $page-size:          A4 landscape;
-$page-margin:        8mm;
+$page-margin:        0mm;
 
 // A4 landscape dimensions
 $a4-width:           297mm;
@@ -126,10 +126,14 @@ $color-text:         #1c1917;
   }
 
   .pdf-sheet {
-    width: $a4-width;
-    height: $a4-height;
-    min-height: $a4-height;
-    max-height: $a4-height;
+    // Fill the actual printable area the browser provides.
+    // Safari enforces its own minimum margins (~12.7mm) that cannot be
+    // removed via @page, so we use 100vw/100vh rather than fixed A4 values
+    // to avoid content being clipped by those forced margins.
+    width: 100vw;
+    height: 100vh;
+    min-height: unset;
+    max-height: unset;
     aspect-ratio: auto;
     margin: 0;
     overflow: hidden;

@@ -50,6 +50,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
   const [pendingPrint, setPendingPrint] = useState(false)
+  const [downloading, setDownloading] = useState(false)
 
   const activeSection = sections[activeIndex]?.id ?? sections[0]?.id ?? 'cover'
   const sectionIds = useMemo(() => sections.map((section) => section.id), [sections])
@@ -204,9 +205,25 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
     handleModeChange('scroll')
   }
 
-  function handleDownload() {
-    setPendingPrint(true)
-    handleModeChange('scroll')
+  async function handleDownload() {
+    setDownloading(true)
+    try {
+      const res = await fetch('/api/pdf')
+      if (!res.ok) throw new Error('PDF 생성 실패')
+      const blob = await res.blob()
+      const url = URL.createObjectURL(blob)
+      const a = document.createElement('a')
+      a.href = url
+      a.download = 'afeel-company-brochure.pdf'
+      a.click()
+      URL.revokeObjectURL(url)
+    } catch {
+      // fallback: browser print
+      setPendingPrint(true)
+      handleModeChange('scroll')
+    } finally {
+      setDownloading(false)
+    }
   }
 
   return (
@@ -295,10 +312,11 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
               <button
                 type="button"
                 onClick={handleDownload}
+                disabled={downloading}
                 className={cn(buttonVariants({ size: 'sm' }), 'min-h-10 rounded-full px-3')}
               >
                 <Download data-icon="inline-start" />
-                <span>다운로드</span>
+                <span>{downloading ? '생성 중...' : '다운로드'}</span>
               </button>
             </div>
           </div>
