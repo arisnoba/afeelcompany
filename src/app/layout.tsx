@@ -3,16 +3,7 @@ import { Geist_Mono, Inter, Manrope, Newsreader } from 'next/font/google';
 
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
-import {
-	DEFAULT_OG_IMAGE,
-	DEFAULT_SITE_DESCRIPTION,
-	DEFAULT_SITE_KEYWORDS,
-	SITE_NAME,
-	SITE_TITLE_SUFFIX,
-	SITE_URL,
-	organizationJsonLd,
-	websiteJsonLd,
-} from '@/lib/seo';
+import { DEFAULT_OG_IMAGE, DEFAULT_SITE_DESCRIPTION, DEFAULT_SITE_KEYWORDS, SITE_NAME, SITE_TITLE_SUFFIX, SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
 
 const inter = Inter({
 	subsets: ['latin'],
@@ -96,15 +87,9 @@ export default function RootLayout({
 }>) {
 	return (
 		<html lang="ko" className={`${inter.variable} ${manrope.variable} ${newsreader.variable} ${geistMono.variable} h-full antialiased`}>
-			<body className="flex min-h-full flex-col font-sans bg-[#fcf9f8]">
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-				/>
-				<script
-					type="application/ld+json"
-					dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
-				/>
+			<body className="flex min-h-full flex-col font-sans">
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 				{children}
 				<Toaster />
 			</body>

@@ -14,7 +14,7 @@ export default async function PublicLayout({
 
 	return (
 		<PublicSmoothScroll>
-			<div className="min-h-screen bg-[#fcf9f8] text-stone-950 [font-family:var(--font-manrope)]">
+			<div className="min-h-screen text-stone-950 [font-family:var(--font-manrope)]">
 				<div className="relative flex min-h-screen flex-col">
 					<SiteHeader />
 					<main className="flex-1 pb-16">{children}</main>

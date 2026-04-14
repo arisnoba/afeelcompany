@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { useMemo } from 'react'
 
 import { Checkbox } from '@/components/ui/checkbox'
 import {
@@ -9,19 +10,13 @@ import {
   ComboboxContent,
   ComboboxEmpty,
   ComboboxGroup,
+  ComboboxInput,
   ComboboxItem,
   ComboboxList,
   useComboboxAnchor,
 } from '@/components/ui/combobox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from '@/components/ui/select'
 import type { ClientBrandAdminItem } from '@/types/client-brand'
 import { PORTFOLIO_CATEGORIES, type PortfolioCategory } from '@/types/portfolio'
 
@@ -45,6 +40,13 @@ interface PortfolioMetadataFieldsProps {
   onChange: (patch: Partial<PortfolioMetadataValue>) => void
 }
 
+interface BrandComboboxItem {
+  value: string
+  label: string
+  isActive: boolean
+  hasLogo: boolean
+}
+
 export function PortfolioMetadataFields({
   value,
   idPrefix,
@@ -55,6 +57,18 @@ export function PortfolioMetadataFields({
   const selectedBrand =
     availableBrands.find((brand) => brand.id === value.clientBrandId) ?? null
   const categoryAnchor = useComboboxAnchor()
+  const brandOptions = useMemo<BrandComboboxItem[]>(
+    () =>
+      availableBrands.map((brand) => ({
+        value: brand.id,
+        label: brand.name,
+        isActive: brand.isActive,
+        hasLogo: Boolean(brand.logoUrl),
+      })),
+    [availableBrands]
+  )
+  const selectedBrandOption =
+    brandOptions.find((brand) => brand.value === value.clientBrandId) ?? null
 
   return (
     <div className="grid gap-5">
@@ -133,32 +147,50 @@ export function PortfolioMetadataFields({
         <div className="grid gap-4 md:grid-cols-[minmax(0,1fr)_120px]">
           <div className="flex flex-col gap-2">
             <Label>등록된 브랜드</Label>
-            <Select
-              value={value.clientBrandId ?? ''}
-              onValueChange={(nextValue) => {
-                const nextBrand =
-                  availableBrands.find((brand) => brand.id === nextValue) ?? null
-
+            <Combobox
+              items={brandOptions}
+              value={selectedBrandOption}
+              itemToStringLabel={(item) => item.label}
+              itemToStringValue={(item) => item.value}
+              isItemEqualToValue={(item, selected) => item.value === selected.value}
+              onValueChange={(nextBrand) => {
                 onChange({
-                  clientBrandId: nextBrand?.id ?? null,
-                  brandName: nextBrand?.name ?? '',
+                  clientBrandId: nextBrand?.value ?? null,
+                  brandName: nextBrand?.label ?? '',
                 })
               }}
-              disabled={disabled}
             >
-              <SelectTrigger className="h-11 w-full rounded-xl px-3">
-                <SelectValue placeholder="브랜드를 선택하세요" />
-              </SelectTrigger>
-              <SelectContent>
-                {availableBrands.map((brand) => (
-                  <SelectItem key={brand.id} value={brand.id}>
-                    {brand.name}
-                    {!brand.isActive ? ' · 비활성' : ''}
-                    {!brand.logoUrl ? ' · 로고 없음' : ''}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
+              <ComboboxInput
+                placeholder="브랜드를 검색하거나 선택하세요"
+                disabled={disabled}
+                showClear
+                className="h-11 w-full rounded-xl [&_[data-slot=input-group]]:h-11 [&_[data-slot=input-group-input]]:h-11"
+              />
+              <ComboboxContent className="w-[var(--anchor-width)]">
+                <ComboboxList>
+                  <ComboboxGroup>
+                    {brandOptions.map((brand) => (
+                      <ComboboxItem key={brand.value} value={brand}>
+                        <div className="flex min-w-0 items-center gap-2">
+                          <span className="truncate">{brand.label}</span>
+                          {!brand.isActive ? (
+                            <span className="shrink-0 text-xs text-muted-foreground">
+                              비활성
+                            </span>
+                          ) : null}
+                          {!brand.hasLogo ? (
+                            <span className="shrink-0 text-xs text-muted-foreground">
+                              로고 없음
+                            </span>
+                          ) : null}
+                        </div>
+                      </ComboboxItem>
+                    ))}
+                  </ComboboxGroup>
+                  <ComboboxEmpty>검색 결과가 없습니다.</ComboboxEmpty>
+                </ComboboxList>
+              </ComboboxContent>
+            </Combobox>
           </div>
 
           <div className="grid gap-2">
