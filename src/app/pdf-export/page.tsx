@@ -1,7 +1,6 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ReactNode } from 'react'
 
-import { ShaderGodrays } from '@/components/ui/shader-godrays'
 import type { PdfClientBrand, PdfPortfolioItem } from '@/types/pdf'
 
 import { BrochureSheet } from './_components/BrochureSheet'
@@ -743,11 +742,10 @@ export default async function PdfExportPage() {
     node: (
       <BrochureSheet sectionId="cover">
         <div className="relative h-full overflow-hidden">
-          {/* Left background: gradient + shader */}
+          {/* Left background: gradient only */}
           <div className="absolute inset-y-0 left-0 w-[55%] bg-[linear-gradient(160deg,#f7f1ea_0%,#fcfaf7_40%,#f3ece5_100%)]">
             <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:32px_32px]" />
             <div className="absolute inset-x-[10%] top-0 h-36 bg-[radial-gradient(circle_at_center,rgba(255,251,245,0.9),transparent_72%)] blur-2xl" />
-            <ShaderGodrays className="opacity-80 [mask-image:radial-gradient(130%_100%_at_60%_0%,black_0%,black_55%,transparent_100%)]" />
           </div>
 
           {/* Content grid */}

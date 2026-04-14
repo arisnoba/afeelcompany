@@ -72,7 +72,10 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 
 						return (
 							<BlurFade key={item.id} delay={Math.min(index * 0.05, 0.25)} className="w-full">
-								<button type="button" onClick={() => handleItemClick(item)} className="group relative block w-full aspect-square overflow-hidden bg-stone-200 text-left">
+								<button
+									type="button"
+									onClick={() => handleItemClick(item)}
+									className="group relative block aspect-square w-full cursor-pointer overflow-hidden bg-stone-200 text-left">
 									<div className="relative h-full w-full overflow-hidden">
 										<Image
 											src={item.imageUrl}
