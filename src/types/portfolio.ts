@@ -1,12 +1,19 @@
-export const PORTFOLIO_CATEGORIES = ['상의', '하의', '신발', '악세서리', '기타', '남성', '여성'] as const
+export const PORTFOLIO_CATEGORIES = ['남성', '여성', '악세서리', '슈즈'] as const
 
 export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number]
 
 const PORTFOLIO_CATEGORY_SET = new Set<string>(PORTFOLIO_CATEGORIES)
 const PORTFOLIO_CATEGORY_SEPARATOR = '|'
+const PORTFOLIO_CATEGORY_ALIASES: Record<string, PortfolioCategory> = {
+  신발: '슈즈',
+}
+
+function toCanonicalPortfolioCategory(value: string): string {
+  return PORTFOLIO_CATEGORY_ALIASES[value] ?? value
+}
 
 export function isPortfolioCategory(value: string): value is PortfolioCategory {
-  return PORTFOLIO_CATEGORY_SET.has(value)
+  return PORTFOLIO_CATEGORY_SET.has(toCanonicalPortfolioCategory(value))
 }
 
 function splitPortfolioCategoryValue(value: string): string[] {
@@ -21,7 +28,7 @@ function normalizePortfolioCategories(values: readonly string[]): PortfolioCateg
   const seen = new Set<PortfolioCategory>()
 
   return values.reduce<PortfolioCategory[]>((categories, value) => {
-    const trimmed = value.trim()
+    const trimmed = toCanonicalPortfolioCategory(value.trim())
 
     if (!isPortfolioCategory(trimmed) || seen.has(trimmed)) {
       return categories

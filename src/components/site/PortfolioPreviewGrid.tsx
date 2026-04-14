@@ -17,7 +17,7 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 	}
 
 	return (
-		<div className={cn('grid gap-6 md:grid-cols-2 xl:grid-cols-3', gridClassName)}>
+		<div className={cn('grid grid-cols-2 gap-4 sm:gap-6', gridClassName)}>
 			{items.slice(0, 6).map((item, index) => (
 				<BlurFade key={item.id} delay={Math.min(index * 0.07, 0.35)} className="w-full">
 					<Link href={href} className="group relative block aspect-square w-full cursor-pointer overflow-hidden bg-stone-200">
@@ -28,7 +28,7 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 								fill
 								className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
 								loading={index < 3 ? 'eager' : 'lazy'}
-								sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+								sizes="50vw"
 							/>
 							{item.hoverImageUrl ? (
 								<Image
@@ -36,7 +36,7 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 									alt={`${item.title} hover`}
 									fill
 									className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
-									sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+									sizes="50vw"
 								/>
 							) : null}
 						</div>

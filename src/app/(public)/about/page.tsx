@@ -276,8 +276,8 @@ export default async function AboutPage() {
 						<ClientLogoMarquee
 							brands={rollingBrands}
 							className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-							trackClassName="about-logo-marquee-track flex min-w-max items-center gap-14"
-							logoClassName="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
+						trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
+						logoClassName="relative h-8 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-10 sm:w-32"
 							imageClassName="object-contain grayscale"
 						/>
 

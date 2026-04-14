@@ -73,7 +73,7 @@ export default async function HomePage() {
 						{featuredItems.length === 0 ? (
 							<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>
 						) : (
-							<PortfolioPreviewGrid items={featuredItems} gridClassName="xl:grid-cols-4" />
+								<PortfolioPreviewGrid items={featuredItems} />
 						)}
 					</section>
 
@@ -92,8 +92,8 @@ export default async function HomePage() {
 						<ClientLogoMarquee
 							brands={clientLogoBrands}
 							className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
-							trackClassName="home-marquee-track flex min-w-max items-center gap-16 whitespace-nowrap py-4"
-							logoClassName="relative h-12 w-36 shrink-0 opacity-70 transition hover:opacity-100"
+							trackClassName="home-marquee-track flex min-w-max items-center gap-10 whitespace-nowrap py-4 sm:gap-16"
+							logoClassName="relative h-9 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-12 sm:w-36"
 							imageClassName="object-contain grayscale"
 						/>
 					</section>
