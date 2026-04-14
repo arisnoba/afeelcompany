@@ -66,7 +66,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 			{filteredItems.length === 0 ? (
 				<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">선택한 카테고리에 해당하는 작업이 없습니다.</div>
 			) : (
-				<div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+				<div className="grid grid-cols-2 gap-4 sm:gap-6 xl:grid-cols-3">
 					{visibleItems.map((item, index) => {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
 
@@ -83,7 +83,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 											fill
 											className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
 											loading={index < 3 ? 'eager' : 'lazy'}
-											sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+											sizes="(max-width: 1280px) 50vw, 33vw"
 										/>
 										{item.hoverImageUrl ? (
 											<Image
@@ -91,7 +91,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 												alt={`${item.title} hover`}
 												fill
 												className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
-												sizes="(max-width: 768px) 100vw, (max-width: 1280px) 50vw, 33vw"
+												sizes="(max-width: 1280px) 50vw, 33vw"
 											/>
 										) : null}
 									</div>
