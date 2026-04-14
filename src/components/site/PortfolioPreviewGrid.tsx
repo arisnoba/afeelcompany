@@ -26,18 +26,22 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 								src={item.imageUrl}
 								alt={item.title}
 								fill
-								className="object-cover transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
+								className="object-cover object-center transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
 								loading={index < 3 ? 'eager' : 'lazy'}
 								sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
 							/>
 							{item.hoverImageUrl ? (
-								<Image
-									src={item.hoverImageUrl}
-									alt={`${item.title} hover`}
-									fill
-									className="object-cover opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100"
-									sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
-								/>
+								<div className="absolute inset-0 bg-white p-5 opacity-0 transition duration-300 group-hover:opacity-100 group-active:opacity-100 sm:p-6">
+									<div className="relative h-full w-full">
+										<Image
+											src={item.hoverImageUrl}
+											alt={`${item.title} hover`}
+											fill
+											className="object-contain object-center"
+											sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
+										/>
+									</div>
+								</div>
 							) : null}
 						</div>
 						<div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0 group-active:opacity-0" />
