@@ -76,7 +76,7 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 	function handleCreateSuccess(item: PortfolioAdminItem) {
 		setItems(current => sortItems([...current, item]));
-		setSheetState({ mode: 'edit', itemId: item.id });
+		setSheetState(null);
 		setFeedback('새 포트폴리오 항목이 추가되었습니다.');
 		setError(null);
 	}
