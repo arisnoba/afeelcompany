@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -19,14 +20,10 @@ interface ProfileEditorProps {
 
 export function ProfileEditor({ initialProfile }: ProfileEditorProps) {
   const [profile, setProfile] = useState(initialProfile)
-  const [feedback, setFeedback] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [isPending, setIsPending] = useState(false)
 
   async function handleSave() {
     setIsPending(true)
-    setFeedback(null)
-    setError(null)
 
     try {
       const response = await fetch('/api/company-profile', {
@@ -39,13 +36,13 @@ export function ProfileEditor({ initialProfile }: ProfileEditorProps) {
       const result = (await response.json()) as { success: boolean; error?: string }
 
       if (!response.ok || !result.success) {
-        setError(result.error ?? '회사 정보 저장에 실패했습니다.')
+        toast.error(result.error ?? '회사 정보 저장에 실패했습니다.')
         return
       }
 
-      setFeedback('회사 정보가 저장되었습니다.')
+      toast.success('회사 정보가 저장되었습니다.')
     } catch {
-      setError('회사 정보 저장에 실패했습니다.')
+      toast.error('회사 정보 저장에 실패했습니다.')
     } finally {
       setIsPending(false)
     }
@@ -110,18 +107,6 @@ export function ProfileEditor({ initialProfile }: ProfileEditorProps) {
             }
           />
         </div>
-
-        {feedback ? (
-          <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-            {feedback}
-          </div>
-        ) : null}
-
-        {error ? (
-          <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {error}
-          </div>
-        ) : null}
 
         <Button type="button" onClick={handleSave} disabled={isPending}>
           {isPending ? '저장 중...' : '회사 정보 저장'}

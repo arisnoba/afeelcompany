@@ -2,6 +2,7 @@
 
 import Image from 'next/image';
 import { ChangeEvent, useEffect, useState } from 'react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import type { ClientBrandAdminItem } from '@/types/client-brand';
@@ -47,8 +48,6 @@ export function PortfolioEditorForm({
 	const [hoverPreviewUrl, setHoverPreviewUrl] = useState<string | null>(item.thumbnailUrl);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [feedback, setFeedback] = useState<string | null>(null);
 
 	const selectedBrand = availableBrands.find(brand => brand.id === form.clientBrandId) ?? null;
 	const requiresCustomHover = form.brandMode === 'custom';
@@ -58,8 +57,6 @@ export function PortfolioEditorForm({
 		setForm(toFormValue(item));
 		setSelectedHoverFile(null);
 		setHoverPreviewUrl(item.thumbnailUrl);
-		setError(null);
-		setFeedback(null);
 	}, [item]);
 
 	useEffect(() => {
@@ -89,8 +86,6 @@ export function PortfolioEditorForm({
 
 	async function handleSave() {
 		setIsSaving(true);
-		setError(null);
-		setFeedback(null);
 
 		try {
 			const payload = new FormData();
@@ -116,14 +111,13 @@ export function PortfolioEditorForm({
 			const result = (await response.json()) as PortfolioMutationResponse;
 
 			if (!response.ok || !result.success || !result.data) {
-				setError(result.error ?? '저장에 실패했습니다.');
+				toast.error(result.error ?? '저장에 실패했습니다.');
 				return;
 			}
 
-			setFeedback('항목이 저장되었습니다.');
 			onSaveSuccess(result.data);
 		} catch {
-			setError('저장에 실패했습니다.');
+			toast.error('저장에 실패했습니다.');
 		} finally {
 			setIsSaving(false);
 		}
@@ -131,8 +125,6 @@ export function PortfolioEditorForm({
 
 	async function handleDelete() {
 		setIsDeleting(true);
-		setError(null);
-		setFeedback(null);
 
 		try {
 			const response = await fetch(`/api/portfolio/${item.id}`, {
@@ -141,13 +133,13 @@ export function PortfolioEditorForm({
 			const result = (await response.json()) as { success: boolean; error?: string };
 
 			if (!response.ok || !result.success) {
-				setError(result.error ?? '삭제에 실패했습니다.');
+				toast.error(result.error ?? '삭제에 실패했습니다.');
 				return;
 			}
 
 			onDeleteSuccess(item.id);
 		} catch {
-			setError('삭제에 실패했습니다.');
+			toast.error('삭제에 실패했습니다.');
 		} finally {
 			setIsDeleting(false);
 		}
@@ -199,10 +191,6 @@ export function PortfolioEditorForm({
 					</div>
 				</div>
 			</div>
-
-			{error ? <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div> : null}
-
-			{feedback ? <div className="rounded-2xl border border-[#18e299]/25 bg-[#18e299]/10 px-4 py-3 text-sm text-[#0f7b54]">{feedback}</div> : null}
 
 			<div className="flex flex-col gap-2 sm:flex-row sm:justify-between">
 				<Button type="button" variant="destructive" onClick={handleDelete} disabled={isSaving || isDeleting}>

@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import { Geist_Mono, Inter, Manrope, Newsreader } from 'next/font/google';
 
 import './globals.css';
+import { Toaster } from '@/components/ui/sonner';
 import {
 	DEFAULT_OG_IMAGE,
 	DEFAULT_SITE_DESCRIPTION,
@@ -105,6 +106,7 @@ export default function RootLayout({
 					dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }}
 				/>
 				{children}
+				<Toaster />
 			</body>
 		</html>
 	);

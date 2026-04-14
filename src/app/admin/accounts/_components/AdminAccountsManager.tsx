@@ -1,6 +1,7 @@
 'use client'
 
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
@@ -30,15 +31,11 @@ export function AdminAccountsManager({
   const [admins, setAdmins] = useState(initialAdmins)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [feedback, setFeedback] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState(false)
   const [pendingAdminId, setPendingAdminId] = useState<string | null>(null)
 
   async function handleCreateAdmin() {
     setIsCreating(true)
-    setFeedback(null)
-    setError(null)
 
     try {
       const response = await fetch('/api/admin-users', {
@@ -55,16 +52,16 @@ export function AdminAccountsManager({
 
       if (!response.ok || !result.success) {
         const code = result.success ? 'ADMIN_NOT_FOUND' : result.error
-        setError(code ? ERROR_MESSAGES[code] : '관리자 계정 등록에 실패했습니다.')
+        toast.error(code ? ERROR_MESSAGES[code] : '관리자 계정 등록에 실패했습니다.')
         return
       }
 
       setAdmins((current) => [...current, result.admin])
       setEmail('')
       setPassword('')
-      setFeedback('관리자 계정이 등록되었습니다.')
+      toast.success('관리자 계정이 등록되었습니다.')
     } catch {
-      setError('관리자 계정 등록에 실패했습니다.')
+      toast.error('관리자 계정 등록에 실패했습니다.')
     } finally {
       setIsCreating(false)
     }
@@ -72,8 +69,6 @@ export function AdminAccountsManager({
 
   async function handleToggleAdmin(admin: AdminUserSummary) {
     setPendingAdminId(admin.id)
-    setFeedback(null)
-    setError(null)
 
     try {
       const response = await fetch(`/api/admin-users/${admin.id}`, {
@@ -90,20 +85,20 @@ export function AdminAccountsManager({
 
       if (!response.ok || !result.success) {
         const code = result.success ? 'ADMIN_NOT_FOUND' : result.error
-        setError(code ? ERROR_MESSAGES[code] : '관리자 상태 변경에 실패했습니다.')
+        toast.error(code ? ERROR_MESSAGES[code] : '관리자 상태 변경에 실패했습니다.')
         return
       }
 
       setAdmins((current) =>
         current.map((item) => (item.id === result.admin.id ? result.admin : item))
       )
-      setFeedback(
+      toast.success(
         result.admin.isActive
           ? '관리자 계정이 다시 활성화되었습니다.'
           : '관리자 계정이 비활성화되었습니다.'
       )
     } catch {
-      setError('관리자 상태 변경에 실패했습니다.')
+      toast.error('관리자 상태 변경에 실패했습니다.')
     } finally {
       setPendingAdminId(null)
     }
@@ -137,18 +132,6 @@ export function AdminAccountsManager({
               placeholder="10자 이상 비밀번호"
             />
           </div>
-
-          {feedback ? (
-            <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-              {feedback}
-            </div>
-          ) : null}
-
-          {error ? (
-            <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
-          ) : null}
 
           <Button type="button" onClick={handleCreateAdmin} disabled={isCreating}>
             {isCreating ? '등록 중...' : '관리자 계정 추가'}

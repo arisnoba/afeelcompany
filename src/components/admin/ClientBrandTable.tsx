@@ -3,6 +3,7 @@
 import Image from 'next/image'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, Plus } from 'lucide-react'
+import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { Checkbox } from '@/components/ui/checkbox'
@@ -48,8 +49,6 @@ function formatUrlLabel(value: string) {
 export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
   const [items, setItems] = useState<ClientBrandAdminItem[]>(sortItems(initialItems))
   const [sheetState, setSheetState] = useState<ClientSheetState>(null)
-  const [feedback, setFeedback] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
 
   const selectedItem = useMemo(() => {
     if (!sheetState || sheetState.mode !== 'edit') {
@@ -61,36 +60,29 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
 
   function openCreateSheet() {
     setSheetState({ mode: 'create' })
-    setFeedback(null)
-    setError(null)
   }
 
   function openEditSheet(itemId: string) {
     setSheetState({ mode: 'edit', itemId })
-    setFeedback(null)
-    setError(null)
   }
 
   function handleCreateSuccess(item: ClientBrandAdminItem) {
     setItems((current) => sortItems([...current, item]))
     setSheetState({ mode: 'edit', itemId: item.id })
-    setFeedback('새 파트너가 등록되었습니다.')
-    setError(null)
+    toast.success('새 파트너가 등록되었습니다.')
   }
 
   function handleSaveSuccess(item: ClientBrandAdminItem) {
     setItems((current) =>
       sortItems(current.map((entry) => (entry.id === item.id ? item : entry)))
     )
-    setFeedback('파트너 정보가 저장되었습니다.')
-    setError(null)
+    toast.success('파트너 정보가 저장되었습니다.')
   }
 
   function handleDeleteSuccess(itemId: string) {
     setItems((current) => current.filter((item) => item.id !== itemId))
     setSheetState(null)
-    setFeedback('파트너가 삭제되었습니다.')
-    setError(null)
+    toast.success('파트너가 삭제되었습니다.')
   }
 
   return (
@@ -108,18 +100,6 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
       </div>
 
       {/* 피드백 */}
-      {feedback ? (
-        <div className="rounded-lg border border-[#18e299]/20 bg-[#18e299]/8 px-4 py-2.5 text-sm text-[#0f7b54]">
-          {feedback}
-        </div>
-      ) : null}
-
-      {error ? (
-        <div className="rounded-lg border border-destructive/20 bg-destructive/8 px-4 py-2.5 text-sm text-destructive">
-          {error}
-        </div>
-      ) : null}
-
       {/* 테이블 */}
       <div className="overflow-hidden rounded-xl border border-black/6 bg-white shadow-[0_1px_6px_rgba(15,23,42,0.04)]">
         {items.length === 0 ? (
@@ -243,7 +223,6 @@ function ClientBrandSheetForm({
   const [form, setForm] = useState(EMPTY_FORM)
   const [selectedLogo, setSelectedLogo] = useState<File | null>(null)
   const [previewUrl, setPreviewUrl] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
 
@@ -256,14 +235,12 @@ function ClientBrandSheetForm({
       })
       setSelectedLogo(null)
       setPreviewUrl(item.logoUrl)
-      setError(null)
       return
     }
 
     setForm(EMPTY_FORM)
     setSelectedLogo(null)
     setPreviewUrl(null)
-    setError(null)
   }, [item, mode])
 
   useEffect(() => {
@@ -278,7 +255,6 @@ function ClientBrandSheetForm({
     const file = event.target.files?.[0] ?? null
 
     setSelectedLogo(file)
-    setError(null)
 
     setPreviewUrl((current) => {
       if (current?.startsWith('blob:')) {
@@ -295,22 +271,21 @@ function ClientBrandSheetForm({
 
   async function handleSubmit() {
     if (!form.name.trim()) {
-      setError('브랜드 이름을 입력해 주세요.')
+      toast.error('브랜드 이름을 입력해 주세요.')
       return
     }
 
     if (mode === 'create' && !selectedLogo) {
-      setError('브랜드 로고를 업로드해 주세요.')
+      toast.error('브랜드 로고를 업로드해 주세요.')
       return
     }
 
     if (mode === 'edit' && !item) {
-      setError('수정할 파트너 정보를 찾지 못했습니다.')
+      toast.error('수정할 파트너 정보를 찾지 못했습니다.')
       return
     }
 
     setIsSubmitting(true)
-    setError(null)
 
     try {
       const payload = new FormData()
@@ -332,7 +307,7 @@ function ClientBrandSheetForm({
       const result = (await response.json()) as ClientBrandMutationResponse
 
       if (!response.ok || !result.success || !result.data) {
-        setError(result.error ?? '파트너 저장에 실패했습니다.')
+        toast.error(result.error ?? '파트너 저장에 실패했습니다.')
         return
       }
 
@@ -347,7 +322,7 @@ function ClientBrandSheetForm({
         submitError instanceof Error
           ? submitError.message
           : '파트너 저장에 실패했습니다.'
-      setError(message)
+      toast.error(message)
     } finally {
       setIsSubmitting(false)
     }
@@ -359,7 +334,6 @@ function ClientBrandSheetForm({
     }
 
     setIsDeleting(true)
-    setError(null)
 
     try {
       const response = await fetch(`/api/client-brands/${item.id}`, {
@@ -368,13 +342,13 @@ function ClientBrandSheetForm({
       const result = (await response.json()) as { success: boolean; error?: string }
 
       if (!response.ok || !result.success) {
-        setError(result.error ?? '파트너 삭제에 실패했습니다.')
+        toast.error(result.error ?? '파트너 삭제에 실패했습니다.')
         return
       }
 
       onDeleteSuccess(item.id)
     } catch {
-      setError('파트너 삭제에 실패했습니다.')
+      toast.error('파트너 삭제에 실패했습니다.')
     } finally {
       setIsDeleting(false)
     }
@@ -458,12 +432,6 @@ function ClientBrandSheetForm({
           )}
         </div>
       </div>
-
-      {error ? (
-        <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-          {error}
-        </div>
-      ) : null}
 
       <div className="flex flex-wrap items-center gap-3">
         <Button

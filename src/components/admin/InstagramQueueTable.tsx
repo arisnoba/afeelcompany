@@ -2,6 +2,7 @@
 
 import Image from 'next/image'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
@@ -48,20 +49,16 @@ export function InstagramQueueTable({
     portfolioOptions[0]?.id ?? ''
   )
   const [caption, setCaption] = useState('')
-  const [feedback, setFeedback] = useState<string | null>(null)
-  const [error, setError] = useState<string | null>(null)
   const [activeId, setActiveId] = useState<string | null>(null)
   const [isCreating, setIsCreating] = useState(false)
 
   async function handleCreateQueueItem() {
     if (!selectedPortfolioItemId) {
-      setError('큐에 넣을 포트폴리오 항목을 선택해 주세요.')
+      toast.error('큐에 넣을 포트폴리오 항목을 선택해 주세요.')
       return
     }
 
     setIsCreating(true)
-    setFeedback(null)
-    setError(null)
 
     try {
       const response = await fetch('/api/instagram/queue', {
@@ -81,7 +78,7 @@ export function InstagramQueueTable({
       }
 
       if (!response.ok || !result.success || !result.data) {
-        setError(result.error ?? '큐 생성에 실패했습니다.')
+        toast.error(result.error ?? '큐 생성에 실패했습니다.')
         return
       }
 
@@ -102,9 +99,9 @@ export function InstagramQueueTable({
         return [nextItem, ...current]
       })
       setCaption('')
-      setFeedback('큐 항목이 저장되었습니다.')
+      toast.success('큐 항목이 저장되었습니다.')
     } catch {
-      setError('큐 생성에 실패했습니다.')
+      toast.error('큐 생성에 실패했습니다.')
     } finally {
       setIsCreating(false)
     }
@@ -112,8 +109,6 @@ export function InstagramQueueTable({
 
   async function handlePublish(id: string) {
     setActiveId(id)
-    setFeedback(null)
-    setError(null)
 
     setQueue((current) =>
       current.map((item) => (item.id === id ? { ...item, status: 'pending' } : item))
@@ -133,7 +128,7 @@ export function InstagramQueueTable({
         setQueue((current) =>
           current.map((item) => (item.id === id ? { ...item, status: 'failed' } : item))
         )
-        setError(result.error ?? '게시에 실패했습니다.')
+        toast.error(result.error ?? '게시에 실패했습니다.')
         return
       }
 
@@ -149,12 +144,12 @@ export function InstagramQueueTable({
             : item
         )
       )
-      setFeedback('게시 요청이 완료되었습니다.')
+      toast.success('게시 요청이 완료되었습니다.')
     } catch {
       setQueue((current) =>
         current.map((item) => (item.id === id ? { ...item, status: 'failed' } : item))
       )
-      setError('게시에 실패했습니다.')
+      toast.error('게시에 실패했습니다.')
     } finally {
       setActiveId(null)
     }
@@ -209,18 +204,6 @@ export function InstagramQueueTable({
             </div>
           </CardContent>
         </Card>
-
-        {feedback ? (
-          <div className="rounded-md border border-emerald-200 bg-emerald-50 px-4 py-3 text-sm text-emerald-700">
-            {feedback}
-          </div>
-        ) : null}
-
-        {error ? (
-          <div className="rounded-md border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-            {error}
-          </div>
-        ) : null}
 
         {queue.length === 0 ? (
           <div className="rounded-lg border border-dashed bg-muted/40 px-6 py-12 text-center text-sm text-muted-foreground">

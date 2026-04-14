@@ -1,8 +1,29 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState, type DragEvent } from 'react';
+import { useMemo, useState } from 'react';
+import {
+	DndContext,
+	DragOverlay,
+	KeyboardSensor,
+	PointerSensor,
+	closestCenter,
+	useSensor,
+	useSensors,
+	type DragEndEvent,
+	type DragOverEvent,
+	type DragStartEvent,
+} from '@dnd-kit/core';
+import {
+	SortableContext,
+	arrayMove,
+	sortableKeyboardCoordinates,
+	useSortable,
+	verticalListSortingStrategy,
+} from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { GripVertical, Plus, RotateCcw } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { UploadForm } from '@/app/admin/upload/_components/UploadForm';
 import { PortfolioEditorForm } from '@/components/admin/PortfolioEditorForm';
@@ -19,7 +40,7 @@ interface PortfolioTableProps {
 }
 
 type PortfolioSheetState = { mode: 'create' } | { mode: 'edit'; itemId: string } | null;
-type PortfolioDragState = { draggedId: string; overId: string | null } | null;
+type PortfolioDragState = { activeId: string; overId: string | null } | null;
 
 function sortItems(items: PortfolioAdminItem[]) {
 	return [...items].sort((left, right) => left.sortOrder - right.sortOrder);
@@ -45,21 +66,135 @@ function moveItem(items: PortfolioAdminItem[], fromIndex: number, toIndex: numbe
 		return items;
 	}
 
-	const nextItems = [...items];
-	const [moved] = nextItems.splice(fromIndex, 1);
-	nextItems.splice(toIndex, 0, moved);
+	return normalizeSortOrder(arrayMove(items, fromIndex, toIndex));
+}
 
-	return normalizeSortOrder(nextItems);
+interface PortfolioRowProps {
+	index: number;
+	item: PortfolioAdminItem;
+	isActive: boolean;
+	onOpen: (itemId: string) => void;
+}
+
+function PortfolioRow({ index, item, isActive, onOpen }: PortfolioRowProps) {
+	const { attributes, listeners, setActivatorNodeRef, setNodeRef, transform, transition, isDragging, isOver } =
+		useSortable({ id: item.id });
+
+	return (
+		<div
+			ref={setNodeRef}
+			style={{ transform: CSS.Transform.toString(transform), transition }}
+			className={cn(
+				'group grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/4 px-4 py-3 transition-[background-color,box-shadow,transform] last:border-b-0',
+				isDragging ? 'z-10 opacity-35' : 'hover:bg-[#f7fdf9]',
+				isOver && !isActive ? 'bg-[#f0fdf8] shadow-[inset_0_2px_0_#18e299,inset_0_-1px_0_#18e299/20]' : null
+			)}>
+			<button
+				ref={setActivatorNodeRef}
+				type="button"
+				aria-label={`${item.title} 순서 이동`}
+				{...attributes}
+				{...listeners}
+				className={cn(
+					'flex size-8 touch-none cursor-grab items-center justify-center rounded-lg text-black/20 transition-colors',
+					'group-hover:text-black/40 hover:bg-black/4 hover:text-[#0f7b54]!',
+					isActive ? 'cursor-grabbing text-[#0f7b54]' : null
+				)}>
+				<GripVertical className="size-3.5" />
+			</button>
+
+			<button
+				type="button"
+				onClick={() => onOpen(item.id)}
+				className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8] transition-opacity hover:opacity-80">
+				<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
+			</button>
+
+			<button type="button" onClick={() => onOpen(item.id)} className="min-w-0 text-left">
+				<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
+				<p className="truncate text-xs leading-4 text-muted-foreground">
+					{item.brandName}
+					{item.celebrityName ? ` · ${item.celebrityName}` : ''}
+				</p>
+			</button>
+
+			<div className="flex items-center">
+				<span className="truncate rounded-md bg-black/4 px-2 py-1 text-xs text-foreground/70">
+					{formatPortfolioCategories(item.category) || '—'}
+				</span>
+			</div>
+
+			<div className="flex items-center justify-center gap-2">
+				<div className="flex items-center gap-1">
+					<span className={cn('size-2 rounded-full', item.showOnWeb ? 'bg-[#18e299]' : 'bg-black/15')} />
+					<span className="text-[10px] text-muted-foreground">웹</span>
+				</div>
+				<div className="flex items-center gap-1">
+					<span className={cn('size-2 rounded-full', item.showOnPdf ? 'bg-[#18e299]' : 'bg-black/15')} />
+					<span className="text-[10px] text-muted-foreground">PDF</span>
+				</div>
+			</div>
+
+			<div className="flex items-center justify-center">
+				<span className="text-xs tabular-nums text-black/30">{index + 1}</span>
+			</div>
+		</div>
+	);
+}
+
+function PortfolioDragPreview({ item }: { item: PortfolioAdminItem }) {
+	return (
+		<div className="grid w-[min(52rem,calc(100vw-2rem))] grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 rounded-xl border border-[#18e299]/25 bg-white px-4 py-3 shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
+			<div className="flex size-8 items-center justify-center rounded-lg bg-[#18e299]/10 text-[#0f7b54]">
+				<GripVertical className="size-3.5" />
+			</div>
+			<div className="relative h-14 w-14 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8]">
+				<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
+			</div>
+			<div className="min-w-0">
+				<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
+				<p className="truncate text-xs leading-4 text-muted-foreground">
+					{item.brandName}
+					{item.celebrityName ? ` · ${item.celebrityName}` : ''}
+				</p>
+			</div>
+			<div className="flex items-center">
+				<span className="truncate rounded-md bg-black/4 px-2 py-1 text-xs text-foreground/70">
+					{formatPortfolioCategories(item.category) || '—'}
+				</span>
+			</div>
+			<div className="flex items-center justify-center gap-2">
+				<div className="flex items-center gap-1">
+					<span className={cn('size-2 rounded-full', item.showOnWeb ? 'bg-[#18e299]' : 'bg-black/15')} />
+					<span className="text-[10px] text-muted-foreground">웹</span>
+				</div>
+				<div className="flex items-center gap-1">
+					<span className={cn('size-2 rounded-full', item.showOnPdf ? 'bg-[#18e299]' : 'bg-black/15')} />
+					<span className="text-[10px] text-muted-foreground">PDF</span>
+				</div>
+			</div>
+			<div className="flex items-center justify-center">
+				<span className="text-xs tabular-nums text-black/30">이동</span>
+			</div>
+		</div>
+	);
 }
 
 export function PortfolioTable({ initialItems, clientBrands }: PortfolioTableProps) {
 	const [items, setItems] = useState<PortfolioAdminItem[]>(sortItems(initialItems));
 	const [savedOrderIds, setSavedOrderIds] = useState<string[]>(() => getItemIds(sortItems(initialItems)));
-	const [feedback, setFeedback] = useState<string | null>(null);
-	const [error, setError] = useState<string | null>(null);
 	const [isSavingOrder, setIsSavingOrder] = useState(false);
 	const [sheetState, setSheetState] = useState<PortfolioSheetState>(null);
 	const [dragState, setDragState] = useState<PortfolioDragState>(null);
+	const sensors = useSensors(
+		useSensor(PointerSensor, {
+			activationConstraint: { distance: 6 },
+		}),
+		useSensor(KeyboardSensor, {
+			coordinateGetter: sortableKeyboardCoordinates,
+		})
+	);
+	const itemIds = getItemIds(items);
 
 	const selectedItem = useMemo(() => {
 		if (!sheetState || sheetState.mode !== 'edit') {
@@ -74,21 +209,17 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 			return null;
 		}
 
-		return items.find(item => item.id === dragState.draggedId) ?? null;
+		return items.find(item => item.id === dragState.activeId) ?? null;
 	}, [dragState, items]);
 
-	const hasPendingOrderChanges = !hasSameOrder(getItemIds(items), savedOrderIds);
+	const hasPendingOrderChanges = !hasSameOrder(itemIds, savedOrderIds);
 
 	function openCreateSheet() {
 		setSheetState({ mode: 'create' });
-		setError(null);
-		setFeedback(null);
 	}
 
 	function openEditSheet(itemId: string) {
 		setSheetState({ mode: 'edit', itemId });
-		setError(null);
-		setFeedback(null);
 	}
 
 	function updateItem(itemId: string, nextItem: PortfolioAdminItem) {
@@ -113,14 +244,12 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 		setItems(nextItems);
 		setSavedOrderIds(getItemIds(nextItems));
 		setSheetState(null);
-		setFeedback('새 포트폴리오 항목이 추가되었습니다.');
-		setError(null);
+		toast.success('새 포트폴리오 항목이 추가되었습니다.');
 	}
 
 	function handleSaveSuccess(item: PortfolioAdminItem) {
 		updateItem(item.id, item);
-		setFeedback('항목이 저장되었습니다.');
-		setError(null);
+		toast.success('항목이 저장되었습니다.');
 	}
 
 	function handleDeleteSuccess(itemId: string) {
@@ -128,50 +257,38 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 		setItems(nextItems);
 		setSavedOrderIds(getItemIds(nextItems));
 		setSheetState(null);
-		setFeedback('항목이 삭제되었습니다.');
-		setError(null);
+		toast.success('항목이 삭제되었습니다.');
 	}
 
-	function handleDragStart(event: DragEvent<HTMLDivElement>, itemId: string) {
-		event.dataTransfer.effectAllowed = 'move';
-		event.dataTransfer.setData('text/plain', itemId);
-		setDragState({ draggedId: itemId, overId: itemId });
-		setFeedback(null);
-		setError(null);
+	function handleDragStart(event: DragStartEvent) {
+		const activeId = String(event.active.id);
+		setDragState({ activeId, overId: activeId });
 	}
 
-	function handleDragEnter(itemId: string) {
+	function handleDragOver(event: DragOverEvent) {
 		setDragState(current => {
-			if (!current || current.draggedId === itemId) {
+			if (!current) {
 				return current;
 			}
 
 			return {
 				...current,
-				overId: itemId,
+				overId: event.over ? String(event.over.id) : null,
 			};
 		});
 	}
 
-	function handleDragOver(event: DragEvent<HTMLDivElement>) {
-		event.preventDefault();
-		event.dataTransfer.dropEffect = 'move';
-	}
+	function handleDragEnd(event: DragEndEvent) {
+		const activeId = String(event.active.id);
+		const overId = event.over ? String(event.over.id) : null;
+		setDragState(null);
 
-	function handleDrop(event: DragEvent<HTMLDivElement>, itemId: string) {
-		event.preventDefault();
-
-		const draggedId = dragState?.draggedId ?? event.dataTransfer.getData('text/plain');
-
-		if (!draggedId) {
-			setDragState(null);
+		if (!overId || activeId === overId) {
 			return;
 		}
 
-		reorderItems(draggedId, itemId);
-		setDragState(null);
-		setFeedback('순서를 변경했습니다. 저장하면 웹과 PDF 노출 순서에 반영됩니다.');
-		setError(null);
+		reorderItems(activeId, overId);
+		toast.success('순서를 변경했습니다. 저장하면 웹과 PDF 노출 순서에 반영됩니다.');
 	}
 
 	function handleRestoreSavedOrder() {
@@ -182,14 +299,11 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 
 		setItems(normalizeSortOrder(restoredItems));
 		setDragState(null);
-		setFeedback('마지막 저장 순서로 되돌렸습니다.');
-		setError(null);
+		toast.success('마지막 저장 순서로 되돌렸습니다.');
 	}
 
 	async function handleSaveOrder() {
 		setIsSavingOrder(true);
-		setError(null);
-		setFeedback(null);
 
 		try {
 			const response = await fetch('/api/portfolio/reorder', {
@@ -207,14 +321,14 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 			const result = (await response.json()) as { success: boolean; error?: string };
 
 			if (!response.ok || !result.success) {
-				setError(result.error ?? '정렬 저장에 실패했습니다.');
+				toast.error(result.error ?? '정렬 저장에 실패했습니다.');
 				return;
 			}
 
 			setSavedOrderIds(getItemIds(items));
-			setFeedback('정렬 순서가 저장되었습니다.');
+			toast.success('정렬 순서가 저장되었습니다.');
 		} catch {
-			setError('정렬 저장에 실패했습니다.');
+			toast.error('정렬 저장에 실패했습니다.');
 		} finally {
 			setIsSavingOrder(false);
 		}
@@ -245,10 +359,6 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 				</div>
 			</div>
 
-			{/* 피드백 */}
-			{feedback ? <div className="rounded-lg border border-[#18e299]/20 bg-[#18e299]/8 px-4 py-2.5 text-sm text-[#0f7b54]">{feedback}</div> : null}
-			{error ? <div className="rounded-lg border border-destructive/20 bg-destructive/8 px-4 py-2.5 text-sm text-destructive">{error}</div> : null}
-
 			{/* 테이블 */}
 			<div className="overflow-hidden rounded-xl border border-black/6 bg-white shadow-[0_1px_6px_rgba(15,23,42,0.04)]">
 				{items.length === 0 ? (
@@ -259,7 +369,13 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 						</button>
 					</div>
 				) : (
-					<>
+					<DndContext
+						sensors={sensors}
+						collisionDetection={closestCenter}
+						onDragStart={handleDragStart}
+						onDragOver={handleDragOver}
+						onDragEnd={handleDragEnd}
+						onDragCancel={() => setDragState(null)}>
 						{/* 테이블 헤더 */}
 						<div className="grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/6 bg-[#fafafa] px-4 py-2.5 text-xs font-medium text-muted-foreground">
 							<span />
@@ -270,87 +386,28 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 							<span className="text-center">#</span>
 						</div>
 
-						{/* 테이블 행 */}
-						{items.map((item, index) => (
-							<div
-								key={item.id}
-								onDragOver={handleDragOver}
-								onDragEnter={() => handleDragEnter(item.id)}
-								onDrop={event => handleDrop(event, item.id)}
-								className={cn(
-									'group grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/4 px-4 py-3 transition-colors last:border-b-0',
-									dragState?.draggedId === item.id ? 'opacity-40' : 'hover:bg-[#f7fdf9]',
-									dragState?.overId === item.id && dragState.draggedId !== item.id
-										? 'bg-[#f0fdf8] shadow-[inset_0_2px_0_#18e299,inset_0_-1px_0_#18e299/20]'
-										: null
-								)}>
-								{/* 드래그 핸들 */}
-								<div
-									role="button"
-									tabIndex={0}
-									aria-label={`${item.title} 순서 이동`}
-									draggable={items.length > 1}
-									onDragStart={event => handleDragStart(event, item.id)}
-									onDragEnd={() => setDragState(null)}
-									className={cn(
-										'flex size-8 cursor-grab items-center justify-center rounded-lg text-black/20 transition-colors',
-										items.length > 1 ? 'group-hover:text-black/40 hover:bg-black/4 hover:text-[#0f7b54]!' : 'cursor-default',
-										dragState?.draggedId === item.id ? 'cursor-grabbing text-[#0f7b54]' : null
-									)}>
-									<GripVertical className="size-3.5" />
-								</div>
-
-								{/* 썸네일 */}
-								<button
-									type="button"
-									onClick={() => openEditSheet(item.id)}
-									className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8] transition-opacity hover:opacity-80">
-									<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
-								</button>
-
-								{/* 제목 / 브랜드 */}
-								<button
-									type="button"
-									onClick={() => openEditSheet(item.id)}
-									className="min-w-0 text-left">
-									<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
-									<p className="truncate text-xs leading-4 text-muted-foreground">
-										{item.brandName}{item.celebrityName ? ` · ${item.celebrityName}` : ''}
-									</p>
-								</button>
-
-								{/* 카테고리 */}
-								<div className="flex items-center">
-									<span className="truncate rounded-md bg-black/4 px-2 py-1 text-xs text-foreground/70">
-										{formatPortfolioCategories(item.category) || '—'}
-									</span>
-								</div>
-
-								{/* 웹 · PDF 상태 */}
-								<div className="flex items-center justify-center gap-2">
-									<div className="flex items-center gap-1">
-										<span className={cn('size-2 rounded-full', item.showOnWeb ? 'bg-[#18e299]' : 'bg-black/15')} />
-										<span className="text-[10px] text-muted-foreground">웹</span>
-									</div>
-									<div className="flex items-center gap-1">
-										<span className={cn('size-2 rounded-full', item.showOnPdf ? 'bg-[#18e299]' : 'bg-black/15')} />
-										<span className="text-[10px] text-muted-foreground">PDF</span>
-									</div>
-								</div>
-
-								{/* 순서 번호 */}
-								<div className="flex items-center justify-center">
-									<span className="text-xs tabular-nums text-black/30">{index + 1}</span>
-								</div>
-							</div>
-						))}
+						<SortableContext items={itemIds} strategy={verticalListSortingStrategy}>
+							{items.map((item, index) => (
+								<PortfolioRow
+									key={item.id}
+									index={index}
+									item={item}
+									isActive={dragState?.activeId === item.id}
+									onOpen={openEditSheet}
+								/>
+							))}
+						</SortableContext>
 
 						{draggedItem ? (
 							<div className="border-t border-black/4 bg-[#f7fdf9] px-4 py-2 text-xs text-[#0f7b54]">
 								이동 중: <span className="font-medium">{draggedItem.title}</span>
 							</div>
 						) : null}
-					</>
+
+						<DragOverlay>
+							{draggedItem ? <PortfolioDragPreview item={draggedItem} /> : null}
+						</DragOverlay>
+					</DndContext>
 				)}
 			</div>
 

@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import { DragEvent, FormEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { ImagePlus, X } from 'lucide-react';
+import { toast } from 'sonner';
 
 import { Button } from '@/components/ui/button';
 import type { ClientBrandAdminItem } from '@/types/client-brand';
@@ -150,8 +151,6 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 	const [selectedFiles, setSelectedFiles] = useState(EMPTY_SELECTED_FILES);
 	const [previewUrls, setPreviewUrls] = useState(EMPTY_PREVIEW_URLS);
 	const [isPending, setIsPending] = useState(false);
-	const [error, setError] = useState<string | null>(null);
-	const [success, setSuccess] = useState<string | null>(null);
 	const selectedBrand = availableBrands.find(brand => brand.id === form.clientBrandId) ?? null;
 	const requiresCustomHover = form.brandMode === 'custom';
 
@@ -197,8 +196,6 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 			if (current[kind]) URL.revokeObjectURL(current[kind]!);
 			return { ...current, [kind]: URL.createObjectURL(file) };
 		});
-		setError(null);
-		setSuccess(null);
 	}
 
 	function handleClear(kind: UploadImageKey) {
@@ -217,33 +214,30 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 		event.preventDefault();
 
 		if (!selectedFiles.normal) {
-			setError('normal 이미지를 선택해 주세요.');
+			toast.error('normal 이미지를 선택해 주세요.');
 			return;
 		}
 
 		if (requiresCustomHover && !selectedFiles.hover) {
-			setError('예외 브랜드는 hover 이미지를 함께 등록해 주세요.');
+			toast.error('예외 브랜드는 hover 이미지를 함께 등록해 주세요.');
 			return;
 		}
 
 		if (form.brandMode === 'managed' && !form.clientBrandId) {
-			setError('등록된 브랜드를 선택해 주세요.');
+			toast.error('등록된 브랜드를 선택해 주세요.');
 			return;
 		}
 
 		setIsPending(true);
-		setError(null);
-		setSuccess(null);
 
 		try {
 			const resizedNormalFile = await resizePortfolioImage(selectedFiles.normal);
-			const resizedHoverFile =
-				requiresCustomHover && selectedFiles.hover ? await resizePortfolioImage(selectedFiles.hover) : null;
+			const resizedHoverFile = requiresCustomHover && selectedFiles.hover ? await resizePortfolioImage(selectedFiles.hover) : null;
 			const payload = new FormData();
 
 			payload.set('normalFile', resizedNormalFile);
 			payload.set('title', form.title);
-			payload.set('clientBrandId', form.brandMode === 'managed' ? form.clientBrandId ?? '' : '');
+			payload.set('clientBrandId', form.brandMode === 'managed' ? (form.clientBrandId ?? '') : '');
 			payload.set('brandName', form.brandMode === 'custom' ? form.brandName : '');
 			payload.set('celebrityName', form.celebrityName);
 			payload.set('category', serializePortfolioCategories(form.category));
@@ -261,7 +255,7 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 			const result = (await response.json()) as UploadResponse;
 
 			if (!response.ok || !result.success || !result.data) {
-				setError(result.error ?? '업로드에 실패했습니다.');
+				toast.error(result.error ?? '업로드에 실패했습니다.');
 				return;
 			}
 
@@ -275,10 +269,10 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 				return;
 			}
 
-			setSuccess('업로드가 완료되었습니다. 포트폴리오 관리 화면에서 바로 편집할 수 있습니다.');
+			toast.success('업로드가 완료되었습니다. 포트폴리오 관리 화면에서 바로 편집할 수 있습니다.');
 		} catch (submitError) {
 			const message = submitError instanceof Error ? submitError.message : '업로드에 실패했습니다.';
-			setError(message);
+			toast.error(message);
 		} finally {
 			setIsPending(false);
 		}
@@ -286,7 +280,15 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 
 	return (
 		<form className="grid gap-6" onSubmit={handleSubmit} encType="multipart/form-data">
-			<div className={`grid gap-4 ${requiresCustomHover ? 'sm:grid-cols-2' : ''}`}>
+			<div className="grid gap-4">
+				<div className="flex flex-col gap-1">
+					<p className="text-sm font-medium text-foreground">기본 정보</p>
+					<p className="text-xs text-muted-foreground">목록 카드와 상세 정보 패널에 같은 데이터가 반영됩니다.</p>
+				</div>
+				<PortfolioMetadataFields value={form} idPrefix="upload" availableBrands={availableBrands} disabled={isPending} onChange={updateForm} />
+			</div>
+
+			<div className={`grid gap-4 ${requiresCustomHover ? 'sm:grid-cols-2' : 'sm:grid-cols-2'}`}>
 				<ImageDropZone label="Normal 이미지" kind="normal" previewUrl={previewUrls.normal} previewAlt={previewAlt} disabled={isPending} onFile={handleFile} onClear={handleClear} />
 				{requiresCustomHover ? (
 					<ImageDropZone label="Hover 이미지" kind="hover" previewUrl={previewUrls.hover} previewAlt={previewAlt} disabled={isPending} onFile={handleFile} onClear={handleClear} />
@@ -313,32 +315,9 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 				)}
 			</div>
 
-			<p className="text-xs text-muted-foreground">
-				Normal 이미지는 항상 업로드합니다. 예외 브랜드를 직접 입력한 경우에만 hover 이미지를 추가로 업로드합니다.
-			</p>
+			<p className="text-xs text-muted-foreground">Normal 이미지는 항상 업로드합니다. 예외 브랜드를 직접 입력한 경우에만 hover 이미지를 추가로 업로드합니다.</p>
 
-			<div className="grid gap-4 rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
-				<div className="flex flex-col gap-1">
-					<p className="text-sm font-medium text-foreground">기본 정보</p>
-					<p className="text-xs text-muted-foreground">목록 카드와 상세 정보 패널에 같은 데이터가 반영됩니다.</p>
-				</div>
-				<PortfolioMetadataFields value={form} idPrefix="upload" availableBrands={availableBrands} disabled={isPending} onChange={updateForm} />
-			</div>
-
-			{error ? <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div> : null}
-
-			{success ? <div className="rounded-2xl border border-[#18e299]/25 bg-[#18e299]/10 px-4 py-3 text-sm text-[#0f7b54]">{success}</div> : null}
-
-			<Button
-				type="submit"
-				size="lg"
-				disabled={
-					isPending ||
-					!selectedFiles.normal ||
-					(requiresCustomHover && !selectedFiles.hover) ||
-					(form.brandMode === 'managed' && !selectedBrand?.logoUrl)
-				}
-			>
+			<Button type="submit" size="lg" disabled={isPending || !selectedFiles.normal || (requiresCustomHover && !selectedFiles.hover) || (form.brandMode === 'managed' && !selectedBrand?.logoUrl)}>
 				{isPending ? '업로드 중...' : '포트폴리오 생성'}
 			</Button>
 		</form>
