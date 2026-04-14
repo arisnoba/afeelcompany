@@ -40,7 +40,7 @@ export function BrochureSheet({ sectionId, children }: BrochureSheetProps) {
       ref={outerRef}
       id={sectionId}
       data-section={sectionId}
-      className="pdf-sheet overflow-hidden bg-white shadow-[0_20px_56px_rgba(28,25,23,0.10)]"
+      className="pdf-sheet overflow-hidden bg-white"
     >
       <div
         className="pdf-sheet-canvas"

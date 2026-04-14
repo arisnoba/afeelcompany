@@ -124,6 +124,8 @@ const ABOUT_SOCIAL_PROOF_LINES = [
   '어필컴퍼니와 함께 시작하세요.',
 ] as const
 
+const CONTACT_ADDRESS_URL = 'https://naver.me/5WUmv4Fu'
+
 // ── Utilities ───────────────────────────────
 
 function chunk<T>(array: T[], size: number): T[][] {
@@ -182,6 +184,15 @@ function getStoryCards(pageNum: number): string[] {
     ABOUT_STORY_LINES[start],
     ABOUT_STORY_LINES[(start + 1) % ABOUT_STORY_LINES.length],
   ]
+}
+
+function getMailtoHref(email: string): string {
+  return `mailto:${email.trim()}`
+}
+
+function getTelHref(phone: string): string {
+  const normalized = phone.replace(/[^\d+]/g, '')
+  return `tel:${normalized}`
 }
 
 function splitAboutNarrative(text: string) {
@@ -244,10 +255,7 @@ function AboutPageFrame({
   children: ReactNode
 }) {
   return (
-    <div className="relative h-full overflow-hidden bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)] text-stone-950">
-      <div className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:28px_28px]" />
-      <div className="absolute inset-x-[22%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.9),transparent_72%)] blur-3xl" />
-
+    <div className="relative h-full overflow-hidden bg-[#f7f1ea] text-stone-950">
       <div className="relative z-10 flex h-full flex-col px-10 py-9">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -640,7 +648,7 @@ function WorkSheet({ items, pageNum, totalPages }: WorkSheetProps) {
         {items.map((item) => (
           <article
             key={item.id}
-            className="avoid-break flex h-full min-h-0 flex-col overflow-hidden border border-stone-900/8 bg-white shadow-[0_16px_28px_rgba(28,25,23,0.06)]"
+            className="avoid-break flex h-full min-h-0 flex-col overflow-hidden border border-stone-900/8 bg-white"
           >
             <div className="relative flex-1 min-h-0 bg-stone-100">
               <PdfImage
@@ -742,11 +750,7 @@ export default async function PdfExportPage() {
     node: (
       <BrochureSheet sectionId="cover">
         <div className="relative h-full overflow-hidden">
-          {/* Left background: gradient only */}
-          <div className="absolute inset-y-0 left-0 w-[55%] bg-[linear-gradient(160deg,#f7f1ea_0%,#fcfaf7_40%,#f3ece5_100%)]">
-            <div className="absolute inset-0 opacity-40 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:32px_32px]" />
-            <div className="absolute inset-x-[10%] top-0 h-36 bg-[radial-gradient(circle_at_center,rgba(255,251,245,0.9),transparent_72%)] blur-2xl" />
-          </div>
+          <div className="absolute inset-y-0 left-0 w-[55%] bg-[#f7f1ea]" />
 
           {/* Content grid */}
           <div className="relative z-10 grid h-full" style={{ gridTemplateColumns: '55% 45%' }}>
@@ -907,8 +911,7 @@ export default async function PdfExportPage() {
           {/* Left: Map background + dark overlay + copy */}
           <div className="relative overflow-hidden">
             <PdfContactMap address={brochure.contact.address} apiKey={googleMapsApiKey} />
-            {/* Gradient overlay: dark at edges, lighter in center to let map show through */}
-            <div className="absolute inset-0 bg-[linear-gradient(to_bottom,rgba(12,10,9,0.88)_0%,rgba(12,10,9,0.72)_40%,rgba(12,10,9,0.72)_60%,rgba(12,10,9,0.88)_100%)]" />
+            <div className="absolute inset-0 bg-[rgba(12,10,9,0.78)]" />
 
             <div className="relative z-10 flex h-full flex-col justify-between px-12 py-10">
               <div className="flex items-center gap-3">
@@ -940,17 +943,40 @@ export default async function PdfExportPage() {
             <dl className="grid gap-7">
               <div className="grid gap-1.5">
                 <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.email}</dd>
+                <dd>
+                  <a
+                    href={getMailtoHref(brochure.contact.email)}
+                    className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4"
+                  >
+                    {brochure.contact.email}
+                  </a>
+                </dd>
               </div>
               <div className="h-px bg-stone-100" />
               <div className="grid gap-1.5">
                 <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.phone}</dd>
+                <dd>
+                  <a
+                    href={getTelHref(brochure.contact.phone)}
+                    className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4"
+                  >
+                    {brochure.contact.phone}
+                  </a>
+                </dd>
               </div>
               <div className="h-px bg-stone-100" />
               <div className="grid gap-1.5">
                 <dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
-                <dd className="text-[18px] font-medium text-stone-950">{brochure.contact.address}</dd>
+                <dd>
+                  <a
+                    href={CONTACT_ADDRESS_URL}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4"
+                  >
+                    {brochure.contact.address}
+                  </a>
+                </dd>
               </div>
             </dl>
             <div className="mt-8 flex items-center gap-3 border-t border-stone-100 pt-6">

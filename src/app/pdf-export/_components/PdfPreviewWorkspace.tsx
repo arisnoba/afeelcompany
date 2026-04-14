@@ -230,7 +230,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
     <>
       <div className="screen-only sticky top-3 z-30 px-3">
         <div className="mx-auto flex w-full max-w-[1400px] justify-center">
-          <div className="flex w-full max-w-[980px] flex-wrap items-center justify-center gap-2 rounded-[24px] border border-black/10 bg-white/78 px-2.5 py-2 shadow-[0_10px_28px_rgba(17,17,17,0.08)] backdrop-blur-xl">
+          <div className="flex w-full max-w-[980px] flex-wrap items-center justify-center gap-2 rounded-[24px] border border-black/10 bg-white/78 px-2.5 py-2 backdrop-blur-xl">
             <div className="flex items-center gap-2 rounded-full bg-black/[0.035] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-black/50">
               <span>PDF</span>
               <span className="text-black/25">/</span>
