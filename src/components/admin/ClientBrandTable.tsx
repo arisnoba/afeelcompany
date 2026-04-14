@@ -4,22 +4,13 @@ import Image from 'next/image'
 import { ChangeEvent, useEffect, useMemo, useState } from 'react'
 import { ExternalLink, Plus } from 'lucide-react'
 
-import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from '@/components/ui/card'
 import { Checkbox } from '@/components/ui/checkbox'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
 } from '@/components/ui/sheet'
@@ -104,133 +95,109 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
 
   return (
     <>
-      <Card className="overflow-hidden border-black/6 bg-white py-0 shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
-        <CardHeader className="flex flex-col gap-4 border-b border-black/6 bg-[linear-gradient(135deg,rgba(24,226,153,0.08),rgba(255,255,255,0.92)_48%,rgba(255,255,255,1))] px-6 py-6">
-          <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-            <div className="flex flex-col gap-2">
-              <CardTitle className="text-2xl font-semibold tracking-[-0.03em]">
-                클라이언트 리스트
-              </CardTitle>
-              <CardDescription className="max-w-3xl text-sm leading-6">
-                브랜드 이름, 로고, URL, 활성 여부를 한 테이블에서 확인하고 필요한 항목만
-                패널에서 수정할 수 있습니다.
-              </CardDescription>
-            </div>
+      {/* 페이지 타이틀 + 액션 */}
+      <div className="flex items-center gap-3">
+        <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">클라이언트 리스트</h1>
+        <span className="text-sm text-muted-foreground tabular-nums">{items.length}개</span>
+        <div className="ml-auto">
+          <Button type="button" variant="outline" size="sm" onClick={openCreateSheet}>
+            <Plus data-icon="inline-start" />
+            새 클라이언트
+          </Button>
+        </div>
+      </div>
 
-            <Button type="button" variant="outline" onClick={openCreateSheet}>
-              <Plus data-icon="inline-start" />
-              새 클라이언트 등록
-            </Button>
+      {/* 피드백 */}
+      {feedback ? (
+        <div className="rounded-lg border border-[#18e299]/20 bg-[#18e299]/8 px-4 py-2.5 text-sm text-[#0f7b54]">
+          {feedback}
+        </div>
+      ) : null}
+
+      {error ? (
+        <div className="rounded-lg border border-destructive/20 bg-destructive/8 px-4 py-2.5 text-sm text-destructive">
+          {error}
+        </div>
+      ) : null}
+
+      {/* 테이블 */}
+      <div className="overflow-hidden rounded-xl border border-black/6 bg-white shadow-[0_1px_6px_rgba(15,23,42,0.04)]">
+        {items.length === 0 ? (
+          <div className="px-6 py-16 text-center text-sm text-muted-foreground">
+            아직 등록된 클라이언트가 없습니다.
           </div>
-
-          <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <Badge variant="outline" className="rounded-full border-[#18e299]/30 bg-white">
-              총 {items.length}개 항목
-            </Badge>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full border-collapse text-sm">
+              <thead className="bg-[#fafafa] text-left text-xs font-medium text-muted-foreground">
+                <tr>
+                  <th className="px-4 py-3">브랜드 이름</th>
+                  <th className="px-4 py-3">로고</th>
+                  <th className="px-4 py-3">브랜드 URL</th>
+                  <th className="px-4 py-3">활성</th>
+                  <th className="px-4 py-3 text-right">관리</th>
+                </tr>
+              </thead>
+              <tbody>
+                {items.map((item) => (
+                  <tr key={item.id} className="border-t border-black/6 hover:bg-[#f7fdf9] transition-colors">
+                    <td className="px-4 py-3 align-middle font-medium text-foreground">
+                      {item.name}
+                    </td>
+                    <td className="px-4 py-3 align-middle">
+                      <div className="relative flex h-12 w-24 items-center justify-center overflow-hidden rounded-xl border border-black/6 bg-[#fbfdfb]">
+                        {item.logoUrl ? (
+                          <Image
+                            src={item.logoUrl}
+                            alt={item.name}
+                            fill
+                            className="object-contain p-3"
+                            sizes="96px"
+                          />
+                        ) : (
+                          <span className="px-3 text-xs text-muted-foreground">없음</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-4 py-3 align-middle text-muted-foreground">
+                      {item.brandUrl ? (
+                        <a
+                          href={item.brandUrl}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="inline-flex items-center gap-1 text-sm text-foreground underline-offset-4 hover:underline"
+                        >
+                          <span className="max-w-[16rem] truncate">
+                            {formatUrlLabel(item.brandUrl)}
+                          </span>
+                          <ExternalLink className="size-3.5 shrink-0" />
+                        </a>
+                      ) : (
+                        <span className="text-black/25">—</span>
+                      )}
+                    </td>
+                    <td className="px-4 py-3 align-middle">
+                      <span className={item.isActive ? 'text-xs font-medium text-[#0f7b54]' : 'text-xs text-muted-foreground'}>
+                        {item.isActive ? '활성' : '비활성'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 align-middle text-right">
+                      <Button
+                        type="button"
+                        size="sm"
+                        variant="ghost"
+                        onClick={() => openEditSheet(item.id)}
+                      >
+                        열기
+                      </Button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
-        </CardHeader>
-
-        <CardContent className="grid gap-4 px-6 py-6">
-          {feedback ? (
-            <div className="rounded-2xl border border-[#18e299]/25 bg-[#18e299]/10 px-4 py-3 text-sm text-[#0f7b54]">
-              {feedback}
-            </div>
-          ) : null}
-
-          {error ? (
-            <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">
-              {error}
-            </div>
-          ) : null}
-
-          {items.length === 0 ? (
-            <div className="rounded-[24px] border border-dashed border-black/10 bg-[#fbfdfb] px-6 py-14 text-center text-sm text-muted-foreground">
-              아직 등록된 클라이언트가 없습니다. 우측 패널에서 첫 항목을 등록하세요.
-            </div>
-          ) : (
-            <div className="overflow-hidden rounded-[24px] border border-black/6">
-              <div className="overflow-x-auto">
-                <table className="min-w-full border-collapse text-sm">
-                  <thead className="bg-[#f7fbf8] text-left text-xs font-medium tracking-[0.08em] text-muted-foreground uppercase">
-                    <tr>
-                      <th className="px-4 py-4">브랜드 이름</th>
-                      <th className="px-4 py-4">로고</th>
-                      <th className="px-4 py-4">브랜드 URL</th>
-                      <th className="px-4 py-4">활성</th>
-                      <th className="px-4 py-4 text-right">관리</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {items.map((item) => (
-                      <tr key={item.id} className="border-t border-black/6 bg-white">
-                        <td className="px-4 py-4 align-middle font-medium text-foreground">
-                          {item.name}
-                        </td>
-                        <td className="px-4 py-4 align-middle">
-                          <div className="relative flex h-14 w-28 items-center justify-center overflow-hidden rounded-2xl border border-black/6 bg-[#fbfdfb]">
-                            {item.logoUrl ? (
-                              <Image
-                                src={item.logoUrl}
-                                alt={item.name}
-                                fill
-                                className="object-contain p-3"
-                                sizes="112px"
-                              />
-                            ) : (
-                              <span className="px-3 text-xs text-muted-foreground">
-                                로고 없음
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-4 py-4 align-middle text-muted-foreground">
-                          {item.brandUrl ? (
-                            <a
-                              href={item.brandUrl}
-                              target="_blank"
-                              rel="noreferrer"
-                              className="inline-flex items-center gap-1 text-sm text-foreground underline-offset-4 hover:underline"
-                            >
-                              <span className="max-w-[16rem] truncate">
-                                {formatUrlLabel(item.brandUrl)}
-                              </span>
-                              <ExternalLink className="size-3.5 shrink-0" />
-                            </a>
-                          ) : (
-                            <span>-</span>
-                          )}
-                        </td>
-                        <td className="px-4 py-4 align-middle">
-                          <Badge
-                            variant="outline"
-                            className={
-                              item.isActive
-                                ? 'rounded-full border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]'
-                                : 'rounded-full border-black/6'
-                            }
-                          >
-                            {item.isActive ? '활성' : '비활성'}
-                          </Badge>
-                        </td>
-                        <td className="px-4 py-4 align-middle text-right">
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => openEditSheet(item.id)}
-                          >
-                            열기
-                          </Button>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
-        </CardContent>
-      </Card>
+        )}
+      </div>
 
       <Sheet open={sheetState !== null} onOpenChange={(open) => !open && setSheetState(null)}>
         <SheetContent
@@ -239,13 +206,8 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
         >
           <SheetHeader className="border-b border-black/6 bg-white px-6 py-5">
             <SheetTitle>
-              {sheetState?.mode === 'create' ? '새 클라이언트 등록' : '클라이언트 상세 설정'}
+              {sheetState?.mode === 'create' ? '새 클라이언트 등록' : '클라이언트 수정'}
             </SheetTitle>
-            <SheetDescription>
-              {sheetState?.mode === 'create'
-                ? '포트폴리오 등록 패널과 같은 흐름으로 브랜드명, 로고, URL, 활성 상태를 입력합니다.'
-                : '선택한 클라이언트의 기본 정보와 로고를 수정합니다.'}
-            </SheetDescription>
           </SheetHeader>
 
           <div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">
@@ -423,12 +385,7 @@ function ClientBrandSheetForm({
   return (
     <div className="grid gap-6">
       <div className="grid gap-4 rounded-[24px] border border-black/6 bg-white p-5">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">기본 정보</p>
-          <p className="text-xs text-muted-foreground">
-            목록과 외부 노출에 공통으로 쓰는 항목입니다.
-          </p>
-        </div>
+        <p className="text-sm font-medium text-foreground">기본 정보</p>
 
         <div className="grid gap-4">
           <div className="grid gap-2">
@@ -454,9 +411,6 @@ function ClientBrandSheetForm({
               placeholder="https://example.com"
               disabled={isSubmitting || isDeleting}
             />
-            <p className="text-xs text-muted-foreground">
-              선택 입력입니다. 도메인만 입력하면 자동으로 `https://`를 붙여 저장합니다.
-            </p>
           </div>
 
           <div className="flex items-center gap-2">
@@ -474,14 +428,7 @@ function ClientBrandSheetForm({
       </div>
 
       <div className="grid gap-4 rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
-        <div className="flex flex-col gap-1">
-          <p className="text-sm font-medium text-foreground">로고 업로드</p>
-          <p className="text-xs text-muted-foreground">
-            {mode === 'create'
-              ? '새 클라이언트 등록에는 로고 파일이 필요합니다.'
-              : '새 파일을 선택하면 기존 로고를 교체합니다.'}
-          </p>
-        </div>
+        <p className="text-sm font-medium text-foreground">로고 업로드</p>
 
         <div className="grid gap-3">
           <Label htmlFor="client-logo">로고 파일</Label>

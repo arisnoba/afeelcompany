@@ -136,9 +136,6 @@ export function AdminAccountsManager({
               onChange={(event) => setPassword(event.target.value)}
               placeholder="10자 이상 비밀번호"
             />
-            <p className="text-sm leading-6 text-muted-foreground">
-              등록 즉시 해시로 저장되며, 평문 비밀번호는 DB에 남지 않습니다.
-            </p>
           </div>
 
           {feedback ? (

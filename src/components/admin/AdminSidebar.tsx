@@ -77,16 +77,6 @@ export function AdminSidebar() {
 					</div>
 				))}
 
-				<SidebarSeparator />
-
-				<SidebarGroup>
-					<SidebarGroupLabel>메모</SidebarGroupLabel>
-					<SidebarGroupContent>
-						<div className="rounded-sm border border-black/6 bg-[#fbfdfb] p-3 text-sm text-muted-foreground group-data-[collapsible=icon]:hidden">
-							포트폴리오와 클라이언트 등록은 목록 우측 패널에서 바로 시작할 수 있습니다.
-						</div>
-					</SidebarGroupContent>
-				</SidebarGroup>
 			</SidebarContent>
 
 			<SidebarFooter>

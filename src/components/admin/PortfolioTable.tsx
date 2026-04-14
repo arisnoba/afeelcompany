@@ -2,14 +2,12 @@
 
 import Image from 'next/image';
 import { useMemo, useState, type DragEvent } from 'react';
-import { GripVertical, MousePointer2, Plus, RotateCcw } from 'lucide-react';
+import { GripVertical, Plus, RotateCcw } from 'lucide-react';
 
 import { UploadForm } from '@/app/admin/upload/_components/UploadForm';
 import { PortfolioEditorForm } from '@/components/admin/PortfolioEditorForm';
-import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
-import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import { formatPortfolioCategories } from '@/types/portfolio';
 import type { PortfolioAdminItem } from '@/types/portfolio';
@@ -222,156 +220,144 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 	return (
 		<>
-			<Card className="overflow-hidden border-black/6 bg-white py-0 shadow-[0_2px_12px_rgba(15,23,42,0.04)]">
-				<CardHeader className="flex flex-col gap-4 border-b border-black/6 bg-[linear-gradient(135deg,rgba(24,226,153,0.08),rgba(255,255,255,0.92)_48%,rgba(255,255,255,1))] px-6 py-6">
-					<div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
-						<div className="flex flex-col gap-2">
-							<CardTitle className="text-2xl font-semibold tracking-[-0.03em]">포트폴리오 라이브러리</CardTitle>
-							<CardDescription className="max-w-3xl text-sm leading-6">
-								드래그 핸들로 순서를 바꾼 뒤 저장하면 웹과 PDF 노출 순서에 함께 반영됩니다. 카드를 선택하면 오른쪽 패널에서 상세 설정을 수정할 수 있습니다.
-							</CardDescription>
-						</div>
+			{/* 페이지 타이틀 + 액션 */}
+			<div className="flex items-center gap-3">
+				<h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">포트폴리오 라이브러리</h1>
+				<span className="text-sm text-muted-foreground tabular-nums">{items.length}개</span>
+				<div className="ml-auto flex items-center gap-2">
+					{hasPendingOrderChanges ? (
+						<span className="text-xs font-medium text-[#0f7b54]">저장 필요</span>
+					) : null}
+					<Button type="button" variant="outline" size="sm" onClick={openCreateSheet}>
+						<Plus data-icon="inline-start" />새 항목
+					</Button>
+					{hasPendingOrderChanges ? (
+						<Button type="button" variant="ghost" size="sm" onClick={handleRestoreSavedOrder}>
+							<RotateCcw data-icon="inline-start" />
+							되돌리기
+						</Button>
+					) : null}
+					<Button type="button" size="sm" onClick={handleSaveOrder} disabled={isSavingOrder || items.length === 0 || !hasPendingOrderChanges}>
+						{isSavingOrder ? '저장 중...' : '순서 저장'}
+					</Button>
+				</div>
+			</div>
 
-						<div className="flex flex-col gap-2 sm:flex-row">
-							<Button type="button" variant="outline" onClick={openCreateSheet}>
-								<Plus data-icon="inline-start" />새 항목 등록
-							</Button>
-							{hasPendingOrderChanges ? (
-								<Button type="button" variant="outline" onClick={handleRestoreSavedOrder}>
-									<RotateCcw data-icon="inline-start" />
-									되돌리기
-								</Button>
-							) : null}
-							<Button type="button" onClick={handleSaveOrder} disabled={isSavingOrder || items.length === 0 || !hasPendingOrderChanges}>
-								{isSavingOrder ? '정렬 저장 중...' : '정렬 저장'}
-							</Button>
-						</div>
+			{/* 피드백 */}
+			{feedback ? <div className="rounded-lg border border-[#18e299]/20 bg-[#18e299]/8 px-4 py-2.5 text-sm text-[#0f7b54]">{feedback}</div> : null}
+			{error ? <div className="rounded-lg border border-destructive/20 bg-destructive/8 px-4 py-2.5 text-sm text-destructive">{error}</div> : null}
+
+			{/* 테이블 */}
+			<div className="overflow-hidden rounded-xl border border-black/6 bg-white shadow-[0_1px_6px_rgba(15,23,42,0.04)]">
+				{items.length === 0 ? (
+					<div className="px-6 py-16 text-center text-sm text-muted-foreground">
+						아직 업로드된 포트폴리오 항목이 없습니다.{' '}
+						<button type="button" onClick={openCreateSheet} className="font-medium text-foreground underline-offset-4 hover:underline">
+							첫 항목을 등록하세요
+						</button>
 					</div>
-
-					<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-						<Badge variant="outline" className="rounded-full border-[#18e299]/30 bg-white">
-							총 {items.length}개 항목
-						</Badge>
-						<Badge variant="outline" className={cn('rounded-full border-black/6 bg-white', hasPendingOrderChanges ? 'border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]' : null)}>
-							{hasPendingOrderChanges ? '저장 필요' : '정렬 저장됨'}
-						</Badge>
-					</div>
-				</CardHeader>
-
-				<CardContent className="grid gap-4 px-6 py-6">
-					{feedback ? <div className="rounded-2xl border border-[#18e299]/25 bg-[#18e299]/10 px-4 py-3 text-sm text-[#0f7b54]">{feedback}</div> : null}
-
-					{error ? <div className="rounded-2xl border border-destructive/20 bg-destructive/10 px-4 py-3 text-sm text-destructive">{error}</div> : null}
-
-					{items.length === 0 ? (
-						<div className="rounded-[24px] border border-dashed border-black/10 bg-[#fbfdfb] px-6 py-14 text-center text-sm text-muted-foreground">
-							아직 업로드된 포트폴리오 항목이 없습니다. 우측 패널에서 첫 항목을 등록하세요.
+				) : (
+					<>
+						{/* 테이블 헤더 */}
+						<div className="grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/6 bg-[#fafafa] px-4 py-2.5 text-xs font-medium text-muted-foreground">
+							<span />
+							<span />
+							<span>제목 / 브랜드</span>
+							<span>카테고리</span>
+							<span className="text-center">웹 · PDF</span>
+							<span className="text-center">#</span>
 						</div>
-					) : (
-						<div className="grid gap-4">
-							<div className="flex flex-col gap-2 rounded-[24px] border border-black/6 bg-[#fbfdfb] px-4 py-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-								<div className="flex items-start gap-3">
-									<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-[#18e299]/20 bg-white text-[#0f7b54]">
-										<MousePointer2 className="size-4" />
+
+						{/* 테이블 행 */}
+						{items.map((item, index) => (
+							<div
+								key={item.id}
+								onDragOver={handleDragOver}
+								onDragEnter={() => handleDragEnter(item.id)}
+								onDrop={event => handleDrop(event, item.id)}
+								className={cn(
+									'group grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/4 px-4 py-3 transition-colors last:border-b-0',
+									dragState?.draggedId === item.id ? 'opacity-40' : 'hover:bg-[#f7fdf9]',
+									dragState?.overId === item.id && dragState.draggedId !== item.id
+										? 'bg-[#f0fdf8] shadow-[inset_0_2px_0_#18e299,inset_0_-1px_0_#18e299/20]'
+										: null
+								)}>
+								{/* 드래그 핸들 */}
+								<div
+									role="button"
+									tabIndex={0}
+									aria-label={`${item.title} 순서 이동`}
+									draggable={items.length > 1}
+									onDragStart={event => handleDragStart(event, item.id)}
+									onDragEnd={() => setDragState(null)}
+									className={cn(
+										'flex size-8 cursor-grab items-center justify-center rounded-lg text-black/20 transition-colors',
+										items.length > 1 ? 'group-hover:text-black/40 hover:bg-black/4 hover:text-[#0f7b54]!' : 'cursor-default',
+										dragState?.draggedId === item.id ? 'cursor-grabbing text-[#0f7b54]' : null
+									)}>
+									<GripVertical className="size-3.5" />
+								</div>
+
+								{/* 썸네일 */}
+								<button
+									type="button"
+									onClick={() => openEditSheet(item.id)}
+									className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8] transition-opacity hover:opacity-80">
+									<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
+								</button>
+
+								{/* 제목 / 브랜드 */}
+								<button
+									type="button"
+									onClick={() => openEditSheet(item.id)}
+									className="min-w-0 text-left">
+									<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
+									<p className="truncate text-xs leading-4 text-muted-foreground">
+										{item.brandName}{item.celebrityName ? ` · ${item.celebrityName}` : ''}
+									</p>
+								</button>
+
+								{/* 카테고리 */}
+								<div className="flex items-center">
+									<span className="truncate rounded-md bg-black/4 px-2 py-1 text-xs text-foreground/70">
+										{formatPortfolioCategories(item.category) || '—'}
+									</span>
+								</div>
+
+								{/* 웹 · PDF 상태 */}
+								<div className="flex items-center justify-center gap-2">
+									<div className="flex items-center gap-1">
+										<span className={cn('size-2 rounded-full', item.showOnWeb ? 'bg-[#18e299]' : 'bg-black/15')} />
+										<span className="text-[10px] text-muted-foreground">웹</span>
 									</div>
-									<div className="space-y-1">
-										<p className="font-medium text-foreground">순서 조정은 드래그 방식으로 변경했습니다.</p>
-										<p>왼쪽 핸들을 잡고 원하는 카드 위치로 이동한 뒤 저장하세요.</p>
+									<div className="flex items-center gap-1">
+										<span className={cn('size-2 rounded-full', item.showOnPdf ? 'bg-[#18e299]' : 'bg-black/15')} />
+										<span className="text-[10px] text-muted-foreground">PDF</span>
 									</div>
 								</div>
 
-								{draggedItem ? <p className="text-xs text-[#0f7b54]">이동 중: {draggedItem.title}</p> : null}
+								{/* 순서 번호 */}
+								<div className="flex items-center justify-center">
+									<span className="text-xs tabular-nums text-black/30">{index + 1}</span>
+								</div>
 							</div>
+						))}
 
-							{items.map((item, index) => (
-								<Card
-									key={item.id}
-									onDragOver={handleDragOver}
-									onDragEnter={() => handleDragEnter(item.id)}
-									onDrop={event => handleDrop(event, item.id)}
-									className={cn(
-										'overflow-hidden border-black/6 bg-[#fdfefd] py-0 shadow-[0_1px_6px_rgba(15,23,42,0.03)] transition-colors',
-										dragState?.draggedId === item.id ? 'opacity-60' : null,
-										dragState?.overId === item.id && dragState.draggedId !== item.id
-											? 'border-[#18e299]/40 bg-[#f7fffb] shadow-[0_8px_24px_rgba(24,226,153,0.12)]'
-											: null
-									)}>
-									<CardContent className="grid gap-4 p-4 sm:grid-cols-[auto_120px_minmax(0,1fr)]">
-										<div className="flex items-start">
-											<div
-												role="button"
-												tabIndex={0}
-												aria-label={`${item.title} 순서 이동`}
-												draggable={items.length > 1}
-												onDragStart={event => handleDragStart(event, item.id)}
-												onDragEnd={() => setDragState(null)}
-												className={cn(
-													'flex h-12 w-10 cursor-grab items-center justify-center rounded-[18px] border border-black/6 bg-white text-muted-foreground transition-colors',
-													items.length > 1 ? 'hover:border-[#18e299]/30 hover:text-[#0f7b54]' : 'cursor-default opacity-60',
-													dragState?.draggedId === item.id ? 'cursor-grabbing border-[#18e299]/40 bg-[#18e299]/10 text-[#0f7b54]' : null
-												)}>
-												<GripVertical className="size-4" />
-											</div>
-										</div>
-
-										<button
-											type="button"
-											onClick={() => openEditSheet(item.id)}
-											className="relative aspect-[4/5] overflow-hidden rounded-[18px] border border-black/6 bg-[#f7fbf8] text-left transition-transform hover:scale-[1.01]">
-											<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="120px" />
-										</button>
-
-										<div className="flex min-w-0 flex-col gap-4">
-											<div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
-												<div className="flex min-w-0 flex-col gap-2">
-													<div className="flex flex-wrap items-center gap-2">
-														<p className="truncate text-lg font-semibold tracking-[-0.02em] text-foreground">{item.title}</p>
-														<Badge variant="outline" className="rounded-full border-black/6">
-															순서 {index + 1}
-														</Badge>
-													</div>
-
-													<div className="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm text-muted-foreground">
-														<span>{item.brandName}</span>
-														{item.celebrityName ? <span>{item.celebrityName}</span> : null}
-													</div>
-												</div>
-
-												<div className="flex flex-wrap items-center gap-2">
-													<Badge variant="secondary" className="rounded-full bg-black/4 text-foreground">
-														{formatPortfolioCategories(item.category)}
-													</Badge>
-													<Badge variant="outline" className={item.showOnWeb ? 'rounded-full border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]' : 'rounded-full border-black/6'}>
-														웹 {item.showOnWeb ? 'ON' : 'OFF'}
-													</Badge>
-													<Badge variant="outline" className={item.showOnPdf ? 'rounded-full border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]' : 'rounded-full border-black/6'}>
-														PDF {item.showOnPdf ? 'ON' : 'OFF'}
-													</Badge>
-												</div>
-											</div>
-
-											<div className="flex flex-wrap items-center gap-2">
-												<Button type="button" size="sm" onClick={() => openEditSheet(item.id)}>
-													상세 설정
-												</Button>
-												<span className="text-xs text-muted-foreground">왼쪽 핸들을 드래그해 순서를 바꿀 수 있습니다.</span>
-											</div>
-										</div>
-									</CardContent>
-								</Card>
-							))}
-						</div>
-					)}
-				</CardContent>
-			</Card>
+						{draggedItem ? (
+							<div className="border-t border-black/4 bg-[#f7fdf9] px-4 py-2 text-xs text-[#0f7b54]">
+								이동 중: <span className="font-medium">{draggedItem.title}</span>
+							</div>
+						) : null}
+					</>
+				)}
+			</div>
 
 			<Sheet open={sheetState !== null} onOpenChange={open => !open && setSheetState(null)}>
 				<SheetContent
 					side="right"
 					className="data-[side=right]:w-full data-[side=right]:max-w-none border-black/6 bg-[#fcfffd] p-0 sm:data-[side=right]:w-[min(56rem,44vw)] sm:data-[side=right]:max-w-[min(56rem,44vw)]">
 					<SheetHeader className="border-b border-black/6 bg-white px-6 py-5">
-						<SheetTitle>{sheetState?.mode === 'create' ? '새 포트폴리오 등록' : '포트폴리오 상세 설정'}</SheetTitle>
-						<SheetDescription>{sheetState?.mode === 'create' ? '이미지 업로드와 공개 설정을 한 패널에서 마무리합니다.' : '선택한 항목의 메타데이터와 노출 여부를 수정합니다.'}</SheetDescription>
+						<SheetTitle>{sheetState?.mode === 'create' ? '새 포트폴리오 등록' : '포트폴리오 수정'}</SheetTitle>
 					</SheetHeader>
 
 					<div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">

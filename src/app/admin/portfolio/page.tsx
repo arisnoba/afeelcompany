@@ -52,7 +52,7 @@ export default async function AdminPortfolioPage() {
   `;
 
 	return (
-		<div className="grid gap-6">
+		<div className="flex flex-col gap-4">
 			<PortfolioTable initialItems={result.rows.map(mapPortfolioRow)} />
 		</div>
 	);

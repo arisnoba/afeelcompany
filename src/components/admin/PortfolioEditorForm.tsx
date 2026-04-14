@@ -114,10 +114,7 @@ export function PortfolioEditorForm({ item, onDeleteSuccess, onSaveSuccess }: Po
 	return (
 		<div className="grid gap-6">
 			<div className="grid gap-4">
-				<div className="flex flex-col gap-1">
-					<p className="text-sm font-medium text-foreground">콘텐츠 설정</p>
-					<p className="text-xs text-muted-foreground">선택한 항목의 노출 상태와 메타데이터를 이 패널에서 수정합니다.</p>
-				</div>
+				<p className="text-sm font-medium text-foreground">콘텐츠 설정</p>
 				<PortfolioMetadataFields value={form} idPrefix={`portfolio-${item.id}`} disabled={isSaving || isDeleting} onChange={updateForm} />
 			</div>
 
