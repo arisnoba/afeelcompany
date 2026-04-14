@@ -15,7 +15,6 @@ function renderValue(value: string) {
 const STUDIO_LINKS = [
 	{ href: '/portfolio', label: 'portfolio' },
 	{ href: '/about', label: 'about' },
-	{ href: '/feed', label: 'feed' },
 	{ href: '/contact', label: 'contact' },
 ];
 
