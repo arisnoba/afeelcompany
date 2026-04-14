@@ -1,8 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useMemo, useState } from 'react';
-import { ArrowDown, ArrowUp, Plus } from 'lucide-react';
+import { useMemo, useState, type DragEvent } from 'react';
+import { GripVertical, MousePointer2, Plus, RotateCcw } from 'lucide-react';
 
 import { UploadForm } from '@/app/admin/upload/_components/UploadForm';
 import { PortfolioEditorForm } from '@/components/admin/PortfolioEditorForm';
@@ -10,6 +10,7 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Sheet, SheetContent, SheetDescription, SheetHeader, SheetTitle } from '@/components/ui/sheet';
+import { cn } from '@/lib/utils';
 import { formatPortfolioCategories } from '@/types/portfolio';
 import type { PortfolioAdminItem } from '@/types/portfolio';
 
@@ -18,17 +19,47 @@ interface PortfolioTableProps {
 }
 
 type PortfolioSheetState = { mode: 'create' } | { mode: 'edit'; itemId: string } | null;
+type PortfolioDragState = { draggedId: string; overId: string | null } | null;
 
 function sortItems(items: PortfolioAdminItem[]) {
 	return [...items].sort((left, right) => left.sortOrder - right.sortOrder);
 }
 
+function normalizeSortOrder(items: PortfolioAdminItem[]) {
+	return items.map((item, order) => ({
+		...item,
+		sortOrder: order,
+	}));
+}
+
+function getItemIds(items: PortfolioAdminItem[]) {
+	return items.map(item => item.id);
+}
+
+function hasSameOrder(left: string[], right: string[]) {
+	return left.length === right.length && left.every((itemId, index) => itemId === right[index]);
+}
+
+function moveItem(items: PortfolioAdminItem[], fromIndex: number, toIndex: number) {
+	if (fromIndex === toIndex || fromIndex < 0 || toIndex < 0 || fromIndex >= items.length || toIndex >= items.length) {
+		return items;
+	}
+
+	const nextItems = [...items];
+	const [moved] = nextItems.splice(fromIndex, 1);
+	nextItems.splice(toIndex, 0, moved);
+
+	return normalizeSortOrder(nextItems);
+}
+
 export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 	const [items, setItems] = useState<PortfolioAdminItem[]>(sortItems(initialItems));
+	const [savedOrderIds, setSavedOrderIds] = useState<string[]>(() => getItemIds(sortItems(initialItems)));
 	const [feedback, setFeedback] = useState<string | null>(null);
 	const [error, setError] = useState<string | null>(null);
 	const [isSavingOrder, setIsSavingOrder] = useState(false);
 	const [sheetState, setSheetState] = useState<PortfolioSheetState>(null);
+	const [dragState, setDragState] = useState<PortfolioDragState>(null);
 
 	const selectedItem = useMemo(() => {
 		if (!sheetState || sheetState.mode !== 'edit') {
@@ -37,6 +68,16 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 		return items.find(item => item.id === sheetState.itemId) ?? null;
 	}, [items, sheetState]);
+
+	const draggedItem = useMemo(() => {
+		if (!dragState) {
+			return null;
+		}
+
+		return items.find(item => item.id === dragState.draggedId) ?? null;
+	}, [dragState, items]);
+
+	const hasPendingOrderChanges = !hasSameOrder(getItemIds(items), savedOrderIds);
 
 	function openCreateSheet() {
 		setSheetState({ mode: 'create' });
@@ -54,28 +95,23 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 		setItems(current => sortItems(current.map(item => (item.id === itemId ? nextItem : item))));
 	}
 
-	function reorderLocally(itemId: string, direction: -1 | 1) {
+	function reorderItems(draggedId: string, targetId: string) {
 		setItems(current => {
-			const index = current.findIndex(item => item.id === itemId);
-			const nextIndex = index + direction;
+			const fromIndex = current.findIndex(item => item.id === draggedId);
+			const toIndex = current.findIndex(item => item.id === targetId);
 
-			if (index < 0 || nextIndex < 0 || nextIndex >= current.length) {
+			if (fromIndex < 0 || toIndex < 0) {
 				return current;
 			}
 
-			const nextItems = [...current];
-			const [moved] = nextItems.splice(index, 1);
-			nextItems.splice(nextIndex, 0, moved);
-
-			return nextItems.map((item, order) => ({
-				...item,
-				sortOrder: order,
-			}));
+			return moveItem(current, fromIndex, toIndex);
 		});
 	}
 
 	function handleCreateSuccess(item: PortfolioAdminItem) {
-		setItems(current => sortItems([...current, item]));
+		const nextItems = sortItems([...items, item]);
+		setItems(nextItems);
+		setSavedOrderIds(getItemIds(nextItems));
 		setSheetState(null);
 		setFeedback('새 포트폴리오 항목이 추가되었습니다.');
 		setError(null);
@@ -88,16 +124,65 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 	}
 
 	function handleDeleteSuccess(itemId: string) {
-		setItems(current =>
-			current
-				.filter(item => item.id !== itemId)
-				.map((item, index) => ({
-					...item,
-					sortOrder: index,
-				}))
-		);
+		const nextItems = normalizeSortOrder(items.filter(item => item.id !== itemId));
+		setItems(nextItems);
+		setSavedOrderIds(getItemIds(nextItems));
 		setSheetState(null);
 		setFeedback('항목이 삭제되었습니다.');
+		setError(null);
+	}
+
+	function handleDragStart(event: DragEvent<HTMLDivElement>, itemId: string) {
+		event.dataTransfer.effectAllowed = 'move';
+		event.dataTransfer.setData('text/plain', itemId);
+		setDragState({ draggedId: itemId, overId: itemId });
+		setFeedback(null);
+		setError(null);
+	}
+
+	function handleDragEnter(itemId: string) {
+		setDragState(current => {
+			if (!current || current.draggedId === itemId) {
+				return current;
+			}
+
+			return {
+				...current,
+				overId: itemId,
+			};
+		});
+	}
+
+	function handleDragOver(event: DragEvent<HTMLDivElement>) {
+		event.preventDefault();
+		event.dataTransfer.dropEffect = 'move';
+	}
+
+	function handleDrop(event: DragEvent<HTMLDivElement>, itemId: string) {
+		event.preventDefault();
+
+		const draggedId = dragState?.draggedId ?? event.dataTransfer.getData('text/plain');
+
+		if (!draggedId) {
+			setDragState(null);
+			return;
+		}
+
+		reorderItems(draggedId, itemId);
+		setDragState(null);
+		setFeedback('순서를 변경했습니다. 저장하면 웹과 PDF 노출 순서에 반영됩니다.');
+		setError(null);
+	}
+
+	function handleRestoreSavedOrder() {
+		const itemMap = new Map(items.map(item => [item.id, item]));
+		const restoredItems = savedOrderIds
+			.map(itemId => itemMap.get(itemId))
+			.filter((item): item is PortfolioAdminItem => Boolean(item));
+
+		setItems(normalizeSortOrder(restoredItems));
+		setDragState(null);
+		setFeedback('마지막 저장 순서로 되돌렸습니다.');
 		setError(null);
 	}
 
@@ -126,6 +211,7 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 				return;
 			}
 
+			setSavedOrderIds(getItemIds(items));
 			setFeedback('정렬 순서가 저장되었습니다.');
 		} catch {
 			setError('정렬 저장에 실패했습니다.');
@@ -142,7 +228,7 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 						<div className="flex flex-col gap-2">
 							<CardTitle className="text-2xl font-semibold tracking-[-0.03em]">포트폴리오 라이브러리</CardTitle>
 							<CardDescription className="max-w-3xl text-sm leading-6">
-								카드에서 항목을 선택하면 오른쪽 패널에서 상세 설정을 수정할 수 있습니다. 새 항목 등록도 같은 흐름으로 처리합니다.
+								드래그 핸들로 순서를 바꾼 뒤 저장하면 웹과 PDF 노출 순서에 함께 반영됩니다. 카드를 선택하면 오른쪽 패널에서 상세 설정을 수정할 수 있습니다.
 							</CardDescription>
 						</div>
 
@@ -150,7 +236,13 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 							<Button type="button" variant="outline" onClick={openCreateSheet}>
 								<Plus data-icon="inline-start" />새 항목 등록
 							</Button>
-							<Button type="button" onClick={handleSaveOrder} disabled={isSavingOrder || items.length === 0}>
+							{hasPendingOrderChanges ? (
+								<Button type="button" variant="outline" onClick={handleRestoreSavedOrder}>
+									<RotateCcw data-icon="inline-start" />
+									되돌리기
+								</Button>
+							) : null}
+							<Button type="button" onClick={handleSaveOrder} disabled={isSavingOrder || items.length === 0 || !hasPendingOrderChanges}>
 								{isSavingOrder ? '정렬 저장 중...' : '정렬 저장'}
 							</Button>
 						</div>
@@ -159,6 +251,9 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 					<div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
 						<Badge variant="outline" className="rounded-full border-[#18e299]/30 bg-white">
 							총 {items.length}개 항목
+						</Badge>
+						<Badge variant="outline" className={cn('rounded-full border-black/6 bg-white', hasPendingOrderChanges ? 'border-[#18e299]/30 bg-[#18e299]/10 text-[#0f7b54]' : null)}>
+							{hasPendingOrderChanges ? '저장 필요' : '정렬 저장됨'}
 						</Badge>
 					</div>
 				</CardHeader>
@@ -174,9 +269,51 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 						</div>
 					) : (
 						<div className="grid gap-4">
+							<div className="flex flex-col gap-2 rounded-[24px] border border-black/6 bg-[#fbfdfb] px-4 py-4 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+								<div className="flex items-start gap-3">
+									<div className="flex size-10 shrink-0 items-center justify-center rounded-2xl border border-[#18e299]/20 bg-white text-[#0f7b54]">
+										<MousePointer2 className="size-4" />
+									</div>
+									<div className="space-y-1">
+										<p className="font-medium text-foreground">순서 조정은 드래그 방식으로 변경했습니다.</p>
+										<p>왼쪽 핸들을 잡고 원하는 카드 위치로 이동한 뒤 저장하세요.</p>
+									</div>
+								</div>
+
+								{draggedItem ? <p className="text-xs text-[#0f7b54]">이동 중: {draggedItem.title}</p> : null}
+							</div>
+
 							{items.map((item, index) => (
-								<Card key={item.id} className="overflow-hidden border-black/6 bg-[#fdfefd] py-0 shadow-[0_1px_6px_rgba(15,23,42,0.03)]">
-									<CardContent className="grid gap-4 p-4 sm:grid-cols-[120px_minmax(0,1fr)]">
+								<Card
+									key={item.id}
+									onDragOver={handleDragOver}
+									onDragEnter={() => handleDragEnter(item.id)}
+									onDrop={event => handleDrop(event, item.id)}
+									className={cn(
+										'overflow-hidden border-black/6 bg-[#fdfefd] py-0 shadow-[0_1px_6px_rgba(15,23,42,0.03)] transition-colors',
+										dragState?.draggedId === item.id ? 'opacity-60' : null,
+										dragState?.overId === item.id && dragState.draggedId !== item.id
+											? 'border-[#18e299]/40 bg-[#f7fffb] shadow-[0_8px_24px_rgba(24,226,153,0.12)]'
+											: null
+									)}>
+									<CardContent className="grid gap-4 p-4 sm:grid-cols-[auto_120px_minmax(0,1fr)]">
+										<div className="flex items-start">
+											<div
+												role="button"
+												tabIndex={0}
+												aria-label={`${item.title} 순서 이동`}
+												draggable={items.length > 1}
+												onDragStart={event => handleDragStart(event, item.id)}
+												onDragEnd={() => setDragState(null)}
+												className={cn(
+													'flex h-12 w-10 cursor-grab items-center justify-center rounded-[18px] border border-black/6 bg-white text-muted-foreground transition-colors',
+													items.length > 1 ? 'hover:border-[#18e299]/30 hover:text-[#0f7b54]' : 'cursor-default opacity-60',
+													dragState?.draggedId === item.id ? 'cursor-grabbing border-[#18e299]/40 bg-[#18e299]/10 text-[#0f7b54]' : null
+												)}>
+												<GripVertical className="size-4" />
+											</div>
+										</div>
+
 										<button
 											type="button"
 											onClick={() => openEditSheet(item.id)}
@@ -215,16 +352,9 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 											<div className="flex flex-wrap items-center gap-2">
 												<Button type="button" size="sm" onClick={() => openEditSheet(item.id)}>
-													선택
+													상세 설정
 												</Button>
-												<Button type="button" variant="outline" size="sm" onClick={() => reorderLocally(item.id, -1)} disabled={index === 0}>
-													<ArrowUp data-icon="inline-start" />
-													위로
-												</Button>
-												<Button type="button" variant="outline" size="sm" onClick={() => reorderLocally(item.id, 1)} disabled={index === items.length - 1}>
-													<ArrowDown data-icon="inline-start" />
-													아래로
-												</Button>
+												<span className="text-xs text-muted-foreground">왼쪽 핸들을 드래그해 순서를 바꿀 수 있습니다.</span>
 											</div>
 										</div>
 									</CardContent>
