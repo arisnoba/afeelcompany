@@ -9,11 +9,13 @@ import { PortfolioEditorForm } from '@/components/admin/PortfolioEditorForm';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
+import type { ClientBrandAdminItem } from '@/types/client-brand';
 import { formatPortfolioCategories } from '@/types/portfolio';
 import type { PortfolioAdminItem } from '@/types/portfolio';
 
 interface PortfolioTableProps {
 	initialItems: PortfolioAdminItem[];
+	clientBrands: ClientBrandAdminItem[];
 }
 
 type PortfolioSheetState = { mode: 'create' } | { mode: 'edit'; itemId: string } | null;
@@ -50,7 +52,7 @@ function moveItem(items: PortfolioAdminItem[], fromIndex: number, toIndex: numbe
 	return normalizeSortOrder(nextItems);
 }
 
-export function PortfolioTable({ initialItems }: PortfolioTableProps) {
+export function PortfolioTable({ initialItems, clientBrands }: PortfolioTableProps) {
 	const [items, setItems] = useState<PortfolioAdminItem[]>(sortItems(initialItems));
 	const [savedOrderIds, setSavedOrderIds] = useState<string[]>(() => getItemIds(sortItems(initialItems)));
 	const [feedback, setFeedback] = useState<string | null>(null);
@@ -362,9 +364,14 @@ export function PortfolioTable({ initialItems }: PortfolioTableProps) {
 
 					<div className="flex min-h-0 flex-1 flex-col overflow-y-auto px-6 py-6">
 						{sheetState?.mode === 'create' ? (
-							<UploadForm onSuccess={handleCreateSuccess} />
+							<UploadForm availableBrands={clientBrands} onSuccess={handleCreateSuccess} />
 						) : selectedItem ? (
-							<PortfolioEditorForm item={selectedItem} onSaveSuccess={handleSaveSuccess} onDeleteSuccess={handleDeleteSuccess} />
+							<PortfolioEditorForm
+								item={selectedItem}
+								availableBrands={clientBrands}
+								onSaveSuccess={handleSaveSuccess}
+								onDeleteSuccess={handleDeleteSuccess}
+							/>
 						) : null}
 					</div>
 				</SheetContent>

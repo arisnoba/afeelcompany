@@ -1,5 +1,6 @@
 import { buildBrandLogoUrlMap, findBrandLogoUrl, getBrandsWithLogos } from '@/lib/client-brands'
 import { sql } from '@/lib/db'
+import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
 import type { PdfClientBrand, PdfDocument, PdfPortfolioItem } from '@/types/pdf'
 
 import { pdfFixtureDocument } from './pdf-fixtures'
@@ -17,6 +18,8 @@ interface CompanyProfileRow {
 interface PortfolioItemRow {
   id: string
   title: string
+  client_brand_id: string | null
+  client_brand_logo_url: string | null
   brand_name: string
   celebrity_name: string | null
   category: string
@@ -37,8 +40,13 @@ function mapWorkItems(rows: PortfolioItemRow[], brandLogoUrlMap: Map<string, str
   return rows.map((row) => ({
     id: row.id,
     title: row.title,
+    clientBrandId: row.client_brand_id,
     brandName: row.brand_name,
-    brandLogoUrl: findBrandLogoUrl(row.brand_name, brandLogoUrlMap),
+    brandLogoUrl:
+      resolvePortfolioHoverImageUrl(
+        row.client_brand_logo_url,
+        row.thumbnail_url
+      ) ?? findBrandLogoUrl(row.brand_name, brandLogoUrlMap),
     celebrityName: row.celebrity_name,
     category: row.category,
     imageUrl: row.image_url,
@@ -67,10 +75,23 @@ export async function getPdfDocument(): Promise<PdfDocument> {
         LIMIT 1
       `,
       sql<PortfolioItemRow>`
-        SELECT id, title, brand_name, celebrity_name, category, image_url, thumbnail_url, show_on_pdf, sort_order
-        FROM portfolio_items
+        SELECT
+          p.id,
+          p.title,
+          p.client_brand_id,
+          cb.logo_url AS client_brand_logo_url,
+          p.brand_name,
+          p.celebrity_name,
+          p.category,
+          p.image_url,
+          p.thumbnail_url,
+          p.show_on_pdf,
+          p.sort_order
+        FROM portfolio_items AS p
+        LEFT JOIN client_brands AS cb
+          ON cb.id = p.client_brand_id
         WHERE show_on_pdf = true
-        ORDER BY sort_order ASC, created_at DESC
+        ORDER BY p.sort_order ASC, p.created_at DESC
         LIMIT 200
       `,
       sql<ClientBrandRow>`

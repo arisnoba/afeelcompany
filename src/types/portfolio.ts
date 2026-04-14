@@ -97,6 +97,8 @@ export function formatPortfolioCategories(
 export interface PortfolioItemRecord {
   id: string
   title: string
+  client_brand_id: string | null
+  client_brand_logo_url?: string | null
   brand_name: string
   celebrity_name: string | null
   category: PortfolioCategory | string
@@ -113,6 +115,8 @@ export interface PortfolioItemRecord {
 export interface PortfolioAdminItem {
   id: string
   title: string
+  clientBrandId: string | null
+  clientBrandLogoUrl: string | null
   brandName: string
   celebrityName: string | null
   category: PortfolioCategory | string

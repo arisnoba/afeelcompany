@@ -15,6 +15,7 @@ export const pdfFixtureDocument: PdfDocument = {
 		{
 			id: 'work-01',
 			title: 'ROYNINE LOOK 01',
+			clientBrandId: null,
 			brandName: 'ROYNINE',
 			brandLogoUrl: '/pdf-fixtures/logo-01.png',
 			celebrityName: null,
@@ -27,6 +28,7 @@ export const pdfFixtureDocument: PdfDocument = {
 		{
 			id: 'work-02',
 			title: 'ROYNINE LOOK 02',
+			clientBrandId: null,
 			brandName: 'ROYNINE',
 			brandLogoUrl: '/pdf-fixtures/logo-01.png',
 			celebrityName: null,
@@ -39,6 +41,7 @@ export const pdfFixtureDocument: PdfDocument = {
 		{
 			id: 'work-03',
 			title: 'ROYNINE LOOK 03',
+			clientBrandId: null,
 			brandName: 'ROYNINE',
 			brandLogoUrl: '/pdf-fixtures/logo-01.png',
 			celebrityName: null,
@@ -51,6 +54,7 @@ export const pdfFixtureDocument: PdfDocument = {
 		{
 			id: 'work-04',
 			title: 'ROYNINE LOOK 04',
+			clientBrandId: null,
 			brandName: 'ROYNINE',
 			brandLogoUrl: '/pdf-fixtures/logo-01.png',
 			celebrityName: null,

@@ -9,6 +9,7 @@ export interface PdfContact {
 export interface PdfPortfolioItem {
   id: string
   title: string
+  clientBrandId: string | null
   brandName: string
   brandLogoUrl: string | null
   celebrityName: string | null

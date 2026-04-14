@@ -2,25 +2,33 @@ import { del } from '@vercel/blob'
 
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { uploadPublicImage } from '@/lib/blob'
+import {
+  getClientBrandOptionById,
+  resolvePortfolioHoverImageUrl,
+} from '@/lib/portfolio-brand'
 import {
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
 
-interface PortfolioMutationBody {
-  title?: string
-  brandName?: string
-  celebrityName?: string | null
-  category?: string
-  instagramUrl?: string | null
-  showOnWeb?: boolean
-  showOnPdf?: boolean
-  sortOrder?: number
+function toBoolean(value: FormDataEntryValue | null): boolean | null {
+  if (value === 'true') {
+    return true
+  }
+
+  if (value === 'false') {
+    return false
+  }
+
+  return null
 }
 
 interface PortfolioMutationRow {
   id: string
   title: string
+  client_brand_id: string | null
+  client_brand_logo_url: string | null
   brand_name: string
   celebrity_name: string | null
   category: string
@@ -61,13 +69,18 @@ function mapPortfolioRow(row: PortfolioMutationRow): PortfolioAdminItem {
   return {
     id: row.id,
     title: row.title,
+    clientBrandId: row.client_brand_id,
+    clientBrandLogoUrl: row.client_brand_logo_url,
     brandName: row.brand_name,
     celebrityName: row.celebrity_name,
     category: row.category,
     instagramUrl: row.instagram_url,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
-    hoverImageUrl: row.thumbnail_url,
+    hoverImageUrl: resolvePortfolioHoverImageUrl(
+      row.client_brand_logo_url,
+      row.thumbnail_url
+    ),
     showOnWeb: row.show_on_web,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
@@ -83,38 +96,129 @@ export async function PATCH(
   }
 
   const { id } = await ctx.params
-  const body = (await request.json()) as PortfolioMutationBody
+  const current = await sql<{
+    id: string
+    client_brand_id: string | null
+    thumbnail_url: string | null
+  }>`
+    SELECT id, client_brand_id, thumbnail_url
+    FROM portfolio_items
+    WHERE id = ${id}
+    LIMIT 1
+  `
+
+  const existingItem = current.rows[0]
+
+  if (!existingItem) {
+    return Response.json({ success: false, error: 'NOT_FOUND' }, { status: 404 })
+  }
+
+  const formData = await request.formData()
+  const title = formData.get('title')?.toString().trim()
+  const clientBrandId = formData.get('clientBrandId')?.toString().trim() || null
+  const brandName = formData.get('brandName')?.toString().trim() || null
+  const celebrityName = formData.get('celebrityName')?.toString().trim() || null
+  const category = formData.get('category')?.toString().trim()
+  const instagramUrlRaw = formData.get('instagramUrl')?.toString() ?? null
+  const showOnWeb = toBoolean(formData.get('showOnWeb'))
+  const showOnPdf = toBoolean(formData.get('showOnPdf'))
+  const sortOrderRaw = formData.get('sortOrder')?.toString()
+  const hoverFile = formData.get('hoverFile')
+  const sortOrder = sortOrderRaw ? Number.parseInt(sortOrderRaw, 10) : Number.NaN
 
   if (
-    !body.title ||
-    !body.brandName ||
-    !body.category ||
-    !isSerializedPortfolioCategories(body.category) ||
-    typeof body.showOnWeb !== 'boolean' ||
-    typeof body.showOnPdf !== 'boolean' ||
-    typeof body.sortOrder !== 'number'
+    !title ||
+    !category ||
+    !isSerializedPortfolioCategories(category) ||
+    typeof showOnWeb !== 'boolean' ||
+    typeof showOnPdf !== 'boolean' ||
+    !Number.isFinite(sortOrder) ||
+    (hoverFile !== null && !(hoverFile instanceof File))
   ) {
     return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
   }
 
   try {
-    const instagramUrl = normalizePortfolioUrl(body.instagramUrl)
+    let resolvedBrandName = brandName
+    let resolvedClientBrandId: string | null = null
+    let managedBrandLogoUrl: string | null = null
+
+    if (clientBrandId) {
+      const selectedBrand = await getClientBrandOptionById(clientBrandId)
+
+      if (!selectedBrand || !selectedBrand.isActive) {
+        return Response.json(
+          { success: false, error: 'INVALID_CLIENT_BRAND' },
+          { status: 400 }
+        )
+      }
+
+      if (!selectedBrand.logoUrl) {
+        return Response.json(
+          {
+            success: false,
+            error: '선택한 파트너에 로고가 없습니다. 파트너 관리에서 로고를 먼저 등록해 주세요.',
+          },
+          { status: 400 }
+        )
+      }
+
+      resolvedBrandName = selectedBrand.name
+      resolvedClientBrandId = selectedBrand.id
+      managedBrandLogoUrl = selectedBrand.logoUrl
+    } else {
+      if (!resolvedBrandName) {
+        return Response.json(
+          { success: false, error: 'EXCEPTION_BRAND_NAME_REQUIRED' },
+          { status: 400 }
+        )
+      }
+
+      const hasExistingCustomHover =
+        !existingItem.client_brand_id && Boolean(existingItem.thumbnail_url)
+      const hasNewHoverFile = hoverFile instanceof File && hoverFile.size > 0
+
+      if (!hasExistingCustomHover && !hasNewHoverFile) {
+        return Response.json(
+          { success: false, error: 'EXCEPTION_BRAND_REQUIRES_HOVER_IMAGE' },
+          { status: 400 }
+        )
+      }
+    }
+
+    const instagramUrl = normalizePortfolioUrl(instagramUrlRaw)
+    let nextThumbnailUrl = existingItem.thumbnail_url
+    let previousThumbnailUrlToDelete: string | null = null
+
+    if (hoverFile instanceof File && hoverFile.size > 0) {
+      const uploadedHover = await uploadPublicImage(hoverFile, 'portfolio')
+      nextThumbnailUrl = uploadedHover.url
+      previousThumbnailUrlToDelete = existingItem.thumbnail_url
+    } else if (managedBrandLogoUrl) {
+      nextThumbnailUrl = null
+      previousThumbnailUrlToDelete = existingItem.thumbnail_url
+    }
+
     const result = await sql<PortfolioMutationRow>`
       UPDATE portfolio_items
       SET
-        title = ${body.title.trim()},
-        brand_name = ${body.brandName.trim()},
-        celebrity_name = ${body.celebrityName?.trim() || null},
-        category = ${body.category.trim()},
+        title = ${title},
+        client_brand_id = ${resolvedClientBrandId},
+        brand_name = ${resolvedBrandName},
+        celebrity_name = ${celebrityName},
+        category = ${category},
         instagram_url = ${instagramUrl},
-        show_on_web = ${body.showOnWeb},
-        show_on_pdf = ${body.showOnPdf},
-        sort_order = ${body.sortOrder},
+        thumbnail_url = ${nextThumbnailUrl},
+        show_on_web = ${showOnWeb},
+        show_on_pdf = ${showOnPdf},
+        sort_order = ${sortOrder},
         updated_at = NOW()
       WHERE id = ${id}
       RETURNING
         id,
         title,
+        client_brand_id,
+        ${managedBrandLogoUrl}::text AS client_brand_logo_url,
         brand_name,
         celebrity_name,
         category,
@@ -127,7 +231,11 @@ export async function PATCH(
     `
 
     if (!result.rows[0]) {
-      return Response.json({ success: false, error: 'NOT_FOUND' }, { status: 404 })
+      return Response.json({ success: false, error: 'UPDATE_FAILED' }, { status: 500 })
+    }
+
+    if (previousThumbnailUrlToDelete && previousThumbnailUrlToDelete !== nextThumbnailUrl) {
+      await del(previousThumbnailUrlToDelete)
     }
 
     return Response.json({

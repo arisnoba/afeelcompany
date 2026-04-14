@@ -9,6 +9,7 @@ const PUBLIC_ROUTES: Array<{
 }> = [
 	{ path: '/', changeFrequency: 'weekly', priority: 1 },
 	{ path: '/about', changeFrequency: 'monthly', priority: 0.8 },
+	{ path: '/partner', changeFrequency: 'weekly', priority: 0.85 },
 	{ path: '/portfolio', changeFrequency: 'weekly', priority: 0.9 },
 	{ path: '/contact', changeFrequency: 'monthly', priority: 0.7 },
 ];

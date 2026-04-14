@@ -9,6 +9,7 @@ import { useEffect, useState } from 'react';
 const NAV_ITEMS = [
 	{ href: '/', label: 'HOME' },
 	{ href: '/about', label: 'ABOUT' },
+	{ href: '/partner', label: 'PARTNER' },
 	{ href: '/portfolio', label: 'PORTFOLIO' },
 	{ href: '/contact', label: 'CONTACT' },
 ];

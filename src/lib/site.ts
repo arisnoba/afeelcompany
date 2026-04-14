@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
 import type { PublicPortfolioItem, SiteClientBrand, SiteCompanyProfile } from '@/types/site';
 
 export const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/a_feel_company/';
@@ -20,6 +21,8 @@ interface ClientBrandRow {
 interface PortfolioItemRow {
 	id: string;
 	title: string;
+	client_brand_id: string | null;
+	client_brand_logo_url: string | null;
 	brand_name: string;
 	celebrity_name: string | null;
 	category: string;
@@ -51,13 +54,18 @@ function mapPortfolioItem(row: PortfolioItemRow): PublicPortfolioItem {
 	return {
 		id: row.id,
 		title: row.title,
+		clientBrandId: row.client_brand_id,
 		brandName: row.brand_name,
 		celebrityName: row.celebrity_name,
 		category: row.category,
 		instagramUrl: row.instagram_url,
 		imageUrl: row.image_url,
+		clientBrandLogoUrl: row.client_brand_logo_url,
 		thumbnailUrl: row.thumbnail_url,
-		hoverImageUrl: row.thumbnail_url,
+		hoverImageUrl: resolvePortfolioHoverImageUrl(
+			row.client_brand_logo_url,
+			row.thumbnail_url
+		),
 		sortOrder: row.sort_order,
 	};
 }
@@ -89,18 +97,22 @@ export async function getFeaturedPortfolio(limit = 6): Promise<PublicPortfolioIt
 
 	const result = await sql<PortfolioItemRow>`
     SELECT
-      id,
-      title,
-      brand_name,
-      celebrity_name,
-      category,
-      instagram_url,
-      image_url,
-      thumbnail_url,
-      sort_order
-    FROM portfolio_items
+      p.id,
+      p.title,
+      p.client_brand_id,
+      cb.logo_url AS client_brand_logo_url,
+      p.brand_name,
+      p.celebrity_name,
+      p.category,
+      p.instagram_url,
+      p.image_url,
+      p.thumbnail_url,
+      p.sort_order
+    FROM portfolio_items AS p
+    LEFT JOIN client_brands AS cb
+      ON cb.id = p.client_brand_id
     WHERE show_on_web = true
-    ORDER BY sort_order ASC, created_at DESC
+    ORDER BY p.sort_order ASC, p.created_at DESC
     LIMIT ${safeLimit}
   `;
 
@@ -110,18 +122,22 @@ export async function getFeaturedPortfolio(limit = 6): Promise<PublicPortfolioIt
 export async function getPublicPortfolioItems(): Promise<PublicPortfolioItem[]> {
 	const result = await sql<PortfolioItemRow>`
     SELECT
-      id,
-      title,
-      brand_name,
-      celebrity_name,
-      category,
-      instagram_url,
-      image_url,
-      thumbnail_url,
-      sort_order
-    FROM portfolio_items
+      p.id,
+      p.title,
+      p.client_brand_id,
+      cb.logo_url AS client_brand_logo_url,
+      p.brand_name,
+      p.celebrity_name,
+      p.category,
+      p.instagram_url,
+      p.image_url,
+      p.thumbnail_url,
+      p.sort_order
+    FROM portfolio_items AS p
+    LEFT JOIN client_brands AS cb
+      ON cb.id = p.client_brand_id
     WHERE show_on_web = true
-    ORDER BY sort_order ASC, created_at DESC
+    ORDER BY p.sort_order ASC, p.created_at DESC
   `;
 
 	return result.rows.map(mapPortfolioItem);

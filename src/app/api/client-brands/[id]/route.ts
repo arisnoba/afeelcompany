@@ -105,6 +105,14 @@ export async function PATCH(
       RETURNING id, name, logo_url, brand_url, sort_order, is_active
     `
 
+    await sql`
+      UPDATE portfolio_items
+      SET
+        brand_name = ${name},
+        updated_at = NOW()
+      WHERE client_brand_id = ${id}
+    `
+
     if (previousLogoUrl) {
       await del(previousLogoUrl)
     }
@@ -140,6 +148,22 @@ export async function DELETE(
 
   if (!brand) {
     return Response.json({ success: false, error: 'NOT_FOUND' }, { status: 404 })
+  }
+
+  const linkedPortfolioCount = await sql<{ count: string }>`
+    SELECT COUNT(*)::text AS count
+    FROM portfolio_items
+    WHERE client_brand_id = ${id}
+  `
+
+  if (Number(linkedPortfolioCount.rows[0]?.count ?? '0') > 0) {
+    return Response.json(
+      {
+        success: false,
+        error: '파트너에 연결된 포트폴리오가 있어 삭제할 수 없습니다.',
+      },
+      { status: 409 }
+    )
   }
 
   if (brand.logo_url) {

@@ -30,8 +30,8 @@ export const ADMIN_NAV_GROUPS: AdminNavGroup[] = [
       },
       {
         href: '/admin/clients',
-        label: '클라이언트 관리',
-        description: '브랜드 리스트를 테이블과 우측 패널에서 관리합니다.',
+        label: '파트너 관리',
+        description: 'PARTNER 페이지와 포트폴리오에 쓰이는 브랜드 마스터를 관리합니다.',
       },
     ],
   },

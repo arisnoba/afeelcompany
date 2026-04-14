@@ -6,3 +6,10 @@ export interface ClientBrandAdminItem {
   sortOrder: number
   isActive: boolean
 }
+
+export interface ClientBrandOption {
+  id: string
+  name: string
+  logoUrl: string | null
+  isActive: boolean
+}

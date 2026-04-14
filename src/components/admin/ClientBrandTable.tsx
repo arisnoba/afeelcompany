@@ -74,7 +74,7 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
   function handleCreateSuccess(item: ClientBrandAdminItem) {
     setItems((current) => sortItems([...current, item]))
     setSheetState({ mode: 'edit', itemId: item.id })
-    setFeedback('새 클라이언트가 등록되었습니다.')
+    setFeedback('새 파트너가 등록되었습니다.')
     setError(null)
   }
 
@@ -82,14 +82,14 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
     setItems((current) =>
       sortItems(current.map((entry) => (entry.id === item.id ? item : entry)))
     )
-    setFeedback('클라이언트 정보가 저장되었습니다.')
+    setFeedback('파트너 정보가 저장되었습니다.')
     setError(null)
   }
 
   function handleDeleteSuccess(itemId: string) {
     setItems((current) => current.filter((item) => item.id !== itemId))
     setSheetState(null)
-    setFeedback('클라이언트가 삭제되었습니다.')
+    setFeedback('파트너가 삭제되었습니다.')
     setError(null)
   }
 
@@ -97,12 +97,12 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
     <>
       {/* 페이지 타이틀 + 액션 */}
       <div className="flex items-center gap-3">
-        <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">클라이언트 리스트</h1>
+        <h1 className="text-2xl font-semibold tracking-[-0.03em] text-foreground">파트너 리스트</h1>
         <span className="text-sm text-muted-foreground tabular-nums">{items.length}개</span>
         <div className="ml-auto">
           <Button type="button" variant="outline" size="sm" onClick={openCreateSheet}>
             <Plus data-icon="inline-start" />
-            새 클라이언트
+            새 파트너
           </Button>
         </div>
       </div>
@@ -124,7 +124,7 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
       <div className="overflow-hidden rounded-xl border border-black/6 bg-white shadow-[0_1px_6px_rgba(15,23,42,0.04)]">
         {items.length === 0 ? (
           <div className="px-6 py-16 text-center text-sm text-muted-foreground">
-            아직 등록된 클라이언트가 없습니다.
+            아직 등록된 파트너가 없습니다.
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -206,7 +206,7 @@ export function ClientBrandTable({ initialItems }: ClientBrandTableProps) {
         >
           <SheetHeader className="border-b border-black/6 bg-white px-6 py-5">
             <SheetTitle>
-              {sheetState?.mode === 'create' ? '새 클라이언트 등록' : '클라이언트 수정'}
+              {sheetState?.mode === 'create' ? '새 파트너 등록' : '파트너 수정'}
             </SheetTitle>
           </SheetHeader>
 
@@ -305,7 +305,7 @@ function ClientBrandSheetForm({
     }
 
     if (mode === 'edit' && !item) {
-      setError('수정할 클라이언트 정보를 찾지 못했습니다.')
+      setError('수정할 파트너 정보를 찾지 못했습니다.')
       return
     }
 
@@ -332,7 +332,7 @@ function ClientBrandSheetForm({
       const result = (await response.json()) as ClientBrandMutationResponse
 
       if (!response.ok || !result.success || !result.data) {
-        setError(result.error ?? '클라이언트 저장에 실패했습니다.')
+        setError(result.error ?? '파트너 저장에 실패했습니다.')
         return
       }
 
@@ -346,7 +346,7 @@ function ClientBrandSheetForm({
       const message =
         submitError instanceof Error
           ? submitError.message
-          : '클라이언트 저장에 실패했습니다.'
+          : '파트너 저장에 실패했습니다.'
       setError(message)
     } finally {
       setIsSubmitting(false)
@@ -368,19 +368,19 @@ function ClientBrandSheetForm({
       const result = (await response.json()) as { success: boolean; error?: string }
 
       if (!response.ok || !result.success) {
-        setError(result.error ?? '클라이언트 삭제에 실패했습니다.')
+        setError(result.error ?? '파트너 삭제에 실패했습니다.')
         return
       }
 
       onDeleteSuccess(item.id)
     } catch {
-      setError('클라이언트 삭제에 실패했습니다.')
+      setError('파트너 삭제에 실패했습니다.')
     } finally {
       setIsDeleting(false)
     }
   }
 
-  const previewAlt = form.name || '클라이언트 로고 미리보기'
+  const previewAlt = form.name || '파트너 로고 미리보기'
 
   return (
     <div className="grid gap-6">
@@ -422,7 +422,7 @@ function ClientBrandSheetForm({
               }
               disabled={isSubmitting || isDeleting}
             />
-            <Label htmlFor="client-active">활성 클라이언트</Label>
+            <Label htmlFor="client-active">활성 파트너</Label>
           </div>
         </div>
       </div>
@@ -477,8 +477,8 @@ function ClientBrandSheetForm({
               ? '등록 중...'
               : '저장 중...'
             : mode === 'create'
-              ? '클라이언트 등록'
-              : '클라이언트 저장'}
+              ? '파트너 등록'
+              : '파트너 저장'}
         </Button>
 
         {mode === 'edit' ? (
@@ -489,7 +489,7 @@ function ClientBrandSheetForm({
             onClick={handleDelete}
             disabled={isSubmitting || isDeleting}
           >
-            {isDeleting ? '삭제 중...' : '클라이언트 삭제'}
+            {isDeleting ? '삭제 중...' : '파트너 삭제'}
           </Button>
         ) : null}
       </div>

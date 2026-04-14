@@ -2,6 +2,7 @@
 CREATE TABLE IF NOT EXISTS portfolio_items (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
   title TEXT NOT NULL,
+  client_brand_id UUID REFERENCES client_brands(id),
   brand_name TEXT NOT NULL,
   celebrity_name TEXT,
   category TEXT NOT NULL,            -- 상의/하의/신발/악세서리/기타
@@ -17,6 +18,17 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
 
 ALTER TABLE portfolio_items
 ADD COLUMN IF NOT EXISTS instagram_url TEXT;
+
+ALTER TABLE portfolio_items
+ADD COLUMN IF NOT EXISTS client_brand_id UUID REFERENCES client_brands(id);
+
+UPDATE portfolio_items AS portfolio
+SET
+  client_brand_id = brand.id,
+  updated_at = NOW()
+FROM client_brands AS brand
+WHERE portfolio.client_brand_id IS NULL
+  AND LOWER(BTRIM(portfolio.brand_name)) = LOWER(BTRIM(brand.name));
 
 -- 인스타그램 게시 대기열
 CREATE TABLE IF NOT EXISTS instagram_queue (
@@ -81,3 +93,4 @@ ALTER TABLE client_brands
 ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS admin_users_email_idx ON admin_users (email);
+CREATE INDEX IF NOT EXISTS portfolio_items_client_brand_id_idx ON portfolio_items (client_brand_id);

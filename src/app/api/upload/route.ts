@@ -2,6 +2,10 @@ import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
 import {
+  getClientBrandOptionById,
+  resolvePortfolioHoverImageUrl,
+} from '@/lib/portfolio-brand'
+import {
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
@@ -21,6 +25,8 @@ function toBoolean(value: FormDataEntryValue | null): boolean | null {
 interface PortfolioUploadRow {
   id: string
   title: string
+  client_brand_id: string | null
+  client_brand_logo_url: string | null
   brand_name: string
   celebrity_name: string | null
   category: string
@@ -61,13 +67,18 @@ function mapPortfolioRow(row: PortfolioUploadRow): PortfolioAdminItem {
   return {
     id: row.id,
     title: row.title,
+    clientBrandId: row.client_brand_id,
+    clientBrandLogoUrl: row.client_brand_logo_url,
     brandName: row.brand_name,
     celebrityName: row.celebrity_name,
     category: row.category,
     instagramUrl: row.instagram_url,
     imageUrl: row.image_url,
     thumbnailUrl: row.thumbnail_url,
-    hoverImageUrl: row.thumbnail_url,
+    hoverImageUrl: resolvePortfolioHoverImageUrl(
+      row.client_brand_logo_url,
+      row.thumbnail_url
+    ),
     showOnWeb: row.show_on_web,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
@@ -82,6 +93,7 @@ export async function POST(request: Request): Promise<Response> {
   const formData = await request.formData()
   const normalFile = formData.get('normalFile')
   const hoverFile = formData.get('hoverFile')
+  const clientBrandId = formData.get('clientBrandId')?.toString().trim() || null
   const title = formData.get('title')?.toString().trim()
   const brandName = formData.get('brandName')?.toString().trim()
   const celebrityName = formData.get('celebrityName')?.toString().trim() || null
@@ -90,14 +102,11 @@ export async function POST(request: Request): Promise<Response> {
   const showOnWeb = toBoolean(formData.get('showOnWeb'))
   const showOnPdf = toBoolean(formData.get('showOnPdf'))
 
-  if (!(normalFile instanceof File) || !(hoverFile instanceof File)) {
-    return Response.json(
-      { success: false, error: 'NORMAL_AND_HOVER_FILES_REQUIRED' },
-      { status: 400 }
-    )
+  if (!(normalFile instanceof File)) {
+    return Response.json({ success: false, error: 'NORMAL_FILE_REQUIRED' }, { status: 400 })
   }
 
-  if (!title || !brandName || !category || showOnWeb === null || showOnPdf === null) {
+  if (!title || !category || showOnWeb === null || showOnPdf === null) {
     return Response.json({ success: false, error: 'INVALID_FORM_DATA' }, { status: 400 })
   }
 
@@ -106,14 +115,50 @@ export async function POST(request: Request): Promise<Response> {
   }
 
   try {
+    let resolvedBrandName: string | null = brandName ?? null
+    let resolvedClientBrandId: string | null = null
+    let managedBrandLogoUrl: string | null = null
+
+    if (clientBrandId) {
+      const selectedBrand = await getClientBrandOptionById(clientBrandId)
+
+      if (!selectedBrand || !selectedBrand.isActive) {
+        return Response.json(
+          { success: false, error: 'INVALID_CLIENT_BRAND' },
+          { status: 400 }
+        )
+      }
+
+      if (!selectedBrand.logoUrl) {
+        return Response.json(
+          {
+            success: false,
+            error: '선택한 파트너에 로고가 없습니다. 파트너 관리에서 로고를 먼저 등록해 주세요.',
+          },
+          { status: 400 }
+        )
+      }
+
+      resolvedBrandName = selectedBrand.name
+      resolvedClientBrandId = selectedBrand.id
+      managedBrandLogoUrl = selectedBrand.logoUrl
+    } else if (!(hoverFile instanceof File) || !brandName) {
+      return Response.json(
+        { success: false, error: 'EXCEPTION_BRAND_REQUIRES_HOVER_IMAGE' },
+        { status: 400 }
+      )
+    }
+
     const instagramUrl = normalizePortfolioUrl(instagramUrlRaw)
-    const [uploadedNormal, uploadedHover] = await Promise.all([
-      uploadPublicImage(normalFile, 'portfolio'),
-      uploadPublicImage(hoverFile, 'portfolio'),
-    ])
+    const uploadedNormal = await uploadPublicImage(normalFile, 'portfolio')
+    const uploadedHover =
+      hoverFile instanceof File && !managedBrandLogoUrl
+        ? await uploadPublicImage(hoverFile, 'portfolio')
+        : null
     const result = await sql<PortfolioUploadRow>`
       INSERT INTO portfolio_items (
         title,
+        client_brand_id,
         brand_name,
         celebrity_name,
         category,
@@ -126,12 +171,13 @@ export async function POST(request: Request): Promise<Response> {
       )
       VALUES (
         ${title},
-        ${brandName},
+        ${resolvedClientBrandId},
+        ${resolvedBrandName},
         ${celebrityName},
         ${category},
         ${instagramUrl},
         ${uploadedNormal.url},
-        ${uploadedHover.url},
+        ${uploadedHover?.url ?? null},
         ${showOnWeb},
         ${showOnPdf},
         (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM portfolio_items)
@@ -139,6 +185,8 @@ export async function POST(request: Request): Promise<Response> {
       RETURNING
         id,
         title,
+        client_brand_id,
+        ${managedBrandLogoUrl}::text AS client_brand_logo_url,
         brand_name,
         celebrity_name,
         category,

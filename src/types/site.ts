@@ -15,11 +15,13 @@ export interface SiteClientBrand {
 export interface PublicPortfolioItem {
   id: string
   title: string
+  clientBrandId: string | null
   brandName: string
   celebrityName: string | null
   category: string
   instagramUrl: string | null
   imageUrl: string
+  clientBrandLogoUrl: string | null
   thumbnailUrl: string | null
   hoverImageUrl: string | null
   sortOrder: number
