@@ -25,7 +25,7 @@ export default async function HomePage() {
 
 	return (
 		<>
-			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden bg-stone-900/8 pb-16 pt-36 sm:pb-24 sm:pt-40 lg:pb-32 lg:pt-44">
+			<section className="relative overflow-hidden bg-stone-900/8 pb-16 pt-36 sm:pb-24 sm:pt-40 lg:pb-32 lg:pt-44">
 				<ShaderGodrays className="opacity-90 [mask-image:radial-gradient(120%_90%_at_50%_4%,black_0%,black_48%,transparent_100%)]" />
 				<div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] [background-size:32px_32px]" />
 				<div className="absolute -right-16 top-24 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
@@ -54,51 +54,51 @@ export default async function HomePage() {
 				</div>
 			</section>
 
-			<div className="grid gap-24 py-6 sm:gap-28 sm:py-8 lg:gap-32 lg:py-40">
-				<section className="grid gap-12">
-					<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-						<div>
-							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
+			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
+				<div className="grid gap-24 py-6 sm:gap-28 sm:py-8 lg:gap-32 lg:py-40">
+					<section className="grid gap-12">
+						<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+							<div>
+								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
+								<AnimatedPageTitle
+									as="h2"
+									lines={[{ text: 'The work speaks for itself.' }]}
+									delay={0.04}
+									duration={0.42}
+									className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
+								/>
+							</div>
+						</div>
+
+						{featuredItems.length === 0 ? (
+							<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>
+						) : (
+							<PortfolioPreviewGrid items={featuredItems} gridClassName="xl:grid-cols-4" />
+						)}
+					</section>
+
+					<section className="grid gap-12 border-t border-stone-900/8 pt-20">
+						<div className="grid justify-items-center gap-4 text-center">
+							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
 							<AnimatedPageTitle
 								as="h2"
-								lines={[{ text: 'The work speaks for itself.' }]}
+								lines={[{ text: 'Collaborated Brands' }]}
 								delay={0.04}
 								duration={0.42}
-								className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
+								className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
 							/>
 						</div>
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-stone-400">Selected Campaigns</p>
-					</div>
 
-					{featuredItems.length === 0 ? (
-						<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>
-					) : (
-						<PortfolioPreviewGrid items={featuredItems} gridClassName="xl:grid-cols-4" />
-					)}
-				</section>
-
-				<section className="grid gap-12 border-t border-stone-900/8 pt-20">
-					<div className="grid justify-items-center gap-4 text-center">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
-						<AnimatedPageTitle
-							as="h2"
-							lines={[{ text: 'Collaborated Brands' }]}
-							delay={0.04}
-							duration={0.42}
-							className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+						<ClientLogoMarquee
+							brands={clientLogoBrands}
+							className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+							trackClassName="home-marquee-track flex min-w-max items-center gap-16 whitespace-nowrap py-4"
+							logoClassName="relative h-12 w-36 shrink-0 opacity-70 transition hover:opacity-100"
+							imageClassName="object-contain grayscale"
 						/>
-					</div>
+					</section>
 
-					<ClientLogoMarquee
-						brands={clientLogoBrands}
-						className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
-						trackClassName="home-marquee-track flex min-w-max items-center gap-16 whitespace-nowrap py-4"
-						logoClassName="relative h-12 w-36 shrink-0 opacity-70 transition hover:opacity-100"
-						imageClassName="object-contain grayscale"
-					/>
-				</section>
-
-				{/* <section className="grid justify-items-center gap-8 py-6 text-center sm:py-10">
+					{/* <section className="grid justify-items-center gap-8 py-6 text-center sm:py-10">
 					<h2 className="text-5xl italic tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-6xl md:text-7xl">Inquire</h2>
 					<p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">브랜드 협업, 포트폴리오 제안, PR 운영 문의는 아래 링크로 바로 연결할 수 있습니다.</p>
 					<Link
@@ -107,6 +107,7 @@ export default async function HomePage() {
 						Get In Touch
 					</Link>
 				</section> */}
+				</div>
 			</div>
 		</>
 	);

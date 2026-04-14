@@ -135,22 +135,26 @@ export default async function AboutPage() {
 	const storyRevealText = STORY_LINES.join(' ');
 
 	return (
-		<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
-			<header className="grid gap-10">
-				<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
+		<>
+			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
+				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
+					<header className="grid gap-10">
+						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
 
-				<div className="grid gap-6">
-					<AnimatedPageTitle
-						lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
-						className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
-					/>
-					<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-						스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
-					</p>
+						<div className="grid gap-6">
+							<AnimatedPageTitle
+								lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
+								className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+							/>
+							<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
+								스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
+							</p>
+						</div>
+					</header>
 				</div>
-			</header>
+			</div>
 
-			<section className="relative ml-[calc(50%-50vw)] w-screen overflow-hidden border-y border-stone-900/8 bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)]">
+			<section className="relative overflow-hidden border-y border-stone-900/8 bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)]">
 				<div className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:28px_28px]" />
 				<div className="absolute inset-x-[22%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.9),transparent_72%)] blur-3xl" />
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
@@ -166,131 +170,135 @@ export default async function AboutPage() {
 				</div>
 			</section>
 
-			<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
-				<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
-					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
-					<AnimatedPageTitle
-						as="h2"
-						lines={[{ text: 'The Accumulation Line' }]}
-						delay={0.04}
-						duration={0.42}
-						className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
-					/>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">어떤 브랜드, 어떤 배우, 어떤 결과였는지.</p>
-				</div>
+			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
+				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
+					<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
+						<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
+							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
+							<AnimatedPageTitle
+								as="h2"
+								lines={[{ text: 'The Accumulation Line' }]}
+								delay={0.04}
+								duration={0.42}
+								className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+							/>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">어떤 브랜드, 어떤 배우, 어떤 결과였는지.</p>
+						</div>
 
-				<div className="relative">
-					<div className="absolute left-[5px] top-0 h-full w-px bg-stone-900/15" />
+						<div className="relative">
+							<div className="absolute left-[5px] top-0 h-full w-px bg-stone-900/15" />
 
-					<div className="grid gap-6">
-						{MOMENTUM_MILESTONES.map((milestone, index) => (
-							<BlurFade key={milestone.year} delay={Math.min(index * 0.06, 0.3)} className="ml-8">
-								<article className="relative border border-stone-900/8 bg-white px-6 py-5">
-									<div className="absolute -left-[2em] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
-									<p className="text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{milestone.year}</p>
-									<h3 className="mt-2 text-xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-2xl">{milestone.title}</h3>
-									<p className="mt-2 text-sm leading-7 text-stone-600">{milestone.description}</p>
-								</article>
-							</BlurFade>
-						))}
-					</div>
-				</div>
-			</section>
-
-			<section className="grid gap-10">
-				<div className="grid gap-5 md:grid-cols-2 md:items-end">
-					<div className="grid gap-4">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
-						<AnimatedPageTitle
-							as="h2"
-							lines={[{ text: 'What We Do' }]}
-							delay={0.04}
-							duration={0.42}
-							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
-						/>
-					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
-				</div>
-
-				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 sm:grid-cols-2">
-					{SERVICE_ITEMS.map(item => (
-						<article key={item.title} className="grid gap-6 bg-[#faf7f3] p-7 sm:p-8">
-							<div className="flex items-center gap-4">
-								<div className="flex h-10 w-10 items-center justify-center border border-stone-900/10 bg-white text-[#715a3e]">{item.icon}</div>
-								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
+							<div className="grid gap-6">
+								{MOMENTUM_MILESTONES.map((milestone, index) => (
+									<BlurFade key={milestone.year} delay={Math.min(index * 0.06, 0.3)} className="ml-8">
+										<article className="relative border border-stone-900/8 bg-white px-6 py-5">
+											<div className="absolute -left-[2em] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
+											<p className="text-[0.6rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{milestone.year}</p>
+											<h3 className="mt-2 text-xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-2xl">{milestone.title}</h3>
+											<p className="mt-2 text-sm leading-7 text-stone-600">{milestone.description}</p>
+										</article>
+									</BlurFade>
+								))}
 							</div>
-							<h3 className="text-2xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl">{item.headline}</h3>
-							<p className="text-sm leading-8 text-stone-600 sm:text-base text-balance">{item.description}</p>
-						</article>
-					))}
-				</div>
-			</section>
+						</div>
+					</section>
 
-			<section className="grid gap-10">
-				<div className="grid gap-5 md:grid-cols-2 md:items-end">
-					<div className="grid gap-4">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
-						<AnimatedPageTitle
-							as="h2"
-							lines={[{ text: 'Why AFEEL' }]}
-							delay={0.04}
-							duration={0.42}
-							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+					<section className="grid gap-10">
+						<div className="grid gap-5 md:grid-cols-2 md:items-end">
+							<div className="grid gap-4">
+								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
+								<AnimatedPageTitle
+									as="h2"
+									lines={[{ text: 'What We Do' }]}
+									delay={0.04}
+									duration={0.42}
+									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+								/>
+							</div>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
+						</div>
+
+						<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 sm:grid-cols-2">
+							{SERVICE_ITEMS.map(item => (
+								<article key={item.title} className="grid gap-6 bg-[#faf7f3] p-7 sm:p-8">
+									<div className="flex items-center gap-4">
+										<div className="flex h-10 w-10 items-center justify-center border border-stone-900/10 bg-white text-[#715a3e]">{item.icon}</div>
+										<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
+									</div>
+									<h3 className="text-2xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-3xl">{item.headline}</h3>
+									<p className="text-sm leading-8 text-stone-600 sm:text-base text-balance">{item.description}</p>
+								</article>
+							))}
+						</div>
+					</section>
+
+					<section className="grid gap-10">
+						<div className="grid gap-5 md:grid-cols-2 md:items-end">
+							<div className="grid gap-4">
+								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
+								<AnimatedPageTitle
+									as="h2"
+									lines={[{ text: 'Why AFEEL' }]}
+									delay={0.04}
+									duration={0.42}
+									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+								/>
+							</div>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
+						</div>
+
+						<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
+							{EDGE_ITEMS.map(item => (
+								<article key={item.title} className="grid gap-5 bg-[#faf7f3] p-7 sm:p-8">
+									<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
+									<h3 className="text-3xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)]">{item.headline}</h3>
+									<p className="text-sm leading-8 text-stone-600 sm:text-base">{item.description}</p>
+								</article>
+							))}
+						</div>
+					</section>
+
+					<section className="grid gap-10">
+						<div className="grid gap-5 md:grid-cols-2 md:items-end">
+							<div className="grid gap-4">
+								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
+								<AnimatedPageTitle
+									as="h2"
+									lines={[{ text: 'Our Clients' }]}
+									delay={0.04}
+									duration={0.42}
+									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+								/>
+							</div>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
+						</div>
+
+						<ClientLogoMarquee
+							brands={rollingBrands}
+							className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+							trackClassName="about-logo-marquee-track flex min-w-max items-center gap-14"
+							logoClassName="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
+							imageClassName="object-contain grayscale"
 						/>
-					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
-				</div>
 
-				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
-					{EDGE_ITEMS.map(item => (
-						<article key={item.title} className="grid gap-5 bg-[#faf7f3] p-7 sm:p-8">
-							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
-							<h3 className="text-3xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)]">{item.headline}</h3>
-							<p className="text-sm leading-8 text-stone-600 sm:text-base">{item.description}</p>
-						</article>
-					))}
+						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
+							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
+							<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
+								다음 시즌의 메가 히트를 준비하는 브랜드 매니저.
+								<br /> 완벽한 레드카펫 룩이 당장 필요한 스타일리스트.
+								<br /> 어필컴퍼니와 함께 시작하세요.
+							</p>
+							<div>
+								<Link
+									href="/contact"
+									className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14">
+									Inquire for Collaboration
+								</Link>
+							</div>
+						</div>
+					</section>
 				</div>
-			</section>
-
-			<section className="grid gap-10">
-				<div className="grid gap-5 md:grid-cols-2 md:items-end">
-					<div className="grid gap-4">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
-						<AnimatedPageTitle
-							as="h2"
-							lines={[{ text: 'Our Clients' }]}
-							delay={0.04}
-							duration={0.42}
-							className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
-						/>
-					</div>
-					<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
-				</div>
-
-				<ClientLogoMarquee
-					brands={rollingBrands}
-					className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-					trackClassName="about-logo-marquee-track flex min-w-max items-center gap-14"
-					logoClassName="relative h-10 w-32 shrink-0 opacity-70 transition hover:opacity-100"
-					imageClassName="object-contain grayscale"
-				/>
-
-				<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
-					<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-						다음 시즌의 메가 히트를 준비하는 브랜드 매니저.
-						<br /> 완벽한 레드카펫 룩이 당장 필요한 스타일리스트.
-						<br /> 어필컴퍼니와 함께 시작하세요.
-					</p>
-					<div>
-						<Link
-							href="/contact"
-							className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14">
-							Inquire for Collaboration
-						</Link>
-					</div>
-				</div>
-			</section>
-		</div>
+			</div>
+		</>
 	);
 }

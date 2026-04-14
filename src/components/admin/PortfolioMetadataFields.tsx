@@ -39,13 +39,27 @@ export function PortfolioMetadataFields({ value, idPrefix, disabled = false, onC
 		<div className="grid gap-5">
 			<div className="flex flex-col gap-2">
 				<Label htmlFor={`${idPrefix}-title`}>제목</Label>
-				<Input id={`${idPrefix}-title`} value={value.title} onChange={event => onChange({ title: event.target.value })} placeholder="ROYNINE LOOK 01" required disabled={disabled} />
+				<Input
+					id={`${idPrefix}-title`}
+					value={value.title}
+					onChange={event => onChange({ title: event.target.value })}
+					placeholder="포트폴리오 제목을 입력하세요"
+					required
+					disabled={disabled}
+				/>
 			</div>
 
 			<div className="grid gap-4 md:grid-cols-2">
 				<div className="flex flex-col gap-2">
 					<Label htmlFor={`${idPrefix}-brand`}>브랜드 명</Label>
-					<Input id={`${idPrefix}-brand`} value={value.brandName} onChange={event => onChange({ brandName: event.target.value })} placeholder="ROYNINE" required disabled={disabled} />
+					<Input
+						id={`${idPrefix}-brand`}
+						value={value.brandName}
+						onChange={event => onChange({ brandName: event.target.value })}
+						placeholder="브랜드 이름을 입력하세요"
+						required
+						disabled={disabled}
+					/>
 				</div>
 
 				<div className="flex flex-col gap-2">

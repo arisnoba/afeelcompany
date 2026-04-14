@@ -17,9 +17,7 @@ export default async function PublicLayout({
 			<div className="min-h-screen bg-[#fcf9f8] text-stone-950 [font-family:var(--font-manrope)]">
 				<div className="relative flex min-h-screen flex-col">
 					<SiteHeader />
-					<div className="mx-auto flex w-full max-w-screen-2xl flex-1 flex-col px-4 sm:px-6 lg:px-10">
-						<main className="flex-1 pb-16">{children}</main>
-					</div>
+					<main className="flex-1 pb-16">{children}</main>
 					<SiteFooter profile={profile} />
 				</div>
 			</div>

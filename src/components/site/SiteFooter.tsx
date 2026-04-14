@@ -31,7 +31,7 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 
 	return (
 		<footer className="border-t border-stone-900/8 bg-[#faf7f3] text-stone-900">
-			<div className="mx-auto grid w-full max-w-screen-2xl gap-14 px-6 py-20 md:grid-cols-[minmax(0,1.4fr)_minmax(260px,1.15fr)_180px_180px] md:gap-x-16 md:px-12 md:py-24 lg:gap-x-24">
+			<div className="mx-auto grid w-full max-w-screen-2xl gap-14 px-6 py-20 md:grid-cols-2 md:gap-x-12 md:px-12 md:py-24 xl:grid-cols-[minmax(0,1.4fr)_minmax(260px,1.15fr)_180px_180px] xl:gap-x-16">
 				<div className="grid content-start gap-10">
 					<span className="text-2xl tracking-[-0.05em] [font-family:var(--font-newsreader)]">
 						<Image src="/images/logo.svg" alt="afeelcompany" width={230} height={100} className="invert" style={{ height: 'auto' }} />
