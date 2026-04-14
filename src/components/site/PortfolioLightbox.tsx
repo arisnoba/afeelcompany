@@ -18,7 +18,13 @@ export function PortfolioLightbox({ item, open, onOpenChange }: PortfolioLightbo
 				{item ? (
 					<div className="grid gap-0 md:grid-cols-[minmax(0,1.45fr)_minmax(280px,0.85fr)]">
 						<div className="relative min-h-[320px] bg-stone-200 md:min-h-[560px]">
-							<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="(max-width: 768px) 100vw, 60vw" />
+							<Image
+								src={item.imageUrl}
+								alt={item.title}
+								fill
+								className="object-cover object-center"
+								sizes="(max-width: 768px) 100vw, 60vw"
+							/>
 						</div>
 
 						<div className="grid content-start gap-6 px-6 py-6 sm:px-7 sm:py-7">
