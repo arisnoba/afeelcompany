@@ -4,17 +4,17 @@ import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import {
-  ChevronLeft,
-  ChevronRight,
+  ArrowLeft,
+  ArrowRight,
   Download,
-  Eye,
-  GalleryHorizontal,
-  ScrollText,
+  Layout,
+  List,
+  Loader2,
 } from 'lucide-react'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import type { Swiper as SwiperInstance } from 'swiper'
 
-import { Button, buttonVariants } from '@/components/ui/button'
+import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
 
 type PreviewMode = 'scroll' | 'slide'
@@ -201,10 +201,6 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
     })
   }
 
-  function handlePrintPreview() {
-    handleModeChange('scroll')
-  }
-
   async function handleDownload() {
     setDownloading(true)
     try {
@@ -230,94 +226,95 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
     <>
       <div className="screen-only sticky top-3 z-30 px-3">
         <div className="mx-auto flex w-full max-w-[1400px] justify-center">
-          <div className="flex w-full max-w-[980px] flex-wrap items-center justify-center gap-2 rounded-[24px] border border-black/10 bg-white/78 px-2.5 py-2 backdrop-blur-xl">
-            <div className="flex items-center gap-2 rounded-full bg-black/[0.035] px-3 py-2 text-[11px] font-medium uppercase tracking-[0.22em] text-black/50">
-              <span>PDF</span>
-              <span className="text-black/25">/</span>
-              <span>
-                {String(activeIndex + 1).padStart(2, '0')} of{' '}
-                {String(sections.length).padStart(2, '0')}
+          <div className="grid w-full max-w-[1000px] grid-cols-[1fr_auto_1fr] items-center border border-black/15 bg-white/85 px-4 py-1.5 backdrop-blur-xl">
+            {/* Left: Index & Label (Stable Column) */}
+            <div className="flex min-w-0 items-center gap-3 overflow-hidden pr-4">
+              <div className="flex shrink-0 items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-black/50">
+                <span className="text-black/25">PG.</span>
+                <span className="tabular-nums">
+                  {String(activeIndex + 1).padStart(2, '0')}
+                  <span className="mx-1 text-black/20">/</span>
+                  {String(sections.length).padStart(2, '0')}
+                </span>
+              </div>
+              <span className="h-3 w-px shrink-0 bg-black/10" />
+              <span className="truncate text-[9px] font-semibold uppercase tracking-[0.15em] text-black/40">
+                {getSectionLabel(activeSection)}
               </span>
-              <span className="hidden text-black/25 sm:inline">/</span>
-              <span className="hidden sm:inline">{getSectionLabel(activeSection)}</span>
             </div>
 
-            <div className="flex items-center rounded-full border border-black/10 bg-white p-1">
-              <button
-                type="button"
-                onClick={() => handleModeChange('scroll')}
-                className={cn(
-                  'flex min-h-10 items-center gap-2 rounded-full px-3 text-sm transition',
-                  mode === 'scroll'
-                    ? 'bg-black text-white'
-                    : 'text-black/55 hover:text-black'
-                )}
-              >
-                <ScrollText />
-                <span>스크롤</span>
-              </button>
-              <button
-                type="button"
-                onClick={() => handleModeChange('slide')}
-                className={cn(
-                  'flex min-h-10 items-center gap-2 rounded-full px-3 text-sm transition',
-                  mode === 'slide'
-                    ? 'bg-black text-white'
-                    : 'text-black/55 hover:text-black'
-                )}
-              >
-                <GalleryHorizontal />
-                <span>슬라이드</span>
-              </button>
+            {/* Center: Mode Switch & Navigation (Grouped & Centered) */}
+            <div className="flex items-center gap-4">
+              <div className="flex items-center border border-black/10 p-0.5">
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('scroll')}
+                  className={cn(
+                    'flex min-h-[30px] items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-wider transition',
+                    mode === 'scroll'
+                      ? 'bg-black text-white'
+                      : 'text-black/40 hover:bg-black/5 hover:text-black'
+                  )}
+                >
+                  <List size={12} strokeWidth={1.5} />
+                  <span>Scroll</span>
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleModeChange('slide')}
+                  className={cn(
+                    'flex min-h-[30px] items-center gap-2 px-3 text-[10px] font-bold uppercase tracking-wider transition',
+                    mode === 'slide'
+                      ? 'bg-black text-white'
+                      : 'text-black/40 hover:bg-black/5 hover:text-black'
+                  )}
+                >
+                  <Layout size={12} strokeWidth={1.5} />
+                  <span>Slide</span>
+                </button>
+              </div>
+
+              <div className="flex items-center gap-0.5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-xs"
+                  onClick={() => moveSection(-1)}
+                  disabled={activeIndex === 0}
+                  className="size-8 rounded-none border-black/10 bg-white hover:bg-black hover:text-white"
+                >
+                  <ArrowLeft size={14} strokeWidth={1.5} />
+                  <span className="sr-only">Prev</span>
+                </Button>
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon-xs"
+                  onClick={() => moveSection(1)}
+                  disabled={activeIndex === sections.length - 1}
+                  className="size-8 rounded-none border-black/10 bg-white hover:bg-black hover:text-white"
+                >
+                  <ArrowRight size={14} strokeWidth={1.5} />
+                  <span className="sr-only">Next</span>
+                </Button>
+              </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            {/* Right: Download (Stable Column) */}
+            <div className="flex justify-end pl-4">
               <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => moveSection(-1)}
-                disabled={activeIndex === 0}
-                className="rounded-full bg-white/88"
-              >
-                <ChevronLeft />
-                <span className="sr-only">이전</span>
-              </Button>
-              <Button
-                type="button"
-                variant="outline"
-                size="icon"
-                onClick={() => moveSection(1)}
-                disabled={activeIndex === sections.length - 1}
-                className="rounded-full bg-white/88"
-              >
-                <ChevronRight />
-                <span className="sr-only">다음</span>
-              </Button>
-            </div>
-
-            <div className="flex items-center gap-2">
-              <button
-                type="button"
-                onClick={handlePrintPreview}
-                className={cn(
-                  buttonVariants({ variant: 'outline', size: 'sm' }),
-                  'min-h-10 rounded-full bg-white/88 px-3'
-                )}
-              >
-                <Eye data-icon="inline-start" />
-                <span className="hidden sm:inline">인쇄 미리보기</span>
-                <span className="sm:hidden">미리보기</span>
-              </button>
-              <button
                 type="button"
                 onClick={handleDownload}
                 disabled={downloading}
-                className={cn(buttonVariants({ size: 'sm' }), 'min-h-10 rounded-full px-3')}
+                className="h-8 min-w-[120px] rounded-none bg-[#274133] px-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-[#1e3227]"
               >
-                <Download data-icon="inline-start" />
-                <span>{downloading ? '생성 중...' : '다운로드'}</span>
-              </button>
+                {downloading ? (
+                  <Loader2 className="animate-spin" size={12} strokeWidth={1.5} />
+                ) : (
+                  <Download size={12} strokeWidth={1.5} />
+                )}
+                <span>{downloading ? 'WAIT...' : 'Download'}</span>
+              </Button>
             </div>
           </div>
         </div>

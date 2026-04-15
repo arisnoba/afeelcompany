@@ -160,9 +160,7 @@ export default async function AboutPage() {
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 					<div className="grid justify-items-center gap-6 px-4 pt-12 text-center sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">How We Work</p>
-						<p className="max-w-2xl text-sm leading-7 text-stone-600 sm:text-base sm:leading-8">
-							텍스트가 한 줄씩 드러나듯, 어필컴퍼니의 철학도 결과로 증명됩니다. 브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.
-						</p>
+						<p className="max-w-2xl text-sm leading-5 text-stone-600 sm:text-base sm:leading-8 text-balance">브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.</p>
 					</div>
 					<div className="overflow-hidden">
 						<TextRevealByWord text={storyRevealText} className="h-[95vh]" />
@@ -276,8 +274,8 @@ export default async function AboutPage() {
 						<ClientLogoMarquee
 							brands={rollingBrands}
 							className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-						trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
-						logoClassName="relative h-8 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-10 sm:w-32"
+							trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
+							logoClassName="relative h-8 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-10 sm:w-32"
 							imageClassName="object-contain grayscale"
 						/>
 

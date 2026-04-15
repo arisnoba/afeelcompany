@@ -21,5 +21,5 @@ const brochureSerif = Newsreader({
 export const metadata: Metadata = createNoIndexMetadata('PDF Export');
 
 export default function PdfExportLayout({ children }: { children: ReactNode }) {
-	return <div className={`${brochureSans.variable} ${brochureSerif.variable} min-h-full text-[#1c1917] font-[family:var(--font-brochure-sans)]`}>{children}</div>;
+	return <div className={`${brochureSans.variable} ${brochureSerif.variable} min-h-screen bg-[#fcf9f8] text-[#1c1917] font-[family:var(--font-brochure-sans)]`}>{children}</div>;
 }

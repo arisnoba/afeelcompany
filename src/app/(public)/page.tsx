@@ -1,4 +1,6 @@
 import type { Metadata } from 'next';
+import Link from 'next/link';
+import { ChevronRight } from 'lucide-react';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { PortfolioPreviewGrid } from '@/components/site/PortfolioPreviewGrid';
@@ -22,6 +24,9 @@ export default async function HomePage() {
 
 	const heroBody = profile.aboutText || FALLBACK_ABOUT;
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
+	const portfolioLinkClassName =
+		'inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
+	const portfolioLinkLabel = 'View All Work';
 
 	return (
 		<>
@@ -40,7 +45,7 @@ export default async function HomePage() {
 
 						<div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.42fr)] lg:items-end">
 							<AnimatedPageTitle
-								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.' }]}
+								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.', className: 'italic text-[#715a3e]' }]}
 								className="max-w-5xl text-[clamp(3.4rem,9vw,7.8rem)] font-light leading-[0.93] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)]"
 							/>
 
@@ -68,12 +73,24 @@ export default async function HomePage() {
 									className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
 								/>
 							</div>
+							<Link href="/portfolio" className={portfolioLinkClassName}>
+								{portfolioLinkLabel}
+								<ChevronRight className="size-4" />
+							</Link>
 						</div>
 
 						{featuredItems.length === 0 ? (
 							<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>
 						) : (
+							<div className="grid gap-8">
 								<PortfolioPreviewGrid items={featuredItems} />
+								<div className="flex justify-center">
+									<Link href="/portfolio" className={portfolioLinkClassName}>
+										{portfolioLinkLabel}
+										<ChevronRight className="size-4" />
+									</Link>
+								</div>
+							</div>
 						)}
 					</section>
 

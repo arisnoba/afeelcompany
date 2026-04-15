@@ -1,6 +1,7 @@
 'use client';
 
 import { FormEvent, useState } from 'react';
+import { ArrowUpRight } from 'lucide-react';
 
 type ContactInquiryFormProps = {
 	canSubmit: boolean;
@@ -39,7 +40,7 @@ const ERROR_MESSAGES = {
 } satisfies Record<NonNullable<Extract<ContactApiResponse, { success: false }>['error']>, string>;
 
 function FieldLabel({ children }: { children: React.ReactNode }) {
-	return <span className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{children}</span>;
+	return <span className="text-[0.62rem] font-semibold uppercase leading-none tracking-[0.32em] text-stone-400">{children}</span>;
 }
 
 export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProps) {
@@ -93,31 +94,31 @@ export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProp
 	return (
 		<form className="grid gap-10" onSubmit={handleSubmit}>
 			<div className="grid gap-10 md:grid-cols-2 md:gap-12">
-				<label className="grid gap-2">
+				<label className="flex flex-col items-start gap-1.5">
 					<FieldLabel>Name</FieldLabel>
 					<input
 						name="name"
 						value={form.name}
 						onChange={event => setForm(current => ({ ...current, name: event.target.value }))}
 						placeholder="Your Name"
-						className="border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+						className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
 						required
 					/>
 				</label>
 
-				<label className="grid gap-2">
+				<label className="flex flex-col items-start gap-1.5">
 					<FieldLabel>Company</FieldLabel>
 					<input
 						name="company"
 						value={form.company}
 						onChange={event => setForm(current => ({ ...current, company: event.target.value }))}
 						placeholder="Organization"
-						className="border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+						className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
 					/>
 				</label>
 			</div>
 
-			<label className="grid gap-2">
+			<label className="flex flex-col items-start gap-1.5">
 				<FieldLabel>Email Address</FieldLabel>
 				<input
 					type="email"
@@ -125,7 +126,7 @@ export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProp
 					value={form.email}
 					onChange={event => setForm(current => ({ ...current, email: event.target.value }))}
 					placeholder="email@address.com"
-					className="border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+					className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
 					required
 				/>
 			</label>
@@ -135,7 +136,7 @@ export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProp
 				<input name="website" tabIndex={-1} autoComplete="off" value={form.website} onChange={event => setForm(current => ({ ...current, website: event.target.value }))} />
 			</label>
 
-			<label className="grid gap-2">
+			<label className="flex flex-col items-start gap-1.5">
 				<FieldLabel>Message</FieldLabel>
 				<textarea
 					name="message"
@@ -143,7 +144,7 @@ export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProp
 					value={form.message}
 					onChange={event => setForm(current => ({ ...current, message: event.target.value }))}
 					placeholder="Project details and inquiry"
-					className="min-h-40 resize-none border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+					className="min-h-40 w-full resize-none border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
 					required
 				/>
 			</label>
@@ -155,9 +156,7 @@ export default function ContactInquiryForm({ canSubmit }: ContactInquiryFormProp
 						className="group inline-flex w-fit items-center gap-6 bg-[#274133] px-10 py-5 text-[0.72rem] font-semibold uppercase tracking-[0.3em] text-[#ccead6] transition hover:bg-stone-950 disabled:cursor-not-allowed disabled:opacity-60"
 						disabled={isPending}>
 						{isPending ? 'Sending...' : 'Submit Inquiry'}
-						<span aria-hidden="true" className="text-sm transition group-hover:translate-x-1">
-							↗
-						</span>
+						<ArrowUpRight className="size-4 opacity-70 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
 					</button>
 				) : (
 					<p className="text-sm leading-7 text-stone-500">문의 수신 이메일 또는 메일 발신 설정이 아직 완료되지 않았습니다.</p>

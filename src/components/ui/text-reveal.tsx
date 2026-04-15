@@ -23,7 +23,7 @@ const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className }) => {
 	return (
 		<div ref={targetRef} className={cn('relative z-0 h-[115vh]', className)}>
 			<div className="sticky top-0 mx-auto flex h-screen items-center justify-center bg-transparent px-4 py-12">
-				<p className="flex flex-wrap justify-center p-5 text-center text-[clamp(2.3rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)]">
+				<p className="flex flex-wrap justify-center p-5 text-center text-[clamp(1.5rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)]">
 					{words.map((word, index) => {
 						const start = index / words.length;
 						const end = start + 1 / words.length;

@@ -673,9 +673,9 @@ export default async function PdfExportPage() {
 							<div className="grid gap-5">
 								{/* <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">Company Brochure</p> */}
 								<h1 className="text-[5rem] leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-									The Architect
+									The Architect of
 									<br />
-									<span className="italic text-[#715a3e]">of Spotlight.</span>
+									<span className="italic text-[#715a3e]">Spotlight.</span>
 								</h1>
 								<p className="max-w-[32ch] text-[13px] leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
 							</div>

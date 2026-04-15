@@ -17,15 +17,16 @@ $a4-aspect:          math.div(297, 210); // ≈ 1.4143
 // Screen preview
 $sheet-max-width:    1180px;
 $doc-gap:            24px;
-$doc-padding:        24px 20px 48px;
+// Increased top padding to account for the sticky toolbar (top-3 + bar height + gap)
+$doc-padding:        100px 20px 60px;
 
 // Toolbar height offset (top-3 + bar height + buffer)
-$toolbar-offset:     80px;
+$toolbar-offset:     84px;
 // Slide shell vertical padding × 2
 $slide-padding-v:    32px;
 
 // Brand colors
-$color-bg:           #ece9e3;
+$color-bg:           #fcf9f8;
 $color-sheet:        #ffffff;
 $color-text:         #1c1917;
 
@@ -34,6 +35,17 @@ $color-text:         #1c1917;
 @page {
   size: $page-size;
   margin: $page-margin;
+}
+
+// ── Screen mode — body background ───────────
+
+:root:has(.pdf-document),
+:root:has(.pdf-slide-shell),
+body:has(.pdf-document),
+body:has(.pdf-slide-shell) {
+  background-color: $color-bg;
+  // Ensure smooth scrolling for navigation
+  scroll-behavior: smooth;
 }
 
 // ── Scroll mode — document wrapper ───────────
@@ -45,6 +57,12 @@ $color-text:         #1c1917;
   width: 100%;
   gap: $doc-gap;
   padding: $doc-padding;
+  background-color: $color-bg;
+  min-height: 100vh;
+
+  @media (max-width: 640px) {
+    padding-top: 140px; // More space for wrapped toolbar on mobile
+  }
 }
 
 // ── Sheet (single A4 page) ───────────────────
@@ -59,8 +77,16 @@ $color-text:         #1c1917;
   margin-inline: auto;
   background: $color-sheet;
   color: $color-text;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.05); // Subtle shadow for depth
   page-break-after: always;
   break-after: page;
+
+  // Offset for scrollIntoView so it doesn't hide behind the sticky toolbar
+  scroll-margin-top: $toolbar-offset;
+
+  @media (max-width: 640px) {
+    scroll-margin-top: 130px;
+  }
 }
 
 // ── Slide mode ───────────────────────────────
@@ -71,6 +97,7 @@ $color-text:         #1c1917;
   height: calc(100dvh - #{$toolbar-offset});
   display: flex;
   align-items: center;
+  background-color: $color-bg;
 
   // In slide context, constrain sheet to fit both axes:
   // width = min(viewport-width, height × aspect-ratio)
