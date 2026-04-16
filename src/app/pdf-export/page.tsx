@@ -12,7 +12,7 @@ export const dynamic = 'force-dynamic';
 
 // ── Items per page ──────────────────────────
 const WORK_PER_PAGE = 6; // 3×2 grid
-const CLIENT_PER_PAGE = 12; // 4×3 grid
+const CLIENT_PER_PAGE = 42; // 6×4 grid
 const ABOUT_INTRO_LIMIT = 380;
 const ABOUT_STORY_LIMIT = 520;
 const ABOUT_CONTINUATION_LIMIT = 760;
@@ -587,11 +587,7 @@ function WorkSheet({ items, pageNum, totalPages }: WorkSheetProps) {
 						</div>
 
 						<div className="grid gap-1 border-t border-stone-900/8 bg-[#fcfaf7] px-4 py-3 text-stone-950">
-							{item.brandLogoUrl ? (
-								<img src={item.brandLogoUrl} alt={`${item.brandName} logo`} className="h-4 max-w-[96px] object-contain object-left" />
-							) : (
-								<p className="text-[9px] font-semibold uppercase tracking-[0.3em] text-stone-400">{item.brandName}</p>
-							)}
+							<p className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#715a3e]">{item.brandName}</p>
 							<p className="text-[16px] leading-tight tracking-[-0.04em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								{item.celebrityName ?? item.title}
 							</p>
@@ -625,13 +621,13 @@ function ClientSheet({ brands, pageNum, totalPages, totalBrands }: ClientSheetPr
 			<div
 				className="grid flex-1 gap-3"
 				style={{
-					gridTemplateColumns: 'repeat(4, 1fr)',
+					gridTemplateColumns: 'repeat(6, 1fr)',
 					gridAutoRows: '1fr',
 				}}>
 				{brands.map(brand => (
-					<article key={brand.id} className="avoid-break flex flex-col items-center justify-center gap-3 overflow-hidden border border-stone-900/8 bg-white px-4 py-4">
+					<article key={brand.id} className="avoid-break flex flex-col items-center justify-center gap-2 overflow-hidden border border-stone-900/8 bg-white px-3 py-3">
 						{brand.logoUrl ? (
-							<img src={brand.logoUrl} alt={brand.name} className="h-8 w-full object-contain" />
+							<img src={brand.logoUrl} alt={brand.name} className="h-6 w-full object-contain" />
 						) : (
 							<p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-400">{brand.name}</p>
 						)}
