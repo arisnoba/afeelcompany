@@ -14,7 +14,8 @@ const STORY_LINES = [
 	'스타의 이미지와 브랜드의 미학을 먼저 읽습니다.',
 	'그 만남이 자연스러운 콘텐츠가 되도록 배치합니다.',
 	'숫자를 부풀리기보다, 실제로 일어나는 일에 집중합니다.',
-	'이것이 브랜드와 스타일리스트들이 우리를 찾는 이유입니다.',
+	'브랜드와 스타일리스트들이',
+	'우리를 찾는 이유입니다.',
 ];
 
 const MOMENTUM_MILESTONES = [
@@ -132,7 +133,7 @@ export default async function AboutPage() {
 	const brands = await getSiteClientBrands();
 
 	const rollingBrands = getBrandsWithLogos(brands);
-	const storyRevealText = STORY_LINES.join(' ');
+	const storyRevealText = STORY_LINES.join('\n');
 
 	return (
 		<>
@@ -170,7 +171,7 @@ export default async function AboutPage() {
 
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
-					<section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
+					{/* <section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
 						<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
 							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
 							<AnimatedPageTitle
@@ -199,7 +200,7 @@ export default async function AboutPage() {
 								))}
 							</div>
 						</div>
-					</section>
+					</section> */}
 
 					<section className="grid gap-10">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
