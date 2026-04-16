@@ -94,6 +94,65 @@ export function formatPortfolioCategories(
   return typeof value === 'string' ? value.trim() : ''
 }
 
+interface PortfolioNamingSource {
+  title?: string | null
+  brandName?: string | null
+  brand_name?: string | null
+  celebrityName?: string | null
+  celebrity_name?: string | null
+}
+
+function getNormalizedBrandName(source: PortfolioNamingSource): string {
+  return (source.brandName ?? source.brand_name ?? '').trim()
+}
+
+function getNormalizedCelebrityName(source: PortfolioNamingSource): string {
+  return (source.celebrityName ?? source.celebrity_name ?? '').trim()
+}
+
+function getNormalizedTitle(source: PortfolioNamingSource): string {
+  return (source.title ?? '').trim()
+}
+
+export function buildPortfolioTitle(source: PortfolioNamingSource): string {
+  const brandName = getNormalizedBrandName(source)
+  const celebrityName = getNormalizedCelebrityName(source)
+
+  if (brandName && celebrityName) {
+    return `${brandName} / ${celebrityName}`
+  }
+
+  return celebrityName || brandName || getNormalizedTitle(source) || '포트폴리오'
+}
+
+export function getPortfolioDisplayName(source: PortfolioNamingSource): string {
+  return (
+    getNormalizedCelebrityName(source) ||
+    getNormalizedBrandName(source) ||
+    getNormalizedTitle(source) ||
+    '포트폴리오'
+  )
+}
+
+export function getPortfolioAdminLabel(source: PortfolioNamingSource): string {
+  const brandName = getNormalizedBrandName(source)
+  const displayName = getPortfolioDisplayName(source)
+
+  if (brandName && displayName !== brandName) {
+    return `${brandName} / ${displayName}`
+  }
+
+  return brandName || displayName
+}
+
+export function getPortfolioImageAlt(source: PortfolioNamingSource): string {
+  const parts = [getNormalizedBrandName(source), getNormalizedCelebrityName(source)].filter(
+    (value, index, values) => Boolean(value) && values.indexOf(value) === index
+  )
+
+  return parts.join(' ') || getPortfolioDisplayName(source)
+}
+
 export interface PortfolioItemRecord {
   id: string
   title: string

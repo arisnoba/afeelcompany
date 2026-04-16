@@ -7,7 +7,12 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import type { ClientBrandAdminItem } from '@/types/client-brand';
 import { resizePortfolioImage } from '@/lib/image';
-import { parsePortfolioCategories, serializePortfolioCategories, type PortfolioAdminItem } from '@/types/portfolio';
+import {
+	getPortfolioImageAlt,
+	parsePortfolioCategories,
+	serializePortfolioCategories,
+	type PortfolioAdminItem,
+} from '@/types/portfolio';
 import { PortfolioMetadataFields, type PortfolioMetadataValue } from '@/components/admin/PortfolioMetadataFields';
 
 interface PortfolioMutationResponse {
@@ -25,7 +30,6 @@ interface PortfolioEditorFormProps {
 
 function toFormValue(item: PortfolioAdminItem): PortfolioMetadataValue {
 	return {
-		title: item.title,
 		brandMode: item.clientBrandId ? 'managed' : 'custom',
 		clientBrandId: item.clientBrandId,
 		brandName: item.brandName,
@@ -52,6 +56,11 @@ export function PortfolioEditorForm({
 	const selectedBrand = availableBrands.find(brand => brand.id === form.clientBrandId) ?? null;
 	const requiresCustomHover = form.brandMode === 'custom';
 	const resolvedHoverPreviewUrl = requiresCustomHover ? hoverPreviewUrl : selectedBrand?.logoUrl ?? null;
+	const previewAlt = getPortfolioImageAlt({
+		brandName: form.brandName || item.brandName,
+		celebrityName: form.celebrityName || item.celebrityName,
+		title: item.title,
+	});
 
 	useEffect(() => {
 		setForm(toFormValue(item));
@@ -89,7 +98,6 @@ export function PortfolioEditorForm({
 
 		try {
 			const payload = new FormData();
-			payload.set('title', form.title);
 			payload.set('clientBrandId', form.brandMode === 'managed' ? form.clientBrandId ?? '' : '');
 			payload.set('brandName', form.brandMode === 'custom' ? form.brandName : '');
 			payload.set('celebrityName', form.celebrityName || '');
@@ -163,7 +171,7 @@ export function PortfolioEditorForm({
 					<div className="grid gap-2">
 						<p className="text-xs font-medium uppercase tracking-[0.22em] text-muted-foreground">Normal</p>
 						<div className="relative mx-auto aspect-square w-full overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
-							<Image src={item.imageUrl} alt={`${item.title} normal`} fill className="object-cover" sizes="180px" />
+							<Image src={item.imageUrl} alt={`${previewAlt} normal`} fill className="object-cover" sizes="180px" />
 						</div>
 					</div>
 					<div className="grid gap-2">
@@ -172,7 +180,7 @@ export function PortfolioEditorForm({
 						</p>
 						<div className="relative mx-auto flex aspect-square w-full items-center justify-center overflow-hidden rounded-[20px] border border-black/6 bg-[#f7fbf8]">
 							{resolvedHoverPreviewUrl ? (
-								<Image src={resolvedHoverPreviewUrl} alt={`${item.title} hover`} fill className="object-contain p-6" sizes="180px" />
+								<Image src={resolvedHoverPreviewUrl} alt={`${previewAlt} hover`} fill className="object-contain p-6" sizes="180px" />
 							) : (
 								<div className="px-5 text-center text-sm text-muted-foreground">
 									{requiresCustomHover ? '예외 브랜드용 hover 이미지를 등록해 주세요.' : '선택한 브랜드에 로고가 없습니다.'}

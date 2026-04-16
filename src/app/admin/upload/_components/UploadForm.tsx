@@ -8,7 +8,11 @@ import { toast } from 'sonner';
 import { Button } from '@/components/ui/button';
 import type { ClientBrandAdminItem } from '@/types/client-brand';
 import { resizePortfolioImage } from '@/lib/image';
-import { serializePortfolioCategories, type PortfolioAdminItem } from '@/types/portfolio';
+import {
+	getPortfolioImageAlt,
+	serializePortfolioCategories,
+	type PortfolioAdminItem,
+} from '@/types/portfolio';
 import { PortfolioMetadataFields, type PortfolioMetadataValue } from '@/components/admin/PortfolioMetadataFields';
 
 interface UploadResponse {
@@ -18,7 +22,6 @@ interface UploadResponse {
 }
 
 const INITIAL_FORM: PortfolioMetadataValue = {
-	title: '',
 	brandMode: 'managed',
 	clientBrandId: null,
 	brandName: '',
@@ -154,7 +157,7 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 	const selectedBrand = availableBrands.find(brand => brand.id === form.clientBrandId) ?? null;
 	const requiresCustomHover = form.brandMode === 'custom';
 
-	const previewAlt = useMemo(() => form.title || form.brandName || '업로드 예정 이미지', [form.brandName, form.title]);
+	const previewAlt = useMemo(() => getPortfolioImageAlt(form), [form]);
 
 	useEffect(() => {
 		return () => {
@@ -236,7 +239,6 @@ export function UploadForm({ availableBrands, onSuccess }: UploadFormProps) {
 			const payload = new FormData();
 
 			payload.set('normalFile', resizedNormalFile);
-			payload.set('title', form.title);
 			payload.set('clientBrandId', form.brandMode === 'managed' ? (form.clientBrandId ?? '') : '');
 			payload.set('brandName', form.brandMode === 'custom' ? form.brandName : '');
 			payload.set('celebrityName', form.celebrityName);

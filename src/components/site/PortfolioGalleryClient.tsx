@@ -6,7 +6,13 @@ import { ChevronRight } from 'lucide-react';
 
 import { PortfolioLightbox } from '@/components/site/PortfolioLightbox';
 import { BlurFade } from '@/components/ui/blur-fade';
-import { PORTFOLIO_CATEGORIES, includesPortfolioCategory, type PortfolioCategory } from '@/types/portfolio';
+import {
+	PORTFOLIO_CATEGORIES,
+	getPortfolioDisplayName,
+	getPortfolioImageAlt,
+	includesPortfolioCategory,
+	type PortfolioCategory,
+} from '@/types/portfolio';
 import type { PublicPortfolioItem } from '@/types/site';
 
 const FILTER_ALL = '전체';
@@ -69,6 +75,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
 					{visibleItems.map((item, index) => {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
+						const displayName = getPortfolioDisplayName(item);
 
 						return (
 							<BlurFade key={item.id} delay={Math.min(index * 0.05, 0.25)} className="w-full">
@@ -79,7 +86,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 									<div className="relative h-full w-full overflow-hidden">
 										<Image
 											src={item.imageUrl}
-											alt={item.title}
+											alt={getPortfolioImageAlt(item)}
 											fill
 											className="object-cover object-center transition duration-300 group-hover:scale-[1.05] group-active:scale-[1.05]"
 											loading={index < 3 ? 'eager' : 'lazy'}
@@ -90,7 +97,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 												<div className="relative h-full w-full">
 													<Image
 														src={hoverImageUrl}
-														alt={`${item.title} hover`}
+														alt={`${getPortfolioImageAlt(item)} hover`}
 														fill
 														className="object-contain object-center"
 														sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
@@ -103,7 +110,9 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 									<div className="absolute inset-0 bg-[linear-gradient(180deg,rgba(0,0,0,0.02),rgba(0,0,0,0.18)_42%,rgba(0,0,0,0.54)_100%)] transition duration-500 group-hover:opacity-0 group-active:opacity-0" />
 									<div className="absolute inset-x-0 bottom-0 grid gap-1 px-5 py-5 text-white transition duration-500 group-hover:opacity-0 group-active:opacity-0 sm:px-6 sm:py-6">
 										<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-white/72">{item.brandName}</p>
-										<p className="text-lg tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-xl">{item.celebrityName ?? ''}</p>
+										{displayName !== item.brandName ? (
+											<p className="text-lg tracking-[-0.04em] text-white [font-family:var(--font-newsreader)] sm:text-xl">{displayName}</p>
+										) : null}
 									</div>
 								</button>
 							</BlurFade>

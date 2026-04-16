@@ -6,6 +6,7 @@ import {
   resolvePortfolioHoverImageUrl,
 } from '@/lib/portfolio-brand'
 import {
+  buildPortfolioTitle,
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
@@ -94,7 +95,6 @@ export async function POST(request: Request): Promise<Response> {
   const normalFile = formData.get('normalFile')
   const hoverFile = formData.get('hoverFile')
   const clientBrandId = formData.get('clientBrandId')?.toString().trim() || null
-  const title = formData.get('title')?.toString().trim()
   const brandName = formData.get('brandName')?.toString().trim()
   const celebrityName = formData.get('celebrityName')?.toString().trim() || null
   const category = formData.get('category')?.toString().trim()
@@ -106,7 +106,7 @@ export async function POST(request: Request): Promise<Response> {
     return Response.json({ success: false, error: 'NORMAL_FILE_REQUIRED' }, { status: 400 })
   }
 
-  if (!title || !category || showOnWeb === null || showOnPdf === null) {
+  if (!category || showOnWeb === null || showOnPdf === null) {
     return Response.json({ success: false, error: 'INVALID_FORM_DATA' }, { status: 400 })
   }
 
@@ -150,6 +150,10 @@ export async function POST(request: Request): Promise<Response> {
     }
 
     const instagramUrl = normalizePortfolioUrl(instagramUrlRaw)
+    const title = buildPortfolioTitle({
+      brandName: resolvedBrandName,
+      celebrityName,
+    })
     const uploadedNormal = await uploadPublicImage(normalFile, 'portfolio')
     const uploadedHover =
       hoverFile instanceof File && !managedBrandLogoUrl

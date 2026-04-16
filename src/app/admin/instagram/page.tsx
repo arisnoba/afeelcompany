@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db'
 import { InstagramQueueTable } from '@/components/admin/InstagramQueueTable'
 import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
+import { getPortfolioAdminLabel } from '@/types/portfolio'
 
 interface QueueRow {
   id: string
@@ -17,6 +18,7 @@ interface PortfolioOptionRow {
   id: string
   title: string
   brand_name: string
+  celebrity_name: string | null
 }
 
 export default async function AdminInstagramPage() {
@@ -37,7 +39,7 @@ export default async function AdminInstagramPage() {
       ORDER BY iq.created_at DESC
     `,
     sql<PortfolioOptionRow>`
-      SELECT id, title, brand_name
+      SELECT id, title, brand_name, celebrity_name
       FROM portfolio_items
       ORDER BY sort_order ASC, created_at DESC
     `,
@@ -67,7 +69,7 @@ export default async function AdminInstagramPage() {
         }))}
         portfolioOptions={portfolioResult.rows.map((row) => ({
           id: row.id,
-          label: `${row.brand_name} / ${row.title}`,
+          label: getPortfolioAdminLabel(row),
         }))}
       />
     </div>

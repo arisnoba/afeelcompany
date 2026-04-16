@@ -31,7 +31,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@/components/ui/sheet';
 import { cn } from '@/lib/utils';
 import type { ClientBrandAdminItem } from '@/types/client-brand';
-import { formatPortfolioCategories } from '@/types/portfolio';
+import { formatPortfolioCategories, getPortfolioAdminLabel, getPortfolioDisplayName, getPortfolioImageAlt } from '@/types/portfolio';
 import type { PortfolioAdminItem } from '@/types/portfolio';
 
 interface PortfolioTableProps {
@@ -79,6 +79,9 @@ interface PortfolioRowProps {
 function PortfolioRow({ index, item, isActive, onOpen }: PortfolioRowProps) {
 	const { attributes, listeners, setActivatorNodeRef, setNodeRef, transform, transition, isDragging, isOver } =
 		useSortable({ id: item.id });
+	const itemLabel = getPortfolioAdminLabel(item);
+	const itemDisplayName = getPortfolioDisplayName(item);
+	const itemImageAlt = getPortfolioImageAlt(item);
 
 	return (
 		<div
@@ -92,7 +95,7 @@ function PortfolioRow({ index, item, isActive, onOpen }: PortfolioRowProps) {
 			<button
 				ref={setActivatorNodeRef}
 				type="button"
-				aria-label={`${item.title} 순서 이동`}
+				aria-label={`${itemLabel} 순서 이동`}
 				{...attributes}
 				{...listeners}
 				className={cn(
@@ -107,15 +110,14 @@ function PortfolioRow({ index, item, isActive, onOpen }: PortfolioRowProps) {
 				type="button"
 				onClick={() => onOpen(item.id)}
 				className="relative h-14 w-14 shrink-0 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8] transition-opacity hover:opacity-80">
-				<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
+				<Image src={item.imageUrl} alt={itemImageAlt} fill className="object-cover" sizes="56px" />
 			</button>
 
 			<button type="button" onClick={() => onOpen(item.id)} className="min-w-0 text-left">
-				<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
-				<p className="truncate text-xs leading-4 text-muted-foreground">
-					{item.brandName}
-					{item.celebrityName ? ` · ${item.celebrityName}` : ''}
-				</p>
+				<p className="truncate text-sm font-medium leading-5 text-foreground">{itemDisplayName}</p>
+				{item.brandName && item.brandName !== itemDisplayName ? (
+					<p className="truncate text-xs leading-4 text-muted-foreground">{item.brandName}</p>
+				) : null}
 			</button>
 
 			<div className="flex items-center">
@@ -143,20 +145,22 @@ function PortfolioRow({ index, item, isActive, onOpen }: PortfolioRowProps) {
 }
 
 function PortfolioDragPreview({ item }: { item: PortfolioAdminItem }) {
+	const itemDisplayName = getPortfolioDisplayName(item);
+	const itemImageAlt = getPortfolioImageAlt(item);
+
 	return (
 		<div className="grid w-[min(52rem,calc(100vw-2rem))] grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 rounded-xl border border-[#18e299]/25 bg-white px-4 py-3 shadow-[0_18px_48px_rgba(15,23,42,0.18)]">
 			<div className="flex size-8 items-center justify-center rounded-lg bg-[#18e299]/10 text-[#0f7b54]">
 				<GripVertical className="size-3.5" />
 			</div>
 			<div className="relative h-14 w-14 overflow-hidden rounded-xl border border-black/6 bg-[#f7fbf8]">
-				<Image src={item.imageUrl} alt={item.title} fill className="object-cover" sizes="56px" />
+				<Image src={item.imageUrl} alt={itemImageAlt} fill className="object-cover" sizes="56px" />
 			</div>
 			<div className="min-w-0">
-				<p className="truncate text-sm font-medium leading-5 text-foreground">{item.title}</p>
-				<p className="truncate text-xs leading-4 text-muted-foreground">
-					{item.brandName}
-					{item.celebrityName ? ` · ${item.celebrityName}` : ''}
-				</p>
+				<p className="truncate text-sm font-medium leading-5 text-foreground">{itemDisplayName}</p>
+				{item.brandName && item.brandName !== itemDisplayName ? (
+					<p className="truncate text-xs leading-4 text-muted-foreground">{item.brandName}</p>
+				) : null}
 			</div>
 			<div className="flex items-center">
 				<span className="truncate rounded-md bg-black/4 px-2 py-1 text-xs text-foreground/70">
@@ -380,7 +384,7 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 						<div className="grid grid-cols-[32px_56px_minmax(0,1fr)_120px_80px_32px] items-center gap-3 border-b border-black/6 bg-[#fafafa] px-4 py-2.5 text-xs font-medium text-muted-foreground">
 							<span />
 							<span />
-							<span>제목 / 브랜드</span>
+							<span>브랜드 / 셀럽</span>
 							<span>카테고리</span>
 							<span className="text-center">웹 · PDF</span>
 							<span className="text-center">#</span>
@@ -400,7 +404,7 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 
 						{draggedItem ? (
 							<div className="border-t border-black/4 bg-[#f7fdf9] px-4 py-2 text-xs text-[#0f7b54]">
-								이동 중: <span className="font-medium">{draggedItem.title}</span>
+								이동 중: <span className="font-medium">{getPortfolioAdminLabel(draggedItem)}</span>
 							</div>
 						) : null}
 

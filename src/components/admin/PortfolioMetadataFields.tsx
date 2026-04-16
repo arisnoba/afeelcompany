@@ -21,7 +21,6 @@ import type { ClientBrandAdminItem } from '@/types/client-brand'
 import { PORTFOLIO_CATEGORIES, type PortfolioCategory } from '@/types/portfolio'
 
 export interface PortfolioMetadataValue {
-  title: string
   brandMode: 'managed' | 'custom'
   clientBrandId: string | null
   brandName: string
@@ -72,18 +71,6 @@ export function PortfolioMetadataFields({
 
   return (
     <div className="grid gap-5">
-      <div className="flex flex-col gap-2">
-        <Label htmlFor={`${idPrefix}-title`}>제목</Label>
-        <Input
-          id={`${idPrefix}-title`}
-          value={value.title}
-          onChange={(event) => onChange({ title: event.target.value })}
-          placeholder="포트폴리오 제목을 입력하세요"
-          required
-          disabled={disabled}
-        />
-      </div>
-
       <div className="grid gap-3">
         <div className="flex items-center justify-between gap-3">
           <Label>브랜드 연결</Label>

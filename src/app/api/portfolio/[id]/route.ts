@@ -8,6 +8,7 @@ import {
   resolvePortfolioHoverImageUrl,
 } from '@/lib/portfolio-brand'
 import {
+  buildPortfolioTitle,
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
@@ -114,7 +115,6 @@ export async function PATCH(
   }
 
   const formData = await request.formData()
-  const title = formData.get('title')?.toString().trim()
   const clientBrandId = formData.get('clientBrandId')?.toString().trim() || null
   const brandName = formData.get('brandName')?.toString().trim() || null
   const celebrityName = formData.get('celebrityName')?.toString().trim() || null
@@ -127,7 +127,6 @@ export async function PATCH(
   const sortOrder = sortOrderRaw ? Number.parseInt(sortOrderRaw, 10) : Number.NaN
 
   if (
-    !title ||
     !category ||
     !isSerializedPortfolioCategories(category) ||
     typeof showOnWeb !== 'boolean' ||
@@ -187,6 +186,10 @@ export async function PATCH(
     }
 
     const instagramUrl = normalizePortfolioUrl(instagramUrlRaw)
+    const title = buildPortfolioTitle({
+      brandName: resolvedBrandName,
+      celebrityName,
+    })
     let nextThumbnailUrl = existingItem.thumbnail_url
     let previousThumbnailUrlToDelete: string | null = null
 
