@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import Link from 'next/link';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
+import { WorkflowBeam } from '@/components/site/WorkflowBeam';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { BlurFade } from '@/components/ui/blur-fade';
 import { TextRevealByWord } from '@/components/ui/text-reveal';
@@ -201,6 +202,24 @@ export default async function AboutPage() {
 							</div>
 						</div>
 					</section> */}
+
+					<section className="grid gap-10">
+						<div className="grid gap-5 md:grid-cols-2 md:items-end">
+							<div className="grid gap-4">
+								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Process</p>
+								<AnimatedPageTitle
+									as="h2"
+									lines={[{ text: 'How It Works' }]}
+									delay={0.04}
+									duration={0.42}
+									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
+								/>
+							</div>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">브랜드 분석부터 성과 리포트까지, 어필컴퍼니의 5단계 협업 프로세스입니다.</p>
+						</div>
+
+						<WorkflowBeam />
+					</section>
 
 					<section className="grid gap-10">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
