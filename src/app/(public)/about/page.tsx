@@ -300,7 +300,7 @@ export default async function AboutPage() {
 						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
 							<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-								PR을 준비 하는 브랜드.
+								PR을 준비 하는 브랜드,
 								<br /> 의류 협찬 및 스타일링이 필요하시면
 								<br /> 어필컴퍼니와 함께 시작하세요.
 							</p>
