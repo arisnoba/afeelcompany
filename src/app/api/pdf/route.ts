@@ -50,8 +50,22 @@ export async function GET(request: NextRequest): Promise<Response> {
     // Wait for fonts, images, and dynamic content to finish loading
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 45_000 })
 
-    // Extra wait for Google Maps tiles and lazy images
-    await new Promise<void>((resolve) => setTimeout(resolve, 2000))
+    await page.waitForFunction(
+      () => {
+        const mapElement = document.querySelector<HTMLElement>('[data-pdf-contact-map]')
+
+        if (!mapElement) {
+          return true
+        }
+
+        const status = mapElement.dataset.pdfMapStatus
+        return status === 'ready' || status === 'disabled' || status === 'error'
+      },
+      { timeout: 10_000 }
+    ).catch(() => null)
+
+    // Allow the final paint after map/image readiness settles.
+    await new Promise<void>((resolve) => setTimeout(resolve, 500))
 
     const pdf = await page.pdf({
       format: 'A4',

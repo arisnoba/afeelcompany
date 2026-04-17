@@ -28,6 +28,67 @@ const MAP_STYLES = [
 const SCRIPT_ID = 'google-maps-javascript-api'
 let scriptPromise: Promise<void> | null = null
 
+type GoogleMapsStyleRule = {
+  elementType?: string
+  featureType?: string
+  stylers: Array<Record<string, string | number>>
+}
+
+type GoogleMapsLocation = unknown
+
+type GoogleMapsGeocoderResult = {
+  geometry?: {
+    location?: GoogleMapsLocation
+  }
+}
+
+type GoogleMapsNamespace = {
+  Geocoder: new () => {
+    geocode: (
+      request: { address: string },
+      callback: (results: GoogleMapsGeocoderResult[] | null, status: string) => void
+    ) => void
+  }
+  Map: new (
+    element: HTMLElement,
+    options: {
+      backgroundColor: string
+      center: GoogleMapsLocation
+      disableDefaultUI: boolean
+      fullscreenControl: boolean
+      mapTypeControl: boolean
+      streetViewControl: boolean
+      styles: GoogleMapsStyleRule[]
+      zoom: number
+      zoomControl: boolean
+    }
+  ) => unknown
+  Marker: new (options: {
+    icon: {
+      fillColor: string
+      fillOpacity: number
+      path: string
+      scale: number
+      strokeColor: string
+      strokeWeight: number
+    }
+    map: unknown
+    position: GoogleMapsLocation
+    title: string
+  }) => unknown
+  SymbolPath: {
+    CIRCLE: string
+  }
+}
+
+declare global {
+  interface Window {
+    google?: {
+      maps?: GoogleMapsNamespace
+    }
+  }
+}
+
 function loadScript(apiKey: string): Promise<void> {
   if (typeof window === 'undefined') return Promise.reject()
   if (window.google?.maps) return Promise.resolve()
@@ -62,9 +123,20 @@ export function PdfContactMap({ address, apiKey }: PdfContactMapProps) {
   const mapRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
-    if (!address || !apiKey || !mapRef.current) return
+    const mapElement = mapRef.current
+    if (!mapElement) return
+
+    const setStatus = (status: 'loading' | 'ready' | 'disabled' | 'error') => {
+      mapElement.dataset.pdfMapStatus = status
+    }
+
+    if (!address || !apiKey) {
+      setStatus('disabled')
+      return
+    }
 
     let cancelled = false
+    setStatus('loading')
 
     loadScript(apiKey)
       .then(() => {
@@ -73,10 +145,13 @@ export function PdfContactMap({ address, apiKey }: PdfContactMapProps) {
         if (cancelled || !el || !maps) return
 
         const geocoder = new maps.Geocoder()
-        geocoder.geocode({ address }, (results: any, status: string) => {
+        geocoder.geocode({ address }, (results, status) => {
           if (cancelled) return
           const location = results?.[0]?.geometry?.location
-          if (status !== 'OK' || !location) return
+          if (status !== 'OK' || !location) {
+            setStatus('error')
+            return
+          }
 
           const map = new maps.Map(el, {
             center: location,
@@ -103,14 +178,30 @@ export function PdfContactMap({ address, apiKey }: PdfContactMapProps) {
               strokeWeight: 3,
             },
           })
+
+          window.setTimeout(() => {
+            if (cancelled) return
+            requestAnimationFrame(() => {
+              requestAnimationFrame(() => {
+                setStatus('ready')
+              })
+            })
+          }, 600)
         })
       })
-      .catch(() => {})
+      .catch(() => {
+        setStatus('error')
+      })
 
     return () => { cancelled = true }
   }, [address, apiKey])
 
   return (
-    <div ref={mapRef} className="absolute inset-0 h-full w-full bg-[#f5f3ef]" />
+    <div
+      ref={mapRef}
+      data-pdf-contact-map
+      data-pdf-map-status="idle"
+      className="absolute inset-0 h-full w-full bg-[#f5f3ef]"
+    />
   )
 }

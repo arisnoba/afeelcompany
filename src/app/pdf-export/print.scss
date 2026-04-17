@@ -89,6 +89,11 @@ body:has(.pdf-slide-shell) {
   }
 }
 
+.pdf-sheet:last-child {
+  page-break-after: auto;
+  break-after: auto;
+}
+
 // ── Slide mode ───────────────────────────────
 
 // Shell — takes up full remaining viewport height below the toolbar

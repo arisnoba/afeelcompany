@@ -16,6 +16,7 @@ import type { Swiper as SwiperInstance } from 'swiper'
 
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
+import { waitForPdfRenderReady } from './wait-for-pdf-render'
 
 type PreviewMode = 'scroll' | 'slide'
 
@@ -121,21 +122,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
         })
       })
 
-      await document.fonts.ready
-
-      const images = Array.from(
-        document.querySelectorAll('img[data-pdf-image]')
-      ) as HTMLImageElement[]
-
-      await Promise.all(
-        images.map(async (image) => {
-          try {
-            await image.decode()
-          } catch {
-            return
-          }
-        })
-      )
+      await waitForPdfRenderReady()
 
       if (cancelled) {
         return
