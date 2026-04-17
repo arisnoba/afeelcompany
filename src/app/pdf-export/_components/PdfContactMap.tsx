@@ -1,207 +1,66 @@
-'use client'
+/* eslint-disable @next/next/no-img-element */
+'use client';
 
-import { useEffect, useRef } from 'react'
-
-// Same white-toned styles as ContactMap
-const MAP_STYLES = [
-  { elementType: 'geometry', stylers: [{ color: '#f5f3ef' }] },
-  { elementType: 'labels.icon', stylers: [{ visibility: 'off' }] },
-  { elementType: 'labels.text.fill', stylers: [{ color: '#7b776f' }] },
-  { elementType: 'labels.text.stroke', stylers: [{ color: '#f5f3ef' }] },
-  { featureType: 'administrative', elementType: 'geometry.stroke', stylers: [{ color: '#ded9d2' }] },
-  { featureType: 'administrative.land_parcel', stylers: [{ visibility: 'off' }] },
-  { featureType: 'landscape.man_made', elementType: 'geometry.fill', stylers: [{ color: '#eeebe5' }] },
-  { featureType: 'landscape.natural', elementType: 'geometry.fill', stylers: [{ color: '#f8f6f2' }] },
-  { featureType: 'poi', elementType: 'geometry.fill', stylers: [{ color: '#ece7e0' }] },
-  { featureType: 'poi', elementType: 'labels.text.fill', stylers: [{ color: '#8c867d' }] },
-  { featureType: 'poi.park', elementType: 'geometry.fill', stylers: [{ color: '#f1eee7' }] },
-  { featureType: 'road', elementType: 'geometry', stylers: [{ color: '#ffffff' }] },
-  { featureType: 'road', elementType: 'geometry.stroke', stylers: [{ color: '#e4dfd8' }] },
-  { featureType: 'road', elementType: 'labels.text.fill', stylers: [{ color: '#8a857d' }] },
-  { featureType: 'road.highway', elementType: 'geometry.fill', stylers: [{ color: '#fdfcfa' }] },
-  { featureType: 'road.highway', elementType: 'geometry.stroke', stylers: [{ color: '#ddd7cf' }] },
-  { featureType: 'transit', stylers: [{ visibility: 'off' }] },
-  { featureType: 'water', elementType: 'geometry.fill', stylers: [{ color: '#f3f1ec' }] },
-  { featureType: 'water', elementType: 'labels.text.fill', stylers: [{ color: '#9a958d' }] },
-]
-
-const SCRIPT_ID = 'google-maps-javascript-api'
-let scriptPromise: Promise<void> | null = null
-
-type GoogleMapsStyleRule = {
-  elementType?: string
-  featureType?: string
-  stylers: Array<Record<string, string | number>>
-}
-
-type GoogleMapsLocation = unknown
-
-type GoogleMapsGeocoderResult = {
-  geometry?: {
-    location?: GoogleMapsLocation
-  }
-}
-
-type GoogleMapsNamespace = {
-  Geocoder: new () => {
-    geocode: (
-      request: { address: string },
-      callback: (results: GoogleMapsGeocoderResult[] | null, status: string) => void
-    ) => void
-  }
-  Map: new (
-    element: HTMLElement,
-    options: {
-      backgroundColor: string
-      center: GoogleMapsLocation
-      disableDefaultUI: boolean
-      fullscreenControl: boolean
-      mapTypeControl: boolean
-      streetViewControl: boolean
-      styles: GoogleMapsStyleRule[]
-      zoom: number
-      zoomControl: boolean
-    }
-  ) => unknown
-  Marker: new (options: {
-    icon: {
-      fillColor: string
-      fillOpacity: number
-      path: string
-      scale: number
-      strokeColor: string
-      strokeWeight: number
-    }
-    map: unknown
-    position: GoogleMapsLocation
-    title: string
-  }) => unknown
-  SymbolPath: {
-    CIRCLE: string
-  }
-}
-
-declare global {
-  interface Window {
-    google?: {
-      maps?: GoogleMapsNamespace
-    }
-  }
-}
-
-function loadScript(apiKey: string): Promise<void> {
-  if (typeof window === 'undefined') return Promise.reject()
-  if (window.google?.maps) return Promise.resolve()
-  if (scriptPromise) return scriptPromise
-
-  scriptPromise = new Promise<void>((resolve, reject) => {
-    const existing = document.getElementById(SCRIPT_ID) as HTMLScriptElement | null
-    if (existing) {
-      existing.addEventListener('load', () => resolve(), { once: true })
-      existing.addEventListener('error', () => reject(), { once: true })
-      return
-    }
-    const script = document.createElement('script')
-    script.id = SCRIPT_ID
-    script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`
-    script.async = true
-    script.defer = true
-    script.onload = () => resolve()
-    script.onerror = () => reject()
-    document.head.appendChild(script)
-  })
-
-  return scriptPromise
-}
+import { useMemo, useState } from 'react';
 
 interface PdfContactMapProps {
-  address: string
-  apiKey: string | undefined
+	address: string;
+	apiKey: string | undefined;
+}
+
+function buildStaticMapUrl(address: string, apiKey: string) {
+	const params = new URLSearchParams({
+		center: address,
+		zoom: '15',
+		size: '640x420',
+		scale: '2',
+		maptype: 'roadmap',
+		key: apiKey,
+	});
+
+	params.append('markers', `size:small|color:0x171717|${address}`);
+	params.append('style', 'feature:all|element:labels.icon|visibility:off');
+	params.append('style', 'element:geometry|color:0xf5f3ef');
+	params.append('style', 'feature:road|element:geometry|color:0xffffff');
+	params.append('style', 'feature:road|element:geometry.stroke|color:0xe4dfd8');
+	params.append('style', 'feature:water|element:geometry.fill|color:0xf3f1ec');
+	params.append('style', 'feature:poi|element:geometry.fill|color:0xece7e0');
+	params.append('style', 'feature:transit|visibility:off');
+
+	return `https://maps.googleapis.com/maps/api/staticmap?${params.toString()}`;
 }
 
 export function PdfContactMap({ address, apiKey }: PdfContactMapProps) {
-  const mapRef = useRef<HTMLDivElement>(null)
+	const [status, setStatus] = useState<'idle' | 'ready' | 'disabled' | 'error'>(() => {
+		if (!address || !apiKey) {
+			return 'disabled';
+		}
 
-  useEffect(() => {
-    const mapElement = mapRef.current
-    if (!mapElement) return
+		return 'idle';
+	});
 
-    const setStatus = (status: 'loading' | 'ready' | 'disabled' | 'error') => {
-      mapElement.dataset.pdfMapStatus = status
-    }
+	const mapUrl = useMemo(() => {
+		if (!address || !apiKey) {
+			return null;
+		}
 
-    if (!address || !apiKey) {
-      setStatus('disabled')
-      return
-    }
+		return buildStaticMapUrl(address, apiKey);
+	}, [address, apiKey]);
 
-    let cancelled = false
-    setStatus('loading')
-
-    loadScript(apiKey)
-      .then(() => {
-        const maps = window.google?.maps
-        const el = mapRef.current
-        if (cancelled || !el || !maps) return
-
-        const geocoder = new maps.Geocoder()
-        geocoder.geocode({ address }, (results, status) => {
-          if (cancelled) return
-          const location = results?.[0]?.geometry?.location
-          if (status !== 'OK' || !location) {
-            setStatus('error')
-            return
-          }
-
-          const map = new maps.Map(el, {
-            center: location,
-            zoom: 16,
-            backgroundColor: '#f5f3ef',
-            disableDefaultUI: true,
-            zoomControl: false,
-            fullscreenControl: false,
-            mapTypeControl: false,
-            streetViewControl: false,
-            styles: MAP_STYLES,
-          })
-
-          new maps.Marker({
-            map,
-            position: location,
-            title: address,
-            icon: {
-              path: maps.SymbolPath.CIRCLE,
-              scale: 9,
-              fillColor: '#171717',
-              fillOpacity: 1,
-              strokeColor: '#ffffff',
-              strokeWeight: 3,
-            },
-          })
-
-          window.setTimeout(() => {
-            if (cancelled) return
-            requestAnimationFrame(() => {
-              requestAnimationFrame(() => {
-                setStatus('ready')
-              })
-            })
-          }, 600)
-        })
-      })
-      .catch(() => {
-        setStatus('error')
-      })
-
-    return () => { cancelled = true }
-  }, [address, apiKey])
-
-  return (
-    <div
-      ref={mapRef}
-      data-pdf-contact-map
-      data-pdf-map-status="idle"
-      className="absolute inset-0 h-full w-full bg-[#f5f3ef]"
-    />
-  )
+	return (
+		<div data-pdf-contact-map data-pdf-map-status={status} className="absolute inset-0 h-full w-full overflow-hidden bg-[#f5f3ef]">
+			{mapUrl ? (
+				<img
+					src={mapUrl}
+					alt={`${address} 지도`}
+					data-pdf-image
+					className="h-full w-full object-cover"
+					referrerPolicy="no-referrer-when-downgrade"
+					onLoad={() => setStatus('ready')}
+					onError={() => setStatus('error')}
+				/>
+			) : null}
+			{status !== 'ready' ? <div aria-hidden className="absolute inset-0 bg-[linear-gradient(135deg,rgba(255,255,255,0.88),rgba(237,232,225,0.95))]" /> : null}
+		</div>
+	);
 }

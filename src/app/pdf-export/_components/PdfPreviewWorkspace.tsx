@@ -9,14 +9,17 @@ import {
   Download,
   Layout,
   List,
-  Loader2,
 } from 'lucide-react'
+import { toast } from 'sonner'
 import { Swiper, SwiperSlide } from 'swiper/react'
 import type { Swiper as SwiperInstance } from 'swiper'
 
 import { Button } from '@/components/ui/button'
+import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import { waitForPdfRenderReady } from './wait-for-pdf-render'
+
+const PDF_EXPORT_TOASTER_ID = 'pdf-export-toast'
 
 type PreviewMode = 'scroll' | 'slide'
 
@@ -190,6 +193,10 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
 
   async function handleDownload() {
     setDownloading(true)
+    const toastId = toast.loading('PDF 파일을 생성중입니다. 잠시만 기다려 주세요.', {
+      toasterId: PDF_EXPORT_TOASTER_ID,
+      duration: Infinity,
+    })
     try {
       const res = await fetch('/api/pdf')
       if (!res.ok) throw new Error('PDF 생성 실패')
@@ -200,10 +207,18 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
       a.download = 'afeel-company-brochure.pdf'
       a.click()
       URL.revokeObjectURL(url)
+      toast.success('PDF 파일 다운로드를 시작합니다.', {
+        id: toastId,
+        toasterId: PDF_EXPORT_TOASTER_ID,
+      })
     } catch {
       // fallback: browser print
       setPendingPrint(true)
       handleModeChange('scroll')
+      toast.error('PDF 다운로드에 실패해 인쇄 화면으로 전환합니다. 잠시만 기다려 주세요.', {
+        id: toastId,
+        toasterId: PDF_EXPORT_TOASTER_ID,
+      })
     } finally {
       setDownloading(false)
     }
@@ -211,6 +226,25 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
 
   return (
     <>
+      <Toaster
+        id={PDF_EXPORT_TOASTER_ID}
+        position="top-center"
+        offset={0}
+        mobileOffset={0}
+        style={{
+          top: '50%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+        }}
+        toastOptions={{
+          duration: 2200,
+          classNames: {
+            toast: 'font-sans shadow-xl',
+            title: 'text-sm',
+            description: 'text-sm',
+          },
+        }}
+      />
       <div className="screen-only sticky top-3 z-30 px-3">
         <div className="mx-auto flex w-full max-w-[1400px] justify-center">
           <div className="grid w-full max-w-[1000px] grid-cols-[1fr_auto_1fr] items-center border border-black/15 bg-white/85 px-4 py-1.5 backdrop-blur-xl">
@@ -295,11 +329,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
                 disabled={downloading}
                 className="h-8 min-w-[120px] rounded-none bg-[#274133] px-4 text-[10px] font-bold uppercase tracking-[0.15em] text-white hover:bg-[#1e3227]"
               >
-                {downloading ? (
-                  <Loader2 className="animate-spin" size={12} strokeWidth={1.5} />
-                ) : (
-                  <Download size={12} strokeWidth={1.5} />
-                )}
+                <Download size={12} strokeWidth={1.5} />
                 <span>{downloading ? 'WAIT...' : 'Download'}</span>
               </Button>
             </div>
