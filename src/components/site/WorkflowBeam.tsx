@@ -99,9 +99,9 @@ export function WorkflowBeam({ className }: { className?: string }) {
 				<FlowPath
 					d="M 10 50 H 90"
 					viewBox="0 0 100 100"
-					dash={5} // 세그먼트: gap(100) > 경로(80) → 단일 세그먼트만 보임
-					gap={15}
-					duration={1.4}
+					dash={10} // 세그먼트: gap(100) > 경로(80) → 단일 세그먼트만 보임
+					gap={20}
+					duration={0.5}
 				/>
 				<div className="relative grid grid-cols-5 gap-4 xl:gap-5">
 					{WORKFLOW_STEPS.map(step => (
@@ -115,16 +115,16 @@ export function WorkflowBeam({ className }: { className?: string }) {
 				<FlowPath
 					d="M 18 27 H 80 V 75 H 28"
 					viewBox="0 0 100 100"
-					dash={4} // gap(200) > 경로(162) → 단일 세그먼트만 보임
-					gap={200}
-					duration={2.6}
+					dash={10} // gap(200) > 경로(162) → 단일 세그먼트만 보임
+					gap={20}
+					duration={0.5}
 				/>
 				<div className="relative grid grid-cols-3 gap-4">
 					<StepNode label={WORKFLOW_STEPS[0].label} title={WORKFLOW_STEPS[0].title} description={WORKFLOW_STEPS[0].description} className="min-h-[10.25rem]" />
 					<StepNode label={WORKFLOW_STEPS[1].label} title={WORKFLOW_STEPS[1].title} description={WORKFLOW_STEPS[1].description} className="min-h-[10.25rem]" />
 					<StepNode label={WORKFLOW_STEPS[2].label} title={WORKFLOW_STEPS[2].title} description={WORKFLOW_STEPS[2].description} className="min-h-[10.25rem]" />
 				</div>
-				<div className="relative mt-10 grid grid-cols-2 gap-4 px-[4%]">
+				<div className="relative mt-5 grid grid-cols-2 gap-4 px-[4%]">
 					<StepNode label={WORKFLOW_STEPS[4].label} title={WORKFLOW_STEPS[4].title} description={WORKFLOW_STEPS[4].description} className="min-h-[10.25rem]" />
 					<StepNode label={WORKFLOW_STEPS[3].label} title={WORKFLOW_STEPS[3].title} description={WORKFLOW_STEPS[3].description} className="min-h-[10.25rem]" />
 				</div>
@@ -134,15 +134,10 @@ export function WorkflowBeam({ className }: { className?: string }) {
 			<div className="flex flex-col md:hidden">
 				{WORKFLOW_STEPS.map((step, index) => (
 					<div key={step.title}>
-						<article className="relative border border-stone-900/10 bg-[#faf7f3] px-5 py-5">
-							<div className="relative ml-6">
-								<div className="absolute -left-[2.1rem] top-1.5 flex h-7 w-7 items-center justify-center rounded-full border border-[#715a3e]/20 bg-white text-[0.58rem] font-semibold tracking-[0.18em] text-[#715a3e]">
-									{String(index + 1).padStart(2, '0')}
-								</div>
-								<p className="text-[0.52rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">{step.label}</p>
-								<h3 className="mt-2 text-[1rem] font-semibold uppercase tracking-[0.11em] text-stone-950 [font-family:var(--font-newsreader)]">{step.title}</h3>
-								<p className="mt-2 whitespace-pre-line text-sm leading-6 text-stone-500">{step.description}</p>
-							</div>
+						<article className="relative border border-stone-900/10 bg-[#faf7f3] px-5 py-8 flex flex-col items-center text-center">
+							<p className="text-[0.52rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">{step.label}</p>
+							<h3 className="mt-2 text-[1rem] font-semibold uppercase tracking-[0.11em] text-stone-950 [font-family:var(--font-newsreader)]">{step.title}</h3>
+							<p className="mt-2 text-sm leading-6 text-stone-500 break-keep">{step.description.replace('\n', ' ')}</p>
 						</article>
 						{index < WORKFLOW_STEPS.length - 1 && <MobileConnector duration={0.9} />}
 					</div>

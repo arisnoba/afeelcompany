@@ -139,21 +139,19 @@ export default async function AboutPage() {
 	return (
 		<>
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
-					<header className="grid gap-10">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
+				<header className="grid gap-10 py-20 lg:py-48">
+					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
 
-						<div className="grid gap-6">
-							<AnimatedPageTitle
-								lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
-								className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
-							/>
-							<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-								스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
-							</p>
-						</div>
-					</header>
-				</div>
+					<div className="grid gap-6">
+						<AnimatedPageTitle
+							lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
+							className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
+						/>
+						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
+							스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
+						</p>
+					</div>
+				</header>
 			</div>
 
 			<section className="relative overflow-hidden border-y border-stone-900/8 bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)]">
@@ -171,7 +169,7 @@ export default async function AboutPage() {
 			</section>
 
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-20">
+				<div className="grid gap-24 py-10 sm:gap-28 sm:py-14 lg:gap-48 lg:py-40">
 					{/* <section className="grid gap-10 lg:grid-cols-2 lg:gap-0">
 						<div className="grid gap-4 lg:sticky lg:top-32 lg:self-start">
 							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Work History</p>
@@ -302,8 +300,8 @@ export default async function AboutPage() {
 						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
 							<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-								다음 시즌의 메가 히트를 준비하는 브랜드 매니저.
-								<br /> 완벽한 레드카펫 룩이 당장 필요한 스타일리스트.
+								PR을 준비 하는 브랜드.
+								<br /> 의류 협찬 및 스타일링이 필요하시면
 								<br /> 어필컴퍼니와 함께 시작하세요.
 							</p>
 							<div>

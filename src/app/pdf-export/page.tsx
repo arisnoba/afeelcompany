@@ -57,44 +57,6 @@ const ABOUT_STORY_LINES = [
 	'숫자를 부풀리기보다, 실제로 일어나는 일에 집중합니다.',
 ] as const;
 
-const ABOUT_MILESTONES = [
-	{
-		year: '2018.04',
-		title: '새로운 기준의 시작',
-		description: '어필컴퍼니 설립',
-	},
-	{
-		year: '2018.07',
-		title: "tvN '김비서가 왜 그럴까' 황보라",
-		description: '소피앤테일러 투피스 완판',
-	},
-	{
-		year: '2019',
-		title: "tvN '검색어를 입력하세요 WWW' 임수정",
-		description: '코르카 청바지 완판',
-	},
-	{
-		year: '2020.07',
-		title: "tvN '사이코지만 괜찮아' 서예지",
-		description: '고이우 귀걸이 W컨셉 1위',
-	},
-	{
-		year: '2021.01',
-		title: '제35회 골든디스크어워즈 아이유',
-		description: '브리아나 부츠 완판',
-	},
-	{
-		year: '2021',
-		title: '이커머스 플랫폼 랭킹 장악',
-		description: '무신사/W컨셉 베스트셀러 견인',
-	},
-	{
-		year: '2025 현재',
-		title: '글로벌 포트폴리오 구축',
-		description: '글로벌 K-POP 아티스트와 최정상 배우 스타일링 축적',
-	},
-] as const;
-
 const ABOUT_SERVICE_ITEMS = [
 	{
 		title: 'Brand Positioning',
@@ -245,18 +207,16 @@ function AboutPageFrame({
 	children: ReactNode;
 }) {
 	return (
-		<div className="relative h-full overflow-hidden bg-[#f7f1ea] text-stone-950">
-			<div className="relative z-10 flex h-full flex-col px-10 py-9">
-				<div className="flex items-center justify-between">
-					<div className="flex items-center gap-3">
-						<span className="h-px w-6 bg-[#715a3e]" />
-						<p className="text-[9px] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">{label}</p>
-					</div>
-					<p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">{totalPages > 1 ? `${pageNum} / ${totalPages}` : 'Editorial Profile'}</p>
+		<div className="relative z-10 flex h-full flex-col px-10 py-9">
+			<div className="flex items-center justify-between">
+				<div className="flex items-center gap-3">
+					<span className="h-px w-6 bg-[#715a3e]" />
+					<p className="text-[9px] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">{label}</p>
 				</div>
-
-				<div className="flex-1 pt-6">{children}</div>
+				<p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">{totalPages > 1 ? `${pageNum} / ${totalPages}` : 'Editorial Profile'}</p>
 			</div>
+
+			<div className="flex-1 pt-6">{children}</div>
 		</div>
 	);
 }
@@ -397,11 +357,9 @@ function AboutContinuationPage({
 					<div className="grid gap-4">
 						<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-400">Continuation</p>
 						<h2 className="text-[2.3rem] leading-[1.02] tracking-[-0.055em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							The
+							Story
 							<br />
-							Accumulation
-							<br />
-							Line
+							Continuation
 						</h2>
 						<p className="text-[11px] leading-6 text-stone-600">소개문이 길어지더라도 페이지를 나눠 읽는 리듬을 유지합니다.</p>
 					</div>
@@ -434,51 +392,6 @@ function AboutContinuationPage({
 					<div className="flex items-center justify-between border-t border-stone-900/8 pt-4">
 						<p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-stone-400">Fashion PR Editorial Archive</p>
 						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
-					</div>
-				</div>
-			</div>
-		</AboutPageFrame>
-	);
-}
-
-function AboutTimelinePage({ pageNum, totalPages }: AboutPageProps) {
-	return (
-		<AboutPageFrame label="Work History" pageNum={pageNum} totalPages={totalPages}>
-			<div className="grid h-full gap-10" style={{ gridTemplateColumns: '28% 72%' }}>
-				{/* Left */}
-				<div className="flex flex-col justify-between border-r border-stone-900/8 pr-6">
-					<div className="grid gap-4">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Work History</p>
-						<h2 className="text-[2.85rem] leading-[0.98] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							The
-							<br />
-							Accumulation
-							<br />
-							Line
-						</h2>
-						<p className="text-[11px] leading-6 text-stone-600">어떤 브랜드, 어떤 배우, 어떤 결과였는지.</p>
-					</div>
-
-					<div className="grid gap-2 border-t border-stone-900/8 pt-4">
-						<p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-stone-400">Archive View</p>
-						<p className="text-[11px] leading-6 text-stone-600">한 번의 노출을 이벤트로 끝내지 않고, 다음 제안서와 다음 협업으로 이어지는 축적의 흐름으로 관리합니다.</p>
-					</div>
-				</div>
-
-				{/* Right: Timeline */}
-				<div className="relative pl-6">
-					<div className="absolute left-[10px] top-2 h-[calc(100%-16px)] w-px bg-stone-900/15" />
-					<div className="grid h-full grid-cols-2 gap-3 content-start">
-						{ABOUT_MILESTONES.map(milestone => (
-							<article key={`${milestone.year}-${milestone.title}`} className="relative ml-4 border border-stone-900/8 bg-white px-5 py-4">
-								<div className="absolute -left-[22px] top-5 h-2.5 w-2.5 rounded-full bg-[#715a3e]" />
-								<p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#715a3e]">{milestone.year}</p>
-								<h3 className="mt-2 text-[16px] leading-[1.2] tracking-[-0.04em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-									{milestone.title}
-								</h3>
-								<p className="mt-1.5 text-[10px] leading-5 text-stone-600">{milestone.description}</p>
-							</article>
-						))}
 					</div>
 				</div>
 			</div>
@@ -709,10 +622,6 @@ export default async function PdfExportPage() {
 			key: `continuation-${index + 1}`,
 			render: (pageNum: number, totalPages: number) => <AboutContinuationPage paragraphs={paragraphs} pageNum={pageNum} totalPages={totalPages} />,
 		})),
-		{
-			key: 'timeline',
-			render: (pageNum, totalPages) => <AboutTimelinePage pageNum={pageNum} totalPages={totalPages} />,
-		},
 		{
 			key: 'expertise',
 			render: (pageNum, totalPages) => <AboutExpertisePage pageNum={pageNum} totalPages={totalPages} />,
