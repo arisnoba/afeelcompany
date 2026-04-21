@@ -19,7 +19,7 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 
 	return (
 		<div className={cn('grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4', gridClassName)}>
-			{items.slice(0, 6).map((item, index) => {
+			{items.map((item, index) => {
 				const displayName = getPortfolioDisplayName(item);
 
 				return (

@@ -2,7 +2,6 @@
 
 import Image from 'next/image';
 import { useState } from 'react';
-import { ChevronRight } from 'lucide-react';
 
 import { PortfolioLightbox } from '@/components/site/PortfolioLightbox';
 import { BlurFade } from '@/components/ui/blur-fade';
@@ -16,8 +15,7 @@ import {
 import type { PublicPortfolioItem } from '@/types/site';
 
 const FILTER_ALL = '전체';
-const INITIAL_VISIBLE_COUNT = 20;
-const LOAD_MORE_COUNT = 20;
+const ITEMS_PER_PAGE = 12;
 
 interface PortfolioGalleryClientProps {
 	items: PublicPortfolioItem[];
@@ -26,15 +24,17 @@ interface PortfolioGalleryClientProps {
 export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 	const [selectedCategory, setSelectedCategory] = useState(FILTER_ALL);
 	const [activeItemId, setActiveItemId] = useState<string | null>(null);
-	const [visibleCount, setVisibleCount] = useState(INITIAL_VISIBLE_COUNT);
+	const [currentPage, setCurrentPage] = useState(1);
 
 	const filters = [FILTER_ALL, ...PORTFOLIO_CATEGORIES.filter(category => items.some(item => includesPortfolioCategory(item.category, category)))];
 
 	const filteredItems = selectedCategory === FILTER_ALL ? items : items.filter(item => includesPortfolioCategory(item.category, selectedCategory as PortfolioCategory));
 
-	const visibleItems = filteredItems.slice(0, visibleCount);
+	const pageCount = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
+	const activePage = Math.min(currentPage, pageCount || 1);
+	const pageStartIndex = (activePage - 1) * ITEMS_PER_PAGE;
+	const visibleItems = filteredItems.slice(pageStartIndex, pageStartIndex + ITEMS_PER_PAGE);
 	const activeItem = filteredItems.find(item => item.id === activeItemId) ?? null;
-	const canLoadMore = visibleCount < filteredItems.length;
 
 	function handleItemClick(item: PublicPortfolioItem) {
 		if (item.instagramUrl) {
@@ -58,7 +58,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 							onClick={() => {
 								setSelectedCategory(filter);
 								setActiveItemId(null);
-								setVisibleCount(INITIAL_VISIBLE_COUNT);
+								setCurrentPage(1);
 							}}
 							className={`border-b pb-1 text-sm font-semibold uppercase tracking-[0.26em] transition ${
 								isActive ? 'border-stone-950 text-stone-950' : 'border-transparent text-stone-400 hover:text-stone-950'
@@ -121,15 +121,28 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 				</div>
 			)}
 
-			{canLoadMore ? (
-				<div className="flex justify-center pt-2">
-					<button
-						type="button"
-						onClick={() => setVisibleCount(current => current + LOAD_MORE_COUNT)}
-						className="inline-flex items-center gap-3 bg-[#274133] px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-[#e8f1ec] transition hover:bg-[#496455]">
-						Load More Archives
-						<ChevronRight className="size-4" />
-					</button>
+			{pageCount > 1 ? (
+				<div className="flex flex-wrap justify-center gap-2 pt-2" aria-label="포트폴리오 페이지">
+					{Array.from({ length: pageCount }, (_, index) => {
+						const page = index + 1;
+						const isActive = page === activePage;
+
+						return (
+							<button
+								key={page}
+								type="button"
+								onClick={() => {
+									setCurrentPage(page);
+									setActiveItemId(null);
+								}}
+								aria-current={isActive ? 'page' : undefined}
+								className={`flex size-10 items-center justify-center border text-sm font-semibold transition ${
+									isActive ? 'border-[#274133] bg-[#274133] text-[#e8f1ec]' : 'border-stone-200 bg-white text-stone-500 hover:border-stone-400 hover:text-stone-950'
+								}`}>
+								{page}
+							</button>
+						);
+					})}
 				</div>
 			) : null}
 

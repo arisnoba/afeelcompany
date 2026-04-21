@@ -20,13 +20,13 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function HomePage() {
-	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(8), getSiteClientBrands()]);
+	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(12), getSiteClientBrands()]);
 
 	const heroBody = profile.aboutText || FALLBACK_ABOUT;
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
 	const portfolioLinkClassName =
 		'inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
-	const portfolioLinkLabel = 'View All Work';
+	const portfolioLinkLabel = 'More';
 
 	return (
 		<>
