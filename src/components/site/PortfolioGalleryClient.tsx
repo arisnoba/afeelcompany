@@ -16,8 +16,8 @@ import {
 import type { PublicPortfolioItem } from '@/types/site';
 
 const FILTER_ALL = '전체';
-const INITIAL_VISIBLE_COUNT = 6;
-const LOAD_MORE_COUNT = 6;
+const INITIAL_VISIBLE_COUNT = 20;
+const LOAD_MORE_COUNT = 20;
 
 interface PortfolioGalleryClientProps {
 	items: PublicPortfolioItem[];

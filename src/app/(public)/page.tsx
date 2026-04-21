@@ -20,7 +20,7 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 export default async function HomePage() {
-	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(6), getSiteClientBrands()]);
+	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(8), getSiteClientBrands()]);
 
 	const heroBody = profile.aboutText || FALLBACK_ABOUT;
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
