@@ -11,7 +11,7 @@ import { getPdfDocument } from './_lib/get-pdf-document';
 export const dynamic = 'force-dynamic';
 
 // ── Items per page ──────────────────────────
-const WORK_PER_PAGE = 6; // 3×2 grid
+const WORK_PER_PAGE = 8; // 4×2 grid
 const CLIENT_PER_PAGE = 42; // 6×4 grid
 const ABOUT_INTRO_LIMIT = 380;
 const ABOUT_STORY_LIMIT = 520;
@@ -491,7 +491,7 @@ function WorkSheet({ items, pageNum, totalPages }: WorkSheetProps) {
 				className="grid flex-1 gap-4"
 				style={{
 					gridTemplateColumns: 'repeat(4, 1fr)',
-					gridTemplateRows: items.length > 4 ? '1fr 1fr' : '1fr',
+					gridTemplateRows: 'repeat(2, minmax(0, 1fr))',
 				}}>
 				{items.map(item => (
 					<article key={item.id} className="avoid-break flex h-full min-h-0 flex-col overflow-hidden border border-stone-900/8 bg-white">
@@ -643,7 +643,7 @@ export default async function PdfExportPage() {
 		});
 	});
 
-	// Work — one page per chunk of 4
+	// Work — one page per 4×2 chunk
 	workChunks.forEach((items, i) => {
 		const pageNum = i + 1;
 		const totalPages = workChunks.length;
