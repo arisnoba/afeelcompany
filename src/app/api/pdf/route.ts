@@ -1,8 +1,15 @@
 import type { NextRequest } from 'next/server'
 
 export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
 // Vercel Pro: 300s / Hobby: 60s
 export const maxDuration = 60
+
+function getDefaultChromiumUrl(): string {
+  const architecture = process.arch === 'arm64' ? 'arm64' : 'x64'
+
+  return `https://github.com/Sparticuz/chromium/releases/download/v147.0.0/chromium-v147.0.0-pack.${architecture}.tar`
+}
 
 /**
  * GET /api/pdf
@@ -19,29 +26,32 @@ export async function GET(request: NextRequest): Promise<Response> {
   try {
     let executablePath: string
     let launchArgs: string[]
+    let headless: true | 'shell' = true
+
+    const { default: puppeteer } = await import('puppeteer-core')
 
     if (process.env.VERCEL) {
       const Chromium = (await import('@sparticuz/chromium-min')).default
-      const chromiumUrl =
-        process.env.CHROMIUM_REMOTE_URL ??
-        'https://github.com/Sparticuz/chromium/releases/download/v147.0.0/chromium-v147.0.0-pack.tar'
+      const chromiumUrl = process.env.CHROMIUM_REMOTE_URL ?? getDefaultChromiumUrl()
 
       executablePath = await Chromium.executablePath(chromiumUrl)
-      launchArgs = Chromium.args
+      launchArgs = puppeteer.defaultArgs({ args: Chromium.args, headless: 'shell' })
+      headless = 'shell'
     } else {
       // Local dev — detect system Chrome
       executablePath =
         process.env.PUPPETEER_EXECUTABLE_PATH ??
         '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      launchArgs = ['--no-sandbox', '--disable-setuid-sandbox']
+      launchArgs = puppeteer.defaultArgs({
+        args: ['--no-sandbox', '--disable-setuid-sandbox'],
+        headless,
+      })
     }
-
-    const { default: puppeteer } = await import('puppeteer-core')
 
     browser = await puppeteer.launch({
       args: launchArgs,
       executablePath,
-      headless: true,
+      headless,
       defaultViewport: { width: 1440, height: 900 },
     })
 
