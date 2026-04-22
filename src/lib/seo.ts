@@ -5,7 +5,7 @@ import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 export const SITE_NAME = 'AFEEL Company';
 export const SITE_TITLE_SUFFIX = 'AFEEL Company';
 export const DEFAULT_SITE_DESCRIPTION =
-	'브랜드와 셀럽의 접점을 설계하고 포트폴리오, 소개서, 소셜 아카이브까지 연결하는 패션 PR 에이전시 AFEEL Company 공식 사이트.';
+	'브랜드와 셀럽을 연결하여 실질적인 노출을 만드는 패션 PR 에이전시 AFEEL Company 공식 사이트.';
 export const DEFAULT_SITE_KEYWORDS = ['AFEEL Company', '어필컴퍼니', '패션 PR', '셀럽 협찬', '스타 마케팅', '스타일링 포트폴리오'];
 export const DEFAULT_OG_IMAGE = '/pdf-fixtures/cover-hero.png';
 

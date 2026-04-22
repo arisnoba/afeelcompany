@@ -85,13 +85,13 @@ export default async function ContactPage() {
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Contact</p>
 							<AnimatedPageTitle
 								as="h2"
-								lines={[{ text: 'Ready when you are.' }]}
+								lines={[{ text: 'Inquiry.' }]}
 								delay={0.04}
 								duration={0.42}
 								lineStagger={0.1}
 								className="text-4xl leading-tight tracking-[-0.05em] text-stone-900 [font-family:var(--font-newsreader)] sm:text-5xl"
 							/>
-							<p className="max-w-2xl text-base leading-6 text-stone-600 text-balance">프로젝트 문의 내용 남겨주시면 담당자가 검토 후 회신 드립니다.</p>
+							<p className="max-w-2xl text-base leading-6 text-stone-600 text-balance">프로젝트 문의 내용을 남겨주시면 담당자가 검토 후 회신 드립니다.</p>
 						</div>
 
 						<ContactInquiryForm canSubmit={canSubmitInquiry} />

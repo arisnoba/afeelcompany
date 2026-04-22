@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
+import { PUBLIC_ABOUT_COPY } from '@/lib/company-copy';
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 import type { SiteCompanyProfile } from '@/types/site';
 
@@ -19,7 +20,7 @@ const STUDIO_LINKS = [
 ];
 
 export function SiteFooter({ profile }: SiteFooterProps) {
-	const description = profile.aboutText || '브랜드의 이미지를 축적하고 전달하는 에디토리얼 아카이브를 운영합니다.';
+	const description = profile.aboutText || PUBLIC_ABOUT_COPY;
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
 	const connectLinks = [

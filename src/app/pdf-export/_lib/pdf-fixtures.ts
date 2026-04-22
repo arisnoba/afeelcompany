@@ -1,11 +1,11 @@
 import type { PdfDocument } from '@/types/pdf';
+import { PUBLIC_ABOUT_COPY } from '@/lib/company-copy';
 
 export const pdfFixtureDocument: PdfDocument = {
 	title: 'AFEEL Company',
 	issueDate: '2026.03',
 	heroImageUrl: '/images/symbol.svg',
-	aboutText:
-		'어필컴퍼니는 패션 브랜드와 셀럽을 연결하는 PR 에이전시입니다. 브랜드의 톤과 제품 맥락에 맞는 스타일링 포트폴리오를 큐레이션하고, 소개서와 웹, 인스타그램까지 하나의 흐름으로 연결합니다.',
+	aboutText: `${PUBLIC_ABOUT_COPY} 스타일링 협찬을 통해 브랜드의 가시성을 높입니다.`,
 	contact: {
 		email: 'hello@afeelcompany.com',
 		phone: '010-0000-0000',

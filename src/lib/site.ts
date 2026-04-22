@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db';
+import { resolvePublicAboutCopy } from '@/lib/company-copy';
 import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
 import type { PublicPortfolioItem, SiteClientBrand, SiteCompanyProfile } from '@/types/site';
 
@@ -34,7 +35,7 @@ interface PortfolioItemRow {
 
 function mapCompanyProfile(row?: CompanyProfileRow): SiteCompanyProfile {
 	return {
-		aboutText: row?.about_text ?? '',
+		aboutText: resolvePublicAboutCopy(row?.about_text),
 		contactEmail: row?.contact_email ?? '',
 		contactPhone: row?.contact_phone ?? '',
 		address: row?.address ?? '',

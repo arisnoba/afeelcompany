@@ -7,10 +7,9 @@ import { PortfolioPreviewGrid } from '@/components/site/PortfolioPreviewGrid';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { ShaderGodrays } from '@/components/ui/shader-godrays';
 import { getBrandsWithLogos } from '@/lib/client-brands';
+import { PUBLIC_ABOUT_COPY } from '@/lib/company-copy';
 import { createPageMetadata } from '@/lib/seo';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
-
-const FALLBACK_ABOUT = '브랜드와 셀럽의 접점을 설계하고, 한 번 정리한 포트폴리오를 웹과 소개서, 소셜까지 이어 붙이는 패션 PR 스튜디오입니다.';
 
 export const metadata: Metadata = createPageMetadata({
 	title: '패션 PR 에이전시와 셀럽 협업 포트폴리오',
@@ -22,7 +21,7 @@ export const metadata: Metadata = createPageMetadata({
 export default async function HomePage() {
 	const [profile, featuredItems, clientBrands] = await Promise.all([getSiteCompanyProfile(), getFeaturedPortfolio(12), getSiteClientBrands()]);
 
-	const heroBody = profile.aboutText || FALLBACK_ABOUT;
+	const heroBody = profile.aboutText || PUBLIC_ABOUT_COPY;
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
 	const portfolioLinkClassName =
 		'inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
@@ -45,7 +44,7 @@ export default async function HomePage() {
 
 						<div className="grid gap-10 lg:grid-cols-[minmax(0,1.2fr)_minmax(220px,0.42fr)] lg:items-end">
 							<AnimatedPageTitle
-								lines={[{ text: 'The Architect of' }, { text: 'Spotlight.', className: 'italic text-[#715a3e]' }]}
+								lines={[{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }]}
 								className="max-w-5xl text-[clamp(3.4rem,9vw,7.8rem)] font-light leading-[0.93] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)]"
 							/>
 
@@ -67,7 +66,7 @@ export default async function HomePage() {
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
 								<AnimatedPageTitle
 									as="h2"
-									lines={[{ text: 'The work speaks for itself.' }]}
+									lines={[{ text: 'Selected Work.' }]}
 									delay={0.04}
 									duration={0.42}
 									className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
@@ -99,7 +98,7 @@ export default async function HomePage() {
 							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
 							<AnimatedPageTitle
 								as="h2"
-								lines={[{ text: 'Collaborated Brands' }]}
+								lines={[{ text: 'Clients.' }]}
 								delay={0.04}
 								duration={0.42}
 								className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
@@ -121,7 +120,7 @@ export default async function HomePage() {
 					<Link
 						href="/contact"
 						className="inline-flex h-12 items-center justify-center bg-stone-950 px-8 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-stone-800">
-						Get In Touch
+						Inquiry
 					</Link>
 				</section> */}
 				</div>

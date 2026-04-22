@@ -61,7 +61,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Brand Positioning',
 		headline: '브랜드 포지셔닝',
-		description: '브랜드가 어떤 이미지로 기억되어야 할지를 먼저 정리합니다. 단순 노출이 아닌, 인식을 만드는 방향으로 작업합니다.',
+		description: '브랜드의 지향점에 맞춰 노출 전략을 수립합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<circle cx="12" cy="12" r="10" />
@@ -73,7 +73,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Editorial Placement',
 		headline: '에디토리얼 플레이스먼트',
-		description: '드라마, 예능, 화보, SNS — 각 채널에서 브랜드가 자연스럽게 보이는 장면을 직접 기획합니다.',
+		description: '매체 특성에 맞는 적합한 스타일링과 협찬을 진행합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<rect x="3" y="3" width="18" height="18" rx="1" />
@@ -84,7 +84,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Digital Strategy',
 		headline: '디지털 전략',
-		description: '플랫폼별 소비자 흐름을 파악해 브랜드 노출 경로를 설계합니다. 실제로 검색량이 늘고 재고가 소진되는 결과로 이어진 작업들이 있습니다.',
+		description: '데이터를 바탕으로 검색량 및 판매 전환에 기여합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<polyline points="22 12 18 12 15 21 9 3 6 12 2 12" />
@@ -94,7 +94,7 @@ const SERVICE_ITEMS = [
 	{
 		title: 'Archive Management',
 		headline: '아카이브 관리',
-		description: '방송, SNS, 미디어 노출을 빠짐없이 기록하고 보존합니다. 쌓인 아카이브는 다음 협업을 위한 실질적인 레퍼런스가 됩니다.',
+		description: '모든 활동 내역을 기록하여 체계적으로 관리합니다.',
 		icon: (
 			<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round" className="h-6 w-6">
 				<polyline points="21 8 21 21 3 21 3 8" />
@@ -109,17 +109,17 @@ const EDGE_ITEMS = [
 	{
 		title: 'Strategic Curation',
 		headline: '기획된 우연',
-		description: '우연한 노출은 없습니다. 브랜드의 미학과 셀럽의 이미지를 매칭해 대중이 주목하는 순간을 만듭니다.',
+		description: '브랜드 이미지에 부합하는 셀럽을 매칭합니다.',
 	},
 	{
 		title: 'Endless Archive',
 		headline: '집요한 기록',
-		description: '트렌드는 사라지고 기록은 남습니다. 모든 미디어 노출을 꼼꼼히 추적해 레퍼런스로 보존합니다.',
+		description: '노출 현황을 누락 없이 실시간으로 공유합니다.',
 	},
 	{
 		title: 'Proven Impact',
 		headline: '확실한 결과',
-		description: '사진 한 장에서 끝나지 않습니다. 검색량 증가, 재고 소진 — 실제 판매 지표로 이어진 작업을 합니다.',
+		description: '판매 성과와 지표로 이어지는 작업을 지향합니다.',
 	},
 ];
 
@@ -144,11 +144,11 @@ export default async function AboutPage() {
 
 					<div className="grid gap-6">
 						<AnimatedPageTitle
-							lines={[{ text: 'Real impact.' }, { text: 'Measured differently.' }]}
+							lines={[{ text: 'Results,' }, { text: 'not promises.' }]}
 							className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
 						/>
 						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-							스타와 브랜드가 자연스럽게 연결되는 장면을 만들고, <br />그 경험이 신뢰로 쌓이도록 함께 일합니다.
+							스타일링 협찬을 통해 브랜드의 가시성을 높입니다.
 						</p>
 					</div>
 				</header>
@@ -160,7 +160,7 @@ export default async function AboutPage() {
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 					<div className="grid justify-items-center gap-6 px-4 pt-12 text-center sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">How We Work</p>
-						<p className="max-w-2xl text-sm leading-5 text-stone-600 sm:text-base sm:leading-8 text-balance">브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.</p>
+						<p className="max-w-2xl text-sm leading-5 text-stone-600 sm:text-base sm:leading-8 text-balance">효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.</p>
 					</div>
 					<div className="overflow-hidden">
 						<TextRevealByWord text={storyRevealText} className="h-[95vh]" />
@@ -300,9 +300,9 @@ export default async function AboutPage() {
 						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
 							<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-								PR을 준비 하는 브랜드,
-								<br /> 의류 협찬 및 스타일링이 필요하시면
-								<br /> 어필컴퍼니와 함께 시작하세요.
+								새로운 시즌 PR을 준비하는 브랜드.
+								<br /> 의류 협찬 및 스타일링이 필요한 관계자.
+								<br /> 어필컴퍼니로 문의해 주시기 바랍니다.
 							</p>
 							<div>
 								<Link

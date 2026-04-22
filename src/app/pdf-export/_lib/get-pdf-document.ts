@@ -1,4 +1,5 @@
 import { buildBrandLogoUrlMap, findBrandLogoUrl, getBrandsWithLogos } from '@/lib/client-brands'
+import { resolvePublicAboutCopy } from '@/lib/company-copy'
 import { sql } from '@/lib/db'
 import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
 import type { PdfClientBrand, PdfDocument, PdfPortfolioItem } from '@/types/pdf'
@@ -117,7 +118,7 @@ export async function getPdfDocument(): Promise<PdfDocument> {
       title: pdfFixtureDocument.title,
       issueDate: pdfFixtureDocument.issueDate,
       heroImageUrl: pdfFixtureDocument.heroImageUrl,
-      aboutText: profile?.about_text ?? pdfFixtureDocument.aboutText,
+      aboutText: resolvePublicAboutCopy(profile?.about_text ?? pdfFixtureDocument.aboutText),
       contact: {
         email: profile?.contact_email ?? pdfFixtureDocument.contact.email,
         phone: profile?.contact_phone ?? pdfFixtureDocument.contact.phone,

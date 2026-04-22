@@ -21,17 +21,17 @@ const ABOUT_EDGE_ITEMS = [
 	{
 		title: 'Strategic Curation',
 		headline: '기획된 우연',
-		description: '브랜드의 미학과 셀럽의 이미지를 맞물리게 설계합니다.',
+		description: '브랜드 이미지에 부합하는 셀럽을 매칭합니다.',
 	},
 	{
 		title: 'Endless Archive',
 		headline: '집요한 기록',
-		description: '노출 장면을 축적해 다음 협업의 신뢰 자산으로 남깁니다.',
+		description: '노출 현황을 누락 없이 실시간으로 공유합니다.',
 	},
 	{
 		title: 'Proven Impact',
 		headline: '확실한 결과',
-		description: '검색량 증가와 재고 소진으로 이어진 장면을 만듭니다.',
+		description: '판매 성과와 지표로 이어지는 작업을 지향합니다.',
 	},
 ] as const;
 
@@ -61,26 +61,26 @@ const ABOUT_SERVICE_ITEMS = [
 	{
 		title: 'Brand Positioning',
 		headline: '브랜드 포지셔닝',
-		description: '브랜드가 어떤 이미지로 기억되어야 할지를 먼저 정리합니다.',
+		description: '브랜드의 지향점에 맞춰 노출 전략을 수립합니다.',
 	},
 	{
 		title: 'Editorial Placement',
 		headline: '에디토리얼 플레이스먼트',
-		description: '드라마, 예능, 화보, SNS에서 자연스럽게 보이는 장면을 기획합니다.',
+		description: '매체 특성에 맞는 적합한 스타일링과 협찬을 진행합니다.',
 	},
 	{
 		title: 'Digital Strategy',
 		headline: '디지털 전략',
-		description: '플랫폼별 소비 흐름을 읽고 실제 검색과 구매로 이어지는 노출 경로를 설계합니다.',
+		description: '데이터를 바탕으로 검색량 및 판매 전환에 기여합니다.',
 	},
 	{
 		title: 'Archive Management',
 		headline: '아카이브 관리',
-		description: '방송과 SNS, 미디어 노출을 기록해 다음 협업의 실질적 레퍼런스로 보존합니다.',
+		description: '모든 활동 내역을 기록하여 체계적으로 관리합니다.',
 	},
 ] as const;
 
-const ABOUT_SOCIAL_PROOF_LINES = ['다음 시즌의 메가 히트를 준비하는 브랜드 매니저.', '완벽한 레드카펫 룩이 당장 필요한 스타일리스트.', '어필컴퍼니와 함께 시작하세요.'] as const;
+const ABOUT_SOCIAL_PROOF_LINES = ['새로운 시즌 PR을 준비하는 브랜드.', '의류 협찬 및 스타일링이 필요한 관계자.', '어필컴퍼니로 문의해 주시기 바랍니다.'] as const;
 
 const CONTACT_ADDRESS_URL = 'https://naver.me/5WUmv4Fu';
 
@@ -155,7 +155,7 @@ function splitAboutNarrative(text: string) {
 	const [introText, afterIntro] = takeTextChunk(normalized, ABOUT_INTRO_LIMIT);
 	const [storyText, afterStory] = afterIntro
 		? takeTextChunk(afterIntro, ABOUT_STORY_LIMIT)
-		: ['텍스트가 한 줄씩 드러나듯, 어필컴퍼니의 철학도 결과로 증명됩니다. 브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.', ''];
+		: ['효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.', ''];
 
 	const continuations: string[] = [];
 	let remaining = afterStory;
@@ -236,15 +236,15 @@ function AboutIntroPage({
 				{/* Left: Identity */}
 				<div className="flex flex-col justify-between border-r border-stone-900/8 pr-8">
 					<div className="grid gap-5">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Real impact. Measured differently.</p>
+						<p className="text-[9px] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Results, not promises.</p>
 						<h2 className="text-[3rem] leading-[0.93] tracking-[-0.065em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							브랜드와 셀럽이
+							스타일링 협찬을 통해
 							<br />
-							자연스럽게 만나는
+							브랜드의 가시성을
 							<br />
-							<span className="italic text-[#715a3e]">장면</span>을 설계합니다.
+							<span className="italic text-[#715a3e]">높입니다.</span>
 						</h2>
-						<p className="text-[12px] leading-7 text-stone-600">소개 페이지의 에디토리얼 톤을 그대로 가져와, 브로셔에서도 같은 시선과 같은 호흡으로 브랜드 이야기를 이어갑니다.</p>
+						<p className="text-[12px] leading-7 text-stone-600">스타일링 협찬을 통해 브랜드의 가시성을 높입니다.</p>
 					</div>
 
 					<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8">
@@ -303,7 +303,7 @@ function AboutStoryPage({
 							<br />
 							드러나듯.
 						</h2>
-						<p className="text-[11px] leading-6 text-stone-600">브랜드와 셀럽의 한 장면이 대중의 열망으로 번지는 순간을 중심에 둡니다.</p>
+						<p className="text-[11px] leading-6 text-stone-600">효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.</p>
 					</div>
 
 					<div className="grid gap-3 border-t border-stone-900/8 pt-5">
@@ -582,11 +582,11 @@ export default async function PdfExportPage() {
 							<div className="grid gap-5">
 								{/* <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">Company Brochure</p> */}
 								<h1 className="text-[5rem] leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-									The Architect of
+									Fashion PR
 									<br />
-									<span className="italic text-[#715a3e]">Spotlight.</span>
+									<span className="italic text-[#715a3e]">& Styling.</span>
 								</h1>
-								<p className="max-w-[32ch] text-[13px] leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
+								<p className="max-w-[32ch] text-[13px] leading-7 text-stone-600">브랜드와 셀럽을 연결하여 실질적인 노출을 만듭니다.</p>
 							</div>
 
 							<div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
