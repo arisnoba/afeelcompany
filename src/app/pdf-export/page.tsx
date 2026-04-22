@@ -672,22 +672,18 @@ export default async function PdfExportPage() {
 		node: (
 			<BrochureSheet sectionId="contact">
 				<div className="grid h-full" style={{ gridTemplateColumns: '50% 50%' }}>
-					{/* Left: Map background + dark overlay + copy */}
-					<div className="relative overflow-hidden">
-						<PdfContactMap address={brochure.contact.address} apiKey={googleMapsApiKey} />
-						<div className="absolute inset-0" />
-
-						<div className="relative z-10 flex h-full flex-col justify-between px-12 py-10">
+					{/* Left: Contact details */}
+					<div className="flex flex-col justify-between px-12 py-10 border-r border-stone-900/8">
+						<div className="grid gap-2">
 							<div className="flex items-center gap-3">
 								<span className="h-px w-6 bg-[#715a3e]" />
-								<p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-500">Contact</p>
+								<p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-400">Contact</p>
 							</div>
-							<p className="text-[9px] uppercase tracking-[0.24em] text-stone-600">AFEEL Company · Seoul, Korea</p>
+							<h2 className="text-[2.6rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+								Get In Touch.
+							</h2>
 						</div>
-					</div>
 
-					{/* Right: Contact details */}
-					<div className="flex flex-col justify-center px-12 py-10">
 						<dl className="grid gap-7">
 							<div className="grid gap-1.5">
 								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
@@ -715,11 +711,23 @@ export default async function PdfExportPage() {
 									</a>
 								</dd>
 							</div>
+							<div className="h-px bg-stone-100" />
+							<div className="grid gap-1.5">
+								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">웹사이트</dt>
+								<dd>
+									<a href="https://afeelcompany.com" className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4">
+										afeelcompany.com
+									</a>
+								</dd>
+							</div>
 						</dl>
-						<div className="mt-8 flex items-center gap-3 border-t border-stone-100 pt-6">
-							<span className="h-px w-6 bg-[#715a3e]" />
-							<p className="text-[9px] uppercase tracking-[0.24em] text-stone-400">afeelcompany.com</p>
-						</div>
+
+						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">AFEEL Company · Seoul, Korea</p>
+					</div>
+
+					{/* Right: Map */}
+					<div className="relative overflow-hidden">
+						<PdfContactMap address={brochure.contact.address} apiKey={googleMapsApiKey} />
 					</div>
 				</div>
 			</BrochureSheet>

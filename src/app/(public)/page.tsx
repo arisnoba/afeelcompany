@@ -63,7 +63,7 @@ export default async function HomePage() {
 					<section className="grid gap-12">
 						<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 							<div>
-								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p>
+								{/* <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p> */}
 								<AnimatedPageTitle
 									as="h2"
 									lines={[{ text: 'Selected Work.' }]}
@@ -109,8 +109,8 @@ export default async function HomePage() {
 							brands={clientLogoBrands}
 							className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
 							trackClassName="home-marquee-track flex min-w-max items-center gap-10 whitespace-nowrap py-4 sm:gap-16"
-							logoClassName="relative h-9 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-12 sm:w-36"
-							imageClassName="object-contain grayscale"
+							logoClassName="relative h-10 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-36"
+							imageClassName="object-cover grayscale"
 						/>
 					</section>
 
