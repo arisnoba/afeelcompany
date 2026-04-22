@@ -82,6 +82,14 @@ const ABOUT_SERVICE_ITEMS = [
 
 const ABOUT_SOCIAL_PROOF_LINES = ['새로운 시즌 PR을 준비하는 브랜드.', '의류 협찬 및 스타일링이 필요한 관계자.', '어필컴퍼니로 문의해 주시기 바랍니다.'] as const;
 
+const WORKFLOW_STEPS = [
+	{ label: 'STEP 01', title: 'STRATEGY', description: '브랜드 분석 및\n목표 설정' },
+	{ label: 'STEP 02', title: 'MATCHING', description: '아티스트 큐레이션 및\n리스트 확정' },
+	{ label: 'STEP 03', title: 'EXECUTION', description: '현장 협찬 실행 및\n제품 핸들링' },
+	{ label: 'STEP 04', title: 'EXPOSURE', description: '다양한 미디어 채널\n노출 확인' },
+	{ label: 'STEP 05', title: 'ANALYSIS', description: '성과 데이터 분석 및\n사후 리포트' },
+] as const;
+
 const CONTACT_ADDRESS_URL = 'https://naver.me/5WUmv4Fu';
 
 // ── Utilities ───────────────────────────────
@@ -280,59 +288,48 @@ function AboutIntroPage({
 	);
 }
 
+// 각 단계의 강조선 위치 (top, %) — 왼쪽에서 오른쪽으로 점진적으로 상승
+const STEP_LINE_TOPS = ['70%', '58%', '44%', '32%', '18%'] as const;
+
 function AboutStoryPage({
-	paragraphs,
 	pageNum,
 	totalPages,
 }: AboutPageProps & {
 	paragraphs: string[];
 }) {
 	return (
-		<AboutPageFrame label="How We Work" pageNum={pageNum} totalPages={totalPages}>
-			<div className="grid h-full gap-10" style={{ gridTemplateColumns: '38% 62%' }}>
-				{/* Left: Philosophy */}
-				<div className="flex flex-col justify-between border-r border-stone-900/8 pr-8">
-					<div className="grid gap-5">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">How We Work</p>
-						<h2 className="text-[2.6rem] leading-[0.98] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							텍스트가
-							<br />
-							한 줄씩
-							<br />
-							드러나듯.
-						</h2>
-						<p className="text-[11px] leading-6 text-stone-600">효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.</p>
-					</div>
-
-					<div className="grid gap-3 border-t border-stone-900/8 pt-5">
-						{ABOUT_STORY_LINES.map(line => (
-							<div key={line} className="flex items-start gap-3">
-								<span className="mt-[9px] h-px w-3 shrink-0 bg-[#715a3e]" />
-								<p className="text-[11px] leading-6 text-stone-600">{line}</p>
-							</div>
-						))}
-					</div>
+		<AboutPageFrame label="Our Process" pageNum={pageNum} totalPages={totalPages}>
+			<div className="flex h-full flex-col gap-20">
+				{/* Header */}
+				<div className="flex flex-col gap-4">
+					<h2 className="text-5xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						How It Works
+					</h2>
+					<p className="text-lg leading-7 text-stone-600">브랜드 분석부터 성과 리포트까지, 어필컴퍼니의 5단계 협업 프로세스입니다.</p>
 				</div>
 
-				{/* Right: Story text */}
-				<div className="flex h-full flex-col justify-between pl-2">
-					<div className="grid gap-5">
-						<div className="flex items-center gap-3">
-							<span className="h-px w-4 bg-stone-300" />
-							<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-400">Editorial Philosophy</p>
-						</div>
-						<div className="h-px bg-stone-900/8" />
-						{paragraphs.map((paragraph, index) => (
-							<p key={`story-${index}`} className="text-[13.5px] leading-[2.05] text-stone-600">
-								{paragraph}
-							</p>
-						))}
-					</div>
+				{/* 점진적 상승 단계 컬럼 */}
+				<div className="relative flex flex-1">
+					{WORKFLOW_STEPS.map((step, index) => (
+						<div key={step.title} className="relative flex w-full pl-2 flex-col justify-between border-l border-stone-100">
+							{/* 단계 번호 — 상단 */}
+							<p className="left-2 text-sm font-semibold tracking-[0.22em] text-stone-300">{String(index + 1).padStart(2, '0')}</p>
 
-					<div className="flex items-center justify-between border-t border-stone-900/8 pt-4">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-stone-400">Editorial Philosophy</p>
-						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
-					</div>
+							{/* 강조선 — 단계마다 높이 다름 */}
+							<div className="absolute left-2 right-2 inset-0 h-[1.5px] bg-[#715a3e]" style={{ top: STEP_LINE_TOPS[index] }} />
+
+							{/* 콘텐츠 — 강조선 바로 아래 */}
+							<div className="absolute inset-x-2" style={{ top: `calc(${STEP_LINE_TOPS[index]} + 20px)` }}>
+								<p className="text-lg font-semibold whitespace-pre-line leading-tight text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+									{step.description}
+								</p>
+								{/* <p className="mt-1.5 whitespace-pre-line text-[9px] leading-[1.6] text-stone-500">{step.description}</p> */}
+							</div>
+
+							{/* 단계 레이블 — 하단 */}
+							<p className="text-sm tracking-widest text-stone-400">{step.title}</p>
+						</div>
+					))}
 				</div>
 			</div>
 		</AboutPageFrame>
@@ -402,7 +399,6 @@ function AboutExpertisePage({ pageNum, totalPages }: AboutPageProps) {
 		<AboutPageFrame label="Core Expertise" pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-20">
 				<div className="grid gap-4">
-					<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Core Expertise</p>
 					<div className="flex items-end justify-between gap-8">
 						<h2 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 							What We Do
@@ -429,10 +425,9 @@ function AboutExpertisePage({ pageNum, totalPages }: AboutPageProps) {
 
 function AboutEdgePage({ pageNum, totalPages }: AboutPageProps) {
 	return (
-		<AboutPageFrame label="Why AFEEL" pageNum={pageNum} totalPages={totalPages}>
+		<AboutPageFrame label="Our Edge" pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-5 justify-between">
 				<div className="grid gap-4">
-					<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Our Edge</p>
 					<div className="flex items-end justify-between gap-8">
 						<h2 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 							Why AFEEL
@@ -574,17 +569,17 @@ export default async function PdfExportPage() {
 						<div className="flex h-full flex-col justify-between px-12 py-10">
 							<div className="flex items-center gap-4">
 								<span className="h-px w-10 bg-[#715a3e]" />
-								<span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">Fashion PR Agency</span>
+								<span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">Afeel Company</span>
 							</div>
 
 							<div className="grid gap-5">
 								{/* <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">Company Brochure</p> */}
-								<h1 className="text-[5rem] leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+								<h1 className="text-9xl leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 									Fashion PR
 									<br />
 									<span className="italic text-[#715a3e]">& Styling.</span>
 								</h1>
-								<p className="max-w-[32ch] text-[13px] leading-7 text-stone-600">브랜드와 셀럽을 연결하여 실질적인 노출을 만듭니다.</p>
+								<p className="max-w-[32ch] text-base leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
 							</div>
 
 							<div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
