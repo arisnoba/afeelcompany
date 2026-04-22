@@ -12,12 +12,12 @@ export function BrandLogoGrid({ brands }: BrandLogoGridProps) {
 	}
 
 	return (
-		<div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
+		<div className="grid gap-4 bg-stone-950/90 p-4 sm:grid-cols-2 xl:grid-cols-4">
 			{brands.map(brand => (
-				<article key={brand.id} className="grid min-h-36 place-items-center bg-white px-4 py-6">
+				<article key={brand.id} className="grid aspect-square place-items-center overflow-hidden bg-white">
 					{brand.logoUrl ? (
-						<div className="relative h-16 w-full">
-							<Image src={brand.logoUrl} alt={brand.name} fill className="object-contain" sizes="(max-width: 768px) 100vw, 25vw" />
+						<div className="relative h-full w-full">
+							<Image src={brand.logoUrl} alt={brand.name} fill unoptimized className="object-contain" sizes="(max-width: 768px) 100vw, 25vw" />
 						</div>
 					) : (
 						<span className="text-sm text-stone-500">{brand.name}</span>

@@ -41,6 +41,7 @@ export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName
 											src={item.hoverImageUrl}
 											alt={`${getPortfolioImageAlt(item)} hover`}
 											fill
+											unoptimized
 											className="object-contain object-center"
 											sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
 										/>

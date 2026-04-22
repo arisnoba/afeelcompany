@@ -99,6 +99,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 														src={hoverImageUrl}
 														alt={`${getPortfolioImageAlt(item)} hover`}
 														fill
+														unoptimized
 														className="object-contain object-center"
 														sizes="(min-width: 1280px) 25vw, (min-width: 640px) 33vw, 50vw"
 													/>
