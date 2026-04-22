@@ -78,6 +78,11 @@ export const metadata: Metadata = {
 		apple: '/favicon/apple-touch-icon.png',
 	},
 	manifest: '/favicon/site.webmanifest',
+	verification: {
+		other: {
+			'naver-site-verification': '0b7a460c7278b8d5de8c79f806adf377d69e697c',
+		},
+	},
 };
 
 export default function RootLayout({
