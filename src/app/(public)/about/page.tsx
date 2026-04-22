@@ -113,7 +113,7 @@ const EDGE_ITEMS = [
 	},
 	{
 		title: 'Endless Archive',
-		headline: '집요한 기록',
+		headline: '꼼꼼한 기록',
 		description: '노출 현황을 누락 없이 실시간으로 공유합니다.',
 	},
 	{
@@ -147,9 +147,7 @@ export default async function AboutPage() {
 							lines={[{ text: 'Results,' }, { text: 'not promises.' }]}
 							className="text-5xl font-light leading-[0.92] tracking-[-0.07em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]"
 						/>
-						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-							스타일링 협찬을 통해 브랜드의 가시성을 높입니다.
-						</p>
+						<p className="max-w-2xl text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">스타일링 협찬을 통해 브랜드의 가시성을 높입니다.</p>
 					</div>
 				</header>
 			</div>
@@ -293,8 +291,8 @@ export default async function AboutPage() {
 							brands={rollingBrands}
 							className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
 							trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
-							logoClassName="relative h-8 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-10 sm:w-32"
-							imageClassName="object-contain grayscale"
+							logoClassName="relative h-10 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-32"
+							imageClassName="object-cover grayscale"
 						/>
 
 						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">

@@ -25,7 +25,7 @@ const ABOUT_EDGE_ITEMS = [
 	},
 	{
 		title: 'Endless Archive',
-		headline: '집요한 기록',
+		headline: '꼼꼼한 기록',
 		description: '노출 현황을 누락 없이 실시간으로 공유합니다.',
 	},
 	{
