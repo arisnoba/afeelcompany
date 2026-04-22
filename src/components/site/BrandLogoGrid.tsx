@@ -12,7 +12,7 @@ export function BrandLogoGrid({ brands }: BrandLogoGridProps) {
 	}
 
 	return (
-		<div className="grid gap-4 bg-stone-950/90 p-4 sm:grid-cols-2 xl:grid-cols-4">
+		<div className="grid gap-4 grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6">
 			{brands.map(brand => (
 				<article key={brand.id} className="grid aspect-square place-items-center overflow-hidden bg-white">
 					{brand.logoUrl ? (

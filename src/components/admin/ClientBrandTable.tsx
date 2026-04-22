@@ -402,7 +402,12 @@ function ClientBrandSheetForm({
       </div>
 
       <div className="grid gap-4 rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
-        <p className="text-sm font-medium text-foreground">로고 업로드</p>
+        <div className="grid gap-1">
+          <p className="text-sm font-medium text-foreground">로고 업로드</p>
+          <p className="text-xs leading-5 text-muted-foreground">
+            로고는 1:1 정방형 이미지로 업로드해 주세요. 파트너 페이지와 포트폴리오 hover에서 원본 여백을 그대로 사용합니다.
+          </p>
+        </div>
 
         <div className="grid gap-3">
           <Label htmlFor="client-logo">로고 파일</Label>
@@ -415,7 +420,7 @@ function ClientBrandSheetForm({
           />
         </div>
 
-        <div className="relative aspect-[4/3] overflow-hidden rounded-[20px] border border-black/6 bg-white">
+        <div className="relative aspect-square overflow-hidden rounded-[20px] border border-black/6 bg-white">
           {previewUrl ? (
             <Image
               src={previewUrl}
