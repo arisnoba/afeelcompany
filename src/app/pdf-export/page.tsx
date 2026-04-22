@@ -153,9 +153,7 @@ function getTelHref(phone: string): string {
 function splitAboutNarrative(text: string) {
 	const normalized = normalizeAboutText(text);
 	const [introText, afterIntro] = takeTextChunk(normalized, ABOUT_INTRO_LIMIT);
-	const [storyText, afterStory] = afterIntro
-		? takeTextChunk(afterIntro, ABOUT_STORY_LIMIT)
-		: ['효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.', ''];
+	const [storyText, afterStory] = afterIntro ? takeTextChunk(afterIntro, ABOUT_STORY_LIMIT) : ['효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.', ''];
 
 	const continuations: string[] = [];
 	let remaining = afterStory;
@@ -538,9 +536,9 @@ function ClientSheet({ brands, pageNum, totalPages, totalBrands }: ClientSheetPr
 					gridAutoRows: '1fr',
 				}}>
 				{brands.map(brand => (
-					<article key={brand.id} className="avoid-break flex flex-col items-center justify-center gap-2 overflow-hidden border border-stone-900/8 bg-white px-3 py-3">
+					<article key={brand.id} className="avoid-break flex flex-col items-center justify-center gap-2 overflow-hidden  bg-white h-full">
 						{brand.logoUrl ? (
-							<img src={brand.logoUrl} alt={brand.name} className="h-6 w-full object-contain" />
+							<img src={brand.logoUrl} alt={brand.name} className="h-20 w-full object-cover" />
 						) : (
 							<p className="text-[11px] font-semibold uppercase tracking-[0.2em] text-stone-400">{brand.name}</p>
 						)}
