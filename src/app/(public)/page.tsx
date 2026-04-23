@@ -12,7 +12,7 @@ import { createPageMetadata } from '@/lib/seo';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 
 export const metadata: Metadata = createPageMetadata({
-	title: 'AFEEL COMPANY | Fashion PR & Celebrity Coordination',
+	title: 'AFEEL COMPANY | Fashion PR Agency',
 	description: '브랜드와 셀럽을 잇는 순간을 설계합니다.',
 	path: '/',
 	keywords: ['AFEEL COMPANY', '어필컴퍼니', '패션 PR 에이전시', '셀럽 협업', '스타 마케팅', '스타일링 포트폴리오'],
