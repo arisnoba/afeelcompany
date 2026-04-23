@@ -208,7 +208,7 @@ export default async function AboutPage() {
 									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
 								/>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">브랜드 분석부터 성과 리포트까지, 어필컴퍼니의 5단계 협업 프로세스입니다.</p>
+							<p className="max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg text-balance">브랜드 분석부터 성과 리포트까지, 어필컴퍼니의 5단계 협업 프로세스입니다.</p>
 						</div>
 
 						<WorkflowBeam />
@@ -226,7 +226,7 @@ export default async function AboutPage() {
 									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
 								/>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
+							<p className="max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
 						</div>
 
 						<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 sm:grid-cols-2">
@@ -255,7 +255,7 @@ export default async function AboutPage() {
 									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
 								/>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
+							<p className="max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
 						</div>
 
 						<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
@@ -281,7 +281,7 @@ export default async function AboutPage() {
 									className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"
 								/>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
+							<p className="max-w-2xl text-base leading-relaxed text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
 						</div>
 
 						<div className="grid gap-4 sm:gap-6">
