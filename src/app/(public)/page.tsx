@@ -12,10 +12,10 @@ import { createPageMetadata } from '@/lib/seo';
 import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 
 export const metadata: Metadata = createPageMetadata({
-	title: '패션 PR 에이전시와 셀럽 협업 포트폴리오',
-	description: '브랜드와 셀럽을 연결하는 패션 PR 에이전시 AFEEL Company의 대표 포트폴리오와 협업 브랜드를 확인할 수 있습니다.',
+	title: 'AFEEL COMPANY | Fashion PR & Celebrity Coordination',
+	description: '브랜드와 셀럽을 잇는 순간을 설계합니다.',
 	path: '/',
-	keywords: ['패션 PR 에이전시', '셀럽 협업', '브랜드 포트폴리오'],
+	keywords: ['AFEEL COMPANY', '어필컴퍼니', '패션 PR 에이전시', '셀럽 협업', '스타 마케팅', '스타일링 포트폴리오'],
 });
 
 export default async function HomePage() {
