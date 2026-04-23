@@ -7,9 +7,9 @@ import { getPublicPortfolioItems } from '@/lib/site';
 
 export const metadata: Metadata = createPageMetadata({
 	title: '포트폴리오',
-	description: '셀럽 스타일링과 브랜드 협업 중심의 AFEEL Company 포트폴리오를 한눈에 확인할 수 있습니다.',
+	description: '셀럽 스타일링과 브랜드 협업 포트폴리오를 확인할 수 있습니다.',
 	path: '/portfolio',
-	keywords: ['포트폴리오', '스타일링 포트폴리오', '브랜드 협업 사례'],
+	keywords: ['포트폴리오', '브랜드 협업 사례'],
 });
 
 export default async function PortfolioPage() {

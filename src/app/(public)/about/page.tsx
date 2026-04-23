@@ -126,9 +126,9 @@ const EDGE_ITEMS = [
 
 export const metadata: Metadata = createPageMetadata({
 	title: '회사 소개',
-	description: 'AFEEL Company의 패션 PR 철학, 브랜드 포지셔닝 방식, 셀럽 협업 이력과 핵심 서비스를 소개합니다.',
+	description: '패션 PR 철학과 브랜드 포지셔닝 방식, 핵심 서비스를 소개합니다.',
 	path: '/about',
-	keywords: ['회사 소개', '패션 PR 회사', '브랜드 포지셔닝'],
+	keywords: ['회사 소개', '브랜드 포지셔닝'],
 });
 
 export default async function AboutPage() {

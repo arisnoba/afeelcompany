@@ -8,9 +8,9 @@ import { getSiteClientBrands } from '@/lib/site';
 
 export const metadata: Metadata = createPageMetadata({
 	title: '파트너',
-	description: 'AFEEL Company와 함께한 브랜드 파트너 로고를 한 곳에서 확인할 수 있습니다.',
+	description: '함께한 브랜드 파트너를 소개합니다.',
 	path: '/partner',
-	keywords: ['파트너', '브랜드 파트너', '협업 브랜드'],
+	keywords: ['브랜드 파트너', '협업 브랜드'],
 });
 
 export default async function PartnerPage() {
