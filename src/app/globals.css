@@ -210,6 +210,26 @@ html.lenis body {
 	}
 }
 
+@keyframes home-marquee-reverse {
+	0% {
+		transform: translate3d(-50%, 0, 0);
+	}
+
+	100% {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
+@keyframes about-logo-marquee-reverse {
+	0% {
+		transform: translate3d(-50%, 0, 0);
+	}
+
+	100% {
+		transform: translate3d(0, 0, 0);
+	}
+}
+
 @keyframes hero-godrays-drift {
 	0% {
 		opacity: 0.84;
@@ -245,6 +265,16 @@ html.lenis body {
 
 	.about-logo-marquee-track {
 		animation: about-logo-marquee 45s linear infinite;
+		will-change: transform;
+	}
+
+	.home-marquee-track-reverse {
+		animation: home-marquee-reverse 50s linear infinite;
+		will-change: transform;
+	}
+
+	.about-logo-marquee-track-reverse {
+		animation: about-logo-marquee-reverse 45s linear infinite;
 		will-change: transform;
 	}
 

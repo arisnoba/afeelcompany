@@ -54,7 +54,14 @@ export function SiteHeader() {
 			<div className="mx-auto flex w-full max-w-screen-2xl items-center justify-between px-4 py-4 sm:px-6 md:py-5 lg:px-10 lg:py-6">
 				<Link href="/" className="text-stone-950">
 					<span className="sr-only text-[1.9rem] leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)]">AFEELCOMPANY</span>
-					<Image src="/images/symbol.svg" alt="afeelcompany" width={32} height={32} className="invert" />
+					<Image 
+						src="/images/symbol.svg" 
+						alt="afeelcompany" 
+						width={33} 
+						height={30} 
+						className="h-8 w-auto invert" 
+						priority
+					/>
 				</Link>
 
 				<nav className="hidden items-center gap-10 md:flex">

@@ -1,4 +1,5 @@
 import type { Metadata } from 'next';
+import Image from 'next/image';
 import Link from 'next/link';
 
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
@@ -272,7 +273,7 @@ export default async function AboutPage() {
 						</div>
 					</section>
 
-					<section className="grid gap-10">
+					<section className="grid gap-18 md:gap-24">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
 							<div className="grid gap-4">
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
@@ -287,27 +288,49 @@ export default async function AboutPage() {
 							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg text-balance">숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.</p>
 						</div>
 
-						<ClientLogoMarquee
-							brands={rollingBrands}
-							className="relative overflow-hidden border-y border-stone-900/8 py-7 [mask-image:linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
-							trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
-							logoClassName="relative h-10 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-32"
-							imageClassName="object-cover grayscale"
-						/>
+						<div className="grid gap-4 sm:gap-6">
+							<ClientLogoMarquee
+								brands={rollingBrands.filter((_, i) => i % 2 === 0)}
+								className="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+								trackClassName="about-logo-marquee-track flex min-w-max items-center gap-10 sm:gap-14"
+								logoClassName="relative h-10 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-32"
+								imageClassName="object-cover grayscale"
+							/>
+							<ClientLogoMarquee
+								brands={rollingBrands.filter((_, i) => i % 2 !== 0)}
+								className="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_10%,black_90%,transparent)]"
+								trackClassName="about-logo-marquee-track-reverse flex min-w-max items-center gap-10 sm:gap-14"
+								logoClassName="relative h-10 w-24 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-32"
+								imageClassName="object-cover grayscale"
+							/>
+						</div>
 
-						<div className="grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
-							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">Target Alignment</p>
-							<p className="max-w-4xl text-2xl leading-tight tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-								새로운 시즌 PR을 준비하는 브랜드.
-								<br /> 의류 협찬 및 스타일링이 필요한 관계자.
-								<br /> 어필컴퍼니로 문의해 주시기 바랍니다.
-							</p>
-							<div>
-								<Link
-									href="/contact"
-									className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14">
-									Inquire for Collaboration
-								</Link>
+						<div className="relative overflow-hidden grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
+							{/* Background Logo */}
+							<div className="absolute right-0 top-0 h-full opacity-5 pointer-events-none select-none">
+								<Image 
+									src="/images/symbol.svg" 
+									alt="" 
+									width={33}
+									height={30}
+									priority
+									className="h-full w-auto object-contain brightness-0 invert"
+								/>
+							</div>
+
+							<div className="relative z-10 grid gap-6">
+								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">For Collaboration</p>
+								<p className="max-w-4xl text-2xl leading-snug tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
+									브랜드와 셀럽이 만나는 순간을 함께 기획하고 싶다면,
+									<br /> 어필컴퍼니로 연락 주세요.
+								</p>
+								<div>
+									<Link
+										href="/contact"
+										className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14">
+										Inquire for Collaboration
+									</Link>
+								</div>
 							</div>
 						</div>
 					</section>

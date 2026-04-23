@@ -105,13 +105,22 @@ export default async function HomePage() {
 							/>
 						</div>
 
-						<ClientLogoMarquee
-							brands={clientLogoBrands}
-							className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
-							trackClassName="home-marquee-track flex min-w-max items-center gap-10 whitespace-nowrap py-4 sm:gap-16"
-							logoClassName="relative h-10 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-36"
-							imageClassName="object-cover grayscale"
-						/>
+						<div className="grid gap-6 sm:gap-8">
+							<ClientLogoMarquee
+								brands={clientLogoBrands.filter((_, i) => i % 2 === 0)}
+								className="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+								trackClassName="home-marquee-track flex min-w-max items-center gap-10 whitespace-nowrap py-2 sm:gap-16"
+								logoClassName="relative h-10 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-36"
+								imageClassName="object-cover grayscale"
+							/>
+							<ClientLogoMarquee
+								brands={clientLogoBrands.filter((_, i) => i % 2 !== 0)}
+								className="relative overflow-hidden mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]"
+								trackClassName="home-marquee-track-reverse flex min-w-max items-center gap-10 whitespace-nowrap py-2 sm:gap-16"
+								logoClassName="relative h-10 w-28 shrink-0 opacity-70 transition hover:opacity-100 sm:h-16 sm:w-36"
+								imageClassName="object-cover grayscale"
+							/>
+						</div>
 					</section>
 
 					{/* <section className="grid justify-items-center gap-8 py-6 text-center sm:py-10">
