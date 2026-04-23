@@ -13,7 +13,7 @@ import { getSiteClientBrands } from '@/lib/site';
 
 const STORY_LINES = [
 	'단순히 옷을 입히는 데 그치지 않고.',
-	'스타와 브랜드가 어우러지는 결을 먼저 봅니다.',
+	'스타와 브랜드의 결을 먼저 봅니다.',
 	'억지스럽지 않고 자연스럽게,',
 	'수치보다 실제 반응에 집중합니다.',
 	'함께 오래 일하는 브랜드들이',
@@ -155,7 +155,7 @@ export default async function AboutPage() {
 
 			<section className="relative overflow-hidden border-y border-stone-900/8 bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)]">
 				<div className="absolute inset-0 opacity-45 bg-[linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] bg-size-[28px_28px]" />
-				<div className="absolute inset-x-[22%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.9),transparent_72%)] blur-3xl" />
+
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 					<div className="overflow-hidden">
 						<TextRevealByWord text={storyRevealText} className="h-[90vh]" />

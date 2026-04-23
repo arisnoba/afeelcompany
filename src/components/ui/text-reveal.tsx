@@ -36,7 +36,7 @@ const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className }) => {
 	return (
 		<div ref={targetRef} className={cn('relative z-0 h-[115vh]', className)}>
 			<div className="sticky top-0 mx-auto flex h-screen items-center justify-center bg-transparent px-4 py-12">
-				<p className="p-5 text-center text-[clamp(1.5rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)]">
+				<p className="p-5 text-center text-[clamp(1.5rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)] break-keep">
 					{indexedLines.map((line, lineIndex) => (
 						<span key={`line-${lineIndex}`} className="block">
 							{line.map(({ word, index }) => {

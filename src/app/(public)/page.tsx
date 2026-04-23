@@ -24,14 +24,14 @@ export default async function HomePage() {
 	const heroBody = profile.aboutText || PUBLIC_ABOUT_COPY;
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
 	const portfolioLinkClassName =
-		'inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
+		'hidden md:inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
 	const portfolioLinkLabel = 'More';
 
 	return (
 		<>
 			<section className="relative overflow-hidden bg-stone-900/8 pb-16 pt-36 sm:pb-24 sm:pt-40 lg:pb-32 lg:pt-44">
-				<ShaderGodrays className="opacity-90 [mask-image:radial-gradient(120%_90%_at_50%_4%,black_0%,black_48%,transparent_100%)]" />
-				<div className="absolute inset-0 opacity-35 [background-image:linear-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] [background-size:32px_32px]" />
+				<ShaderGodrays className="opacity-90 mask-[radial-gradient(120%_90%_at_50%_4%,black_0%,black_48%,transparent_100%)]" />
+				<div className="absolute inset-0 opacity-35 mask-[radial-gradient(rgba(117,90,62,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.06)_1px,transparent_1px)] mask-size-[32px_32px]" />
 				<div className="absolute -right-16 top-24 h-80 w-80 rounded-full bg-white/30 blur-3xl" />
 				<div className="absolute inset-x-[18%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,251,245,0.88),transparent_72%)] blur-2xl" />
 
@@ -59,20 +59,17 @@ export default async function HomePage() {
 			</section>
 
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-				<div className="grid gap-24 py-6 sm:gap-28 sm:py-8 lg:gap-32 lg:py-40">
+				<div className="grid gap-24 py-16 sm:gap-28 sm:py-24 lg:gap-32 lg:py-40">
 					<section className="grid gap-12">
 						<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-							<div>
-								{/* <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Selected Portfolio</p> */}
-								<AnimatedPageTitle
-									as="h2"
-									lines={[{ text: 'Selected Work.' }]}
-									delay={0.04}
-									duration={0.42}
-									className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
-								/>
-							</div>
-							<Link href="/portfolio" className={portfolioLinkClassName}>
+							<AnimatedPageTitle
+								as="h2"
+								lines={[{ text: 'Selected Work.' }]}
+								delay={0.04}
+								duration={0.42}
+								className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
+							/>
+							<Link href="/portfolio" className={portfolioLinkClassName} aria-label={portfolioLinkLabel}>
 								{portfolioLinkLabel}
 								<ChevronRight className="size-4" />
 							</Link>
