@@ -12,7 +12,7 @@ function renderValue(value: string) {
 
 function ContactDetail({ label, children }: { label: string; children: React.ReactNode }) {
 	return (
-		<div className="flex flex-col items-start gap-6">
+		<div className="flex flex-col items-start gap-4 md:gap-6">
 			<span className="block text-[0.62rem] font-semibold uppercase leading-none tracking-[0.32em] text-stone-400">{label}</span>
 			{children}
 		</div>
@@ -47,12 +47,12 @@ export default async function ContactPage() {
 					<div className="flex flex-col gap-12 lg:w-[calc(41.666%-40px)] lg:gap-16">
 						<ContactMap address={address} apiKey={googleMapsApiKey} />
 
-						<div className="flex flex-col gap-12">
+						<div className="flex flex-col gap-6 md:gap-12">
 							<ContactDetail label="Address">
 								<address className="not-italic text-xl leading-snug text-stone-900 [font-family:var(--font-newsreader)] sm:text-2xl">{renderValue(address)}</address>
 							</ContactDetail>
 
-							<div className="flex flex-col gap-10 md:flex-row md:gap-12">
+							<div className="flex flex-col gap-6 md:flex-row md:gap-12">
 								<div className="flex-1">
 									<ContactDetail label="Email">
 										{email ? (

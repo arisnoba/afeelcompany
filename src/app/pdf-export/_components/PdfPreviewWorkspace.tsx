@@ -247,9 +247,9 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
       />
       <div className="screen-only sticky top-3 z-30 px-3">
         <div className="mx-auto flex w-full max-w-[1400px] justify-center">
-          <div className="grid w-full max-w-[1000px] grid-cols-[1fr_auto_1fr] items-center border border-black/15 bg-white/85 px-4 py-1.5 backdrop-blur-xl">
+          <div className="grid w-full max-w-[1000px] grid-cols-[auto_1fr] items-center border border-black/15 bg-white/85 px-4 py-1.5 backdrop-blur-xl md:grid-cols-[1fr_auto_1fr]">
             {/* Left: Index & Label (Stable Column) */}
-            <div className="flex min-w-0 items-center gap-3 overflow-hidden pr-4">
+            <div className="hidden min-w-0 items-center gap-3 overflow-hidden pr-4 md:flex">
               <div className="flex shrink-0 items-center gap-1.5 text-[9px] font-bold uppercase tracking-[0.2em] text-black/50">
                 <span className="text-black/25">PG.</span>
                 <span className="tabular-nums">
@@ -265,7 +265,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
             </div>
 
             {/* Center: Mode Switch & Navigation (Grouped & Centered) */}
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-2 md:gap-4">
               <div className="flex items-center border border-black/10 p-0.5">
                 <button
                   type="button"
@@ -278,7 +278,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
                   )}
                 >
                   <List size={12} strokeWidth={1.5} />
-                  <span>Scroll</span>
+                  <span className="hidden md:inline">Scroll</span>
                 </button>
                 <button
                   type="button"
@@ -291,7 +291,7 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
                   )}
                 >
                   <Layout size={12} strokeWidth={1.5} />
-                  <span>Slide</span>
+                  <span className="hidden md:inline">Slide</span>
                 </button>
               </div>
 
