@@ -561,39 +561,33 @@ export default async function PdfExportPage() {
 		node: (
 			<BrochureSheet sectionId="cover">
 				<div className="relative h-full overflow-hidden">
-					{/* <div className="absolute inset-y-0 left-0 w-[55%]" /> */}
+					{/* Background Logo */}
+					<div className="absolute inset-y-0 right-0 h-full w-full opacity-[0.05] flex justify-end">
+						<PdfImage src={brochure.heroImageUrl} alt={`${brochure.title}`} className="h-full w-full object-contain invert" />
+					</div>
 
-					{/* Content grid */}
-					<div className="relative z-10 grid h-full" style={{ gridTemplateColumns: '55% 45%' }}>
-						{/* Left: Text */}
-						<div className="flex h-full flex-col justify-between px-12 py-10">
-							<div className="flex items-center gap-4">
-								<span className="h-px w-10 bg-[#715a3e]" />
-								<span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">Afeel Company</span>
-							</div>
-
-							<div className="grid gap-5">
-								{/* <p className="text-[10px] font-semibold uppercase tracking-[0.32em] text-stone-400">Company Brochure</p> */}
-								<h1 className="text-9xl leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-									Fashion PR
-									<br />
-									<span className="italic text-[#715a3e]">& Styling.</span>
-								</h1>
-								<p className="max-w-[32ch] text-base leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
-							</div>
-
-							<div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
-								<div>
-									<p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Issue Date</p>
-									<p className="mt-1 text-[15px] font-medium text-stone-950">{brochure.issueDate}</p>
-								</div>
-								<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
-							</div>
+					{/* Content */}
+					<div className="relative z-10 flex h-full flex-col justify-between px-12 py-10">
+						<div className="flex items-center gap-4">
+							<span className="h-px w-10 bg-[#715a3e]" />
+							<span className="text-[9px] font-semibold uppercase tracking-[0.44em] text-[#715a3e]">Afeel Company</span>
 						</div>
 
-						{/* Right: Hero image */}
-						<div className="relative opacity-5">
-							<PdfImage src={brochure.heroImageUrl} alt={`${brochure.title}`} className="h-full w-full object-contain invert " />
+						<div className="grid gap-5">
+							<h1 className="w-full text-9xl leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+								Fashion PR
+								<br />
+								<span className="italic text-[#715a3e]">& Styling.</span>
+							</h1>
+							<p className="max-w-[32ch] text-base leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
+						</div>
+
+						<div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
+							<div>
+								<p className="text-[9px] uppercase tracking-[0.28em] text-stone-400">Issue Date</p>
+								<p className="mt-1 text-[15px] font-medium text-stone-950">{brochure.issueDate}</p>
+							</div>
+							<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
 						</div>
 					</div>
 				</div>
