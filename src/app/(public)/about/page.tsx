@@ -12,11 +12,11 @@ import { createPageMetadata } from '@/lib/seo';
 import { getSiteClientBrands } from '@/lib/site';
 
 const STORY_LINES = [
-	'의류 협찬에서 끝내지 않습니다.',
-	'스타의 이미지와 브랜드의 미학을 먼저 읽습니다.',
-	'그 만남이 자연스러운 콘텐츠가 되도록 배치합니다.',
-	'숫자를 부풀리기보다, 실제로 일어나는 일에 집중합니다.',
-	'브랜드와 스타일리스트들이',
+	'단순히 옷을 입히는 데 그치지 않고.',
+	'스타와 브랜드가 어우러지는 결을 먼저 봅니다.',
+	'억지스럽지 않고 자연스럽게,',
+	'수치보다 실제 반응에 집중합니다.',
+	'함께 오래 일하는 브랜드들이',
 	'우리를 찾는 이유입니다.',
 ];
 
@@ -141,7 +141,7 @@ export default async function AboutPage() {
 		<>
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 				<header className="grid gap-10 py-20 lg:py-48">
-					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p>
+					{/* <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">About AFEEL</p> */}
 
 					<div className="grid gap-6">
 						<AnimatedPageTitle
@@ -154,15 +154,11 @@ export default async function AboutPage() {
 			</div>
 
 			<section className="relative overflow-hidden border-y border-stone-900/8 bg-[linear-gradient(180deg,#f7f1ea_0%,#fcfaf7_18%,#f3ece5_100%)]">
-				<div className="absolute inset-0 opacity-45 [background-image:linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] [background-size:28px_28px]" />
+				<div className="absolute inset-0 opacity-45 bg-[linear-gradient(rgba(117,90,62,0.07)_1px,transparent_1px),linear-gradient(90deg,rgba(117,90,62,0.05)_1px,transparent_1px)] bg-size-[28px_28px]" />
 				<div className="absolute inset-x-[22%] top-0 h-40 bg-[radial-gradient(circle_at_center,rgba(255,255,255,0.9),transparent_72%)] blur-3xl" />
 				<div className="relative z-10 mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-					<div className="grid justify-items-center gap-6 px-4 pt-12 text-center sm:px-8 sm:pt-16 lg:px-12 lg:pt-20">
-						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.36em] text-[#715a3e]">How We Work</p>
-						<p className="max-w-2xl text-sm leading-5 text-stone-600 sm:text-base sm:leading-8 text-balance">효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.</p>
-					</div>
 					<div className="overflow-hidden">
-						<TextRevealByWord text={storyRevealText} className="h-[95vh]" />
+						<TextRevealByWord text={storyRevealText} className="h-[90vh]" />
 					</div>
 				</div>
 			</section>
@@ -202,7 +198,7 @@ export default async function AboutPage() {
 
 					<section className="grid gap-10">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
-							<div className="grid gap-4">
+							<div className="grid gap-10">
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Process</p>
 								<AnimatedPageTitle
 									as="h2"
@@ -220,7 +216,7 @@ export default async function AboutPage() {
 
 					<section className="grid gap-10">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
-							<div className="grid gap-4">
+							<div className="grid gap-10">
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Core Expertise</p>
 								<AnimatedPageTitle
 									as="h2"
@@ -249,7 +245,7 @@ export default async function AboutPage() {
 
 					<section className="grid gap-10">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
-							<div className="grid gap-4">
+							<div className="grid gap-10">
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Our Edge</p>
 								<AnimatedPageTitle
 									as="h2"
@@ -275,7 +271,7 @@ export default async function AboutPage() {
 
 					<section className="grid gap-18 md:gap-24">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
-							<div className="grid gap-4">
+							<div className="grid gap-10">
 								<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Social Proof</p>
 								<AnimatedPageTitle
 									as="h2"
@@ -308,14 +304,7 @@ export default async function AboutPage() {
 						<div className="relative overflow-hidden grid gap-6 bg-stone-950 px-8 py-10 text-white sm:px-10">
 							{/* Background Logo */}
 							<div className="absolute right-0 top-0 h-full opacity-5 pointer-events-none select-none">
-								<Image 
-									src="/images/symbol.svg" 
-									alt="" 
-									width={33}
-									height={30}
-									priority
-									className="h-full w-auto object-contain brightness-0 invert"
-								/>
+								<Image src="/images/symbol.svg" alt="" width={33} height={30} priority className="h-full w-auto object-contain brightness-0 invert" />
 							</div>
 
 							<div className="relative z-10 grid gap-6">

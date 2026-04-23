@@ -95,10 +95,10 @@ export default async function HomePage() {
 
 					<section className="grid gap-12 border-t border-stone-900/8 pt-20">
 						<div className="grid justify-items-center gap-4 text-center">
-							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p>
+							{/* <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-stone-400">Social Proof</p> */}
 							<AnimatedPageTitle
 								as="h2"
-								lines={[{ text: 'Clients.' }]}
+								lines={[{ text: 'Our Clients.' }]}
 								delay={0.04}
 								duration={0.42}
 								className="text-4xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl"

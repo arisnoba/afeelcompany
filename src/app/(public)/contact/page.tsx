@@ -38,8 +38,8 @@ export default async function ContactPage() {
 	return (
 		<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 			<div className="grid gap-16 py-10 sm:gap-20 sm:py-14 lg:gap-24 lg:py-20">
-				<header className="grid gap-5 border-b border-stone-900/10 pb-12 md:pb-16">
-					<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Connect With Us</p>
+				<header className="block space-y-6">
+					{/* <p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Connect With Us</p> */}
 					<AnimatedPageTitle lines={[{ text: 'Get In Touch.' }]} className="text-5xl font-light leading-none tracking-[-0.06em] [font-family:var(--font-newsreader)] sm:text-7xl lg:text-[7rem]" />
 				</header>
 
