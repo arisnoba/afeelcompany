@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import { Geist_Mono, Inter, Manrope, Newsreader } from 'next/font/google';
+import { Analytics } from '@vercel/analytics/next';
 
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
@@ -97,6 +98,7 @@ export default function RootLayout({
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 				{children}
 				<Toaster />
+				<Analytics />
 			</body>
 		</html>
 	);
