@@ -10,9 +10,14 @@ interface PortfolioLightboxProps {
 	item: PublicPortfolioItem | null;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
+	celebrityLabel?: string;
+	defaultTitle?: string;
 }
 
-export function PortfolioLightbox({ item, open, onOpenChange }: PortfolioLightboxProps) {
+export function PortfolioLightbox({ item, open, onOpenChange, celebrityLabel = 'Celebrity', defaultTitle = '포트폴리오' }: PortfolioLightboxProps) {
+	const rawDisplayName = item ? getPortfolioDisplayName(item) : '';
+	const displayName = rawDisplayName === '포트폴리오' ? defaultTitle : rawDisplayName;
+
 	return (
 		<Dialog open={open} onOpenChange={onOpenChange}>
 			<DialogContent className="w-[calc(100%-2rem)] max-w-[calc(100%-2rem)] overflow-hidden border border-stone-900/10 bg-[#f5efe6] p-0 text-stone-950 sm:max-w-[min(960px,calc(100%-2rem))]">
@@ -30,15 +35,15 @@ export function PortfolioLightbox({ item, open, onOpenChange }: PortfolioLightbo
 
 						<div className="grid content-start gap-6 px-6 py-6 sm:px-7 sm:py-7">
 							<div className="grid gap-2">
-								<DialogTitle className="text-3xl tracking-[-0.05em] text-stone-950">{getPortfolioDisplayName(item)}</DialogTitle>
-								{getPortfolioDisplayName(item) !== item.brandName ? (
+								<DialogTitle className="text-3xl tracking-[-0.05em] text-stone-950">{displayName}</DialogTitle>
+								{displayName !== item.brandName ? (
 									<DialogDescription className="text-base leading-7 text-stone-700">{item.brandName}</DialogDescription>
 								) : null}
 							</div>
 
 							{item.celebrityName ? (
 								<div className="grid gap-1 text-sm text-stone-700">
-									<span className="text-[0.7rem] uppercase tracking-[0.3em] text-stone-500">Celebrity</span>
+									<span className="text-[0.7rem] uppercase tracking-[0.3em] text-stone-500">{celebrityLabel}</span>
 									<span>{item.celebrityName}</span>
 								</div>
 							) : null}

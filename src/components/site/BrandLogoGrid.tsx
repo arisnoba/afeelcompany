@@ -4,11 +4,12 @@ import type { SiteClientBrand } from '@/types/site';
 
 interface BrandLogoGridProps {
 	brands: SiteClientBrand[];
+	emptyLabel?: string;
 }
 
-export function BrandLogoGrid({ brands }: BrandLogoGridProps) {
+export function BrandLogoGrid({ brands, emptyLabel = '등록된 브랜드 로고가 아직 없습니다.' }: BrandLogoGridProps) {
 	if (brands.length === 0) {
-		return <div className="px-6 py-16 text-center text-sm text-stone-300">등록된 브랜드 로고가 아직 없습니다.</div>;
+		return <div className="px-6 py-16 text-center text-sm text-stone-300">{emptyLabel}</div>;
 	}
 
 	return (

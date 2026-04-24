@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 
+import { DEFAULT_LOCALE, LOCALES, OPEN_GRAPH_LOCALES, type Locale, getLocalizedPath } from '@/i18n/config';
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 
 export const SITE_NAME = 'AFEEL COMPANY';
@@ -39,23 +40,44 @@ export function toAbsoluteUrl(path = '/') {
 	return new URL(path, SITE_URL).toString();
 }
 
-export function createPageMetadata({ title, description, path, keywords = [] }: { title: string; description: string; path: string; keywords?: string[] }): Metadata {
+function buildLanguageAlternates(path: string) {
+	return {
+		...Object.fromEntries(LOCALES.map(locale => [locale, getLocalizedPath(locale, path)])),
+		'x-default': getLocalizedPath(DEFAULT_LOCALE, path),
+	};
+}
+
+export function createPageMetadata({
+	title,
+	description,
+	path,
+	keywords = [],
+	locale = DEFAULT_LOCALE,
+}: {
+	title: string;
+	description: string;
+	path: string;
+	keywords?: string[];
+	locale?: Locale;
+}): Metadata {
 	const canonicalPath = path.startsWith('/') ? path : `/${path}`;
 	const mergedKeywords = Array.from(new Set([...DEFAULT_SITE_KEYWORDS, ...keywords]));
+	const localizedPath = getLocalizedPath(locale, canonicalPath);
 
 	return {
 		title,
 		description,
 		keywords: mergedKeywords,
 		alternates: {
-			canonical: canonicalPath,
+			canonical: localizedPath,
+			languages: buildLanguageAlternates(canonicalPath),
 		},
 		openGraph: {
 			title,
 			description,
-			url: canonicalPath,
+			url: localizedPath,
 			siteName: SITE_NAME,
-			locale: 'ko_KR',
+			locale: OPEN_GRAPH_LOCALES[locale],
 			type: 'website',
 			images: [
 				{

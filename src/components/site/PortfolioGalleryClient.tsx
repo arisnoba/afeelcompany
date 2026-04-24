@@ -14,21 +14,35 @@ import {
 } from '@/types/portfolio';
 import type { PublicPortfolioItem } from '@/types/site';
 
-const FILTER_ALL = '전체';
 const ITEMS_PER_PAGE = 12;
 
 interface PortfolioGalleryClientProps {
 	items: PublicPortfolioItem[];
+	filterAllLabel?: string;
+	pageLabel?: string;
+	emptySelectionLabel?: string;
+	categoryLabels?: Record<string, string>;
+	celebrityLabel?: string;
+	defaultTitle?: string;
 }
 
-export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
-	const [selectedCategory, setSelectedCategory] = useState(FILTER_ALL);
+export function PortfolioGalleryClient({
+	items,
+	filterAllLabel = '전체',
+	pageLabel = '포트폴리오 페이지',
+	emptySelectionLabel = '선택한 카테고리에 해당하는 작업이 없습니다.',
+	categoryLabels = {},
+	celebrityLabel = 'Celebrity',
+	defaultTitle = '포트폴리오',
+}: PortfolioGalleryClientProps) {
+	const [selectedCategory, setSelectedCategory] = useState(filterAllLabel);
 	const [activeItemId, setActiveItemId] = useState<string | null>(null);
 	const [currentPage, setCurrentPage] = useState(1);
 
-	const filters = [FILTER_ALL, ...PORTFOLIO_CATEGORIES.filter(category => items.some(item => includesPortfolioCategory(item.category, category)))];
+	const filters = [filterAllLabel, ...PORTFOLIO_CATEGORIES.filter(category => items.some(item => includesPortfolioCategory(item.category, category)))];
 
-	const filteredItems = selectedCategory === FILTER_ALL ? items : items.filter(item => includesPortfolioCategory(item.category, selectedCategory as PortfolioCategory));
+	const filteredItems =
+		selectedCategory === filterAllLabel ? items : items.filter(item => includesPortfolioCategory(item.category, selectedCategory as PortfolioCategory));
 
 	const pageCount = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
 	const activePage = Math.min(currentPage, pageCount || 1);
@@ -63,19 +77,20 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 							className={`border-b pb-1 text-sm font-semibold uppercase tracking-[0.26em] transition ${
 								isActive ? 'border-stone-950 text-stone-950' : 'border-transparent text-stone-400 hover:text-stone-950'
 							}`}>
-							{filter}
+							{categoryLabels[filter] ?? filter}
 						</button>
 					);
 				})}
 			</div>
 
 			{filteredItems.length === 0 ? (
-				<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">선택한 카테고리에 해당하는 작업이 없습니다.</div>
+				<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">{emptySelectionLabel}</div>
 			) : (
 				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
 					{visibleItems.map((item, index) => {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
-						const displayName = getPortfolioDisplayName(item);
+						const rawDisplayName = getPortfolioDisplayName(item);
+						const displayName = rawDisplayName === '포트폴리오' ? defaultTitle : rawDisplayName;
 
 						return (
 							<BlurFade key={item.id} delay={Math.min(index * 0.05, 0.25)} className="w-full">
@@ -123,7 +138,7 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 			)}
 
 			{pageCount > 1 ? (
-				<div className="flex flex-wrap justify-center gap-2 pt-2" aria-label="포트폴리오 페이지">
+				<div className="flex flex-wrap justify-center gap-2 pt-2" aria-label={pageLabel}>
 					{Array.from({ length: pageCount }, (_, index) => {
 						const page = index + 1;
 						const isActive = page === activePage;
@@ -150,6 +165,8 @@ export function PortfolioGalleryClient({ items }: PortfolioGalleryClientProps) {
 			<PortfolioLightbox
 				item={activeItem}
 				open={activeItem !== null}
+				celebrityLabel={celebrityLabel}
+				defaultTitle={defaultTitle}
 				onOpenChange={open => {
 					if (!open) {
 						setActiveItemId(null);

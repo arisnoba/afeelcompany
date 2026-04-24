@@ -1,26 +1,32 @@
 import Link from 'next/link';
 import Image from 'next/image';
 
-import { PUBLIC_ABOUT_COPY } from '@/lib/company-copy';
+import { DEFAULT_LOCALE, type Locale, getLocalizedPath } from '@/i18n/config';
+import { getSiteDictionary } from '@/i18n/site-copy';
+import { getLocalizedSiteAddress } from '@/lib/site-address';
+import { getLocalizedPublicAboutCopy } from '@/lib/company-copy';
 import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
 import type { SiteCompanyProfile } from '@/types/site';
 
 interface SiteFooterProps {
 	profile: SiteCompanyProfile;
+	locale?: Locale;
 }
 
-function renderValue(value: string) {
-	return value || '정보를 준비 중입니다.';
+function renderValue(value: string, fallback: string) {
+	return value || fallback;
 }
 
 const STUDIO_LINKS = [
-	{ href: '/about', label: 'about' },
-	{ href: '/portfolio', label: 'portfolio' },
-	{ href: '/contact', label: 'contact' },
+	{ href: '/about', key: 'about' as const },
+	{ href: '/portfolio', key: 'portfolio' as const },
+	{ href: '/contact', key: 'contact' as const },
 ];
 
-export function SiteFooter({ profile }: SiteFooterProps) {
-	const description = profile.aboutText || PUBLIC_ABOUT_COPY;
+export function SiteFooter({ profile, locale = DEFAULT_LOCALE }: SiteFooterProps) {
+	const dictionary = getSiteDictionary(locale);
+	const description = getLocalizedPublicAboutCopy(locale, profile.aboutText);
+	const address = getLocalizedSiteAddress(locale, profile.address);
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
 	const connectLinks = [
@@ -40,37 +46,37 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 
 				<div className="grid content-start gap-12">
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">address</p>
-						<p className="whitespace-pre-line text-[1.02rem] leading-normal text-stone-800">{renderValue(profile.address)}</p>
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">{dictionary.footer.addressLabel}</p>
+						<p className="whitespace-pre-line text-[1.02rem] leading-normal text-stone-800">{renderValue(address, dictionary.footer.pendingLabel)}</p>
 					</div>
 					<div className="grid gap-4">
-						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Inquiries</p>
+						<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">{dictionary.footer.inquiriesLabel}</p>
 						<div className="grid gap-1 text-[1.02rem] leading-normal text-stone-800">
 							{phone ? (
 								<a href={`tel:${phone}`} className="transition hover:text-stone-950">
 									{phone}
 								</a>
 							) : (
-								<p>{renderValue(phone)}</p>
+								<p>{renderValue(phone, dictionary.footer.pendingLabel)}</p>
 							)}
 							{email ? (
 								<a href={`mailto:${email}`} className="transition hover:text-stone-950">
 									{email}
 								</a>
 							) : (
-								<p>{renderValue(email)}</p>
+								<p>{renderValue(email, dictionary.footer.pendingLabel)}</p>
 							)}
 						</div>
 					</div>
 				</div>
 
 				<div className="grid content-start gap-4">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Site</p>
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">{dictionary.footer.siteLabel}</p>
 					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
 						{STUDIO_LINKS.map(item => (
 							<li key={item.href}>
-								<Link href={item.href} className="transition hover:text-stone-950">
-									{item.label}
+								<Link href={getLocalizedPath(locale, item.href)} className="transition hover:text-stone-950">
+									{dictionary.nav[item.key]}
 								</Link>
 							</li>
 						))}
@@ -78,7 +84,7 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 				</div>
 
 				<div className="grid content-start gap-4">
-					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">Connect</p>
+					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">{dictionary.footer.connectLabel}</p>
 					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
 						{connectLinks.map(item => (
 							<li key={item.href}>
@@ -103,7 +109,7 @@ export function SiteFooter({ profile }: SiteFooterProps) {
 
 			<div className="mx-auto flex w-full max-w-screen-2xl flex-col gap-4 border-t border-stone-900/8 px-6 py-8 text-[0.62rem] uppercase tracking-[0.24em] text-stone-400 md:flex-row md:items-center md:justify-between md:px-12">
 				<p>© {new Date().getFullYear()} AFEELCOMPANY. All Rights Reserved.</p>
-				<p>Digital Archive</p>
+				<p>{dictionary.footer.digitalArchiveLabel}</p>
 			</div>
 		</footer>
 	);

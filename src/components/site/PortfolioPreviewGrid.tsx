@@ -10,11 +10,17 @@ interface PortfolioPreviewGridProps {
 	items: PublicPortfolioItem[];
 	href?: string;
 	gridClassName?: string;
+	emptyLabel?: string;
 }
 
-export function PortfolioPreviewGrid({ items, href = '/portfolio', gridClassName }: PortfolioPreviewGridProps) {
+export function PortfolioPreviewGrid({
+	items,
+	href = '/portfolio',
+	gridClassName,
+	emptyLabel = '표시할 포트폴리오가 아직 없습니다.',
+}: PortfolioPreviewGridProps) {
 	if (items.length === 0) {
-		return <div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">표시할 포트폴리오가 아직 없습니다.</div>;
+		return <div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">{emptyLabel}</div>;
 	}
 
 	return (

@@ -8,9 +8,10 @@ import { cn } from '@/lib/utils';
 interface TextRevealByWordProps {
 	text: string;
 	className?: string;
+	textClassName?: string;
 }
 
-const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className }) => {
+const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className, textClassName }) => {
 	const targetRef = useRef<HTMLDivElement | null>(null);
 
 	const { scrollYProgress } = useScroll({
@@ -20,23 +21,26 @@ const TextRevealByWord: FC<TextRevealByWordProps> = ({ text, className }) => {
 
 	const lines = text
 		.split('\n')
-		.map((line) => line.trim())
-		.filter((line) => line.length > 0);
+		.map(line => line.trim())
+		.filter(line => line.length > 0);
 
-	const indexedLines = lines.map((line) => line.split(/\s+/).filter(Boolean)).reduce<{ word: string; index: number }[][]>(
-		(acc, lineWords) => {
+	const indexedLines = lines
+		.map(line => line.split(/\s+/).filter(Boolean))
+		.reduce<{ word: string; index: number }[][]>((acc, lineWords) => {
 			const currentIndex = acc.flat().length;
 			acc.push(lineWords.map((word, index) => ({ word, index: currentIndex + index })));
 			return acc;
-		},
-		[],
-	);
+		}, []);
 	const totalWords = indexedLines.flat().length;
 
 	return (
 		<div ref={targetRef} className={cn('relative z-0 h-[115vh]', className)}>
-			<div className="sticky top-0 mx-auto flex h-screen items-center justify-center bg-transparent px-4 py-12">
-				<p className="p-5 text-center text-[clamp(1.5rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)] break-keep">
+			<div className="sticky top-0 mx-auto flex h-full items-center justify-center bg-transparent px-4 py-12">
+				<p
+					className={cn(
+						'p-5 text-center text-[clamp(1.5rem,5vw,4.5rem)] font-light leading-[1.35] tracking-[-0.05em] text-stone-950/40 [font-family:var(--font-newsreader)] break-keep',
+						textClassName
+					)}>
 					{indexedLines.map((line, lineIndex) => (
 						<span key={`line-${lineIndex}`} className="block">
 							{line.map(({ word, index }) => {

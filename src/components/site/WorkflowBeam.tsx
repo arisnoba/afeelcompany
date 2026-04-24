@@ -12,6 +12,12 @@ const WORKFLOW_STEPS = [
 	{ label: 'STEP 05', title: 'ANALYSIS', description: '성과 데이터 분석 및\n사후 리포트' },
 ] as const;
 
+type WorkflowStep = {
+	label: string;
+	title: string;
+	description: string;
+};
+
 // ─── 공통 SVG 스타일 상수 ───────────────────────────────────────────────────
 // vectorEffect="non-scaling-stroke" → preserveAspectRatio="none"로 인한
 // 비균일 스케일에서도 strokeWidth를 CSS 픽셀로 고정해 일관성을 유지
@@ -91,7 +97,7 @@ function MobileConnector({ duration }: { duration: number }) {
 	);
 }
 
-export function WorkflowBeam({ className }: { className?: string }) {
+export function WorkflowBeam({ className, steps = WORKFLOW_STEPS }: { className?: string; steps?: readonly WorkflowStep[] }) {
 	return (
 		<div className={cn('w-full', className)}>
 			{/* ── Desktop (lg+) ── 5열, 수평 경로 길이 = 80 SVG units */}
@@ -104,7 +110,7 @@ export function WorkflowBeam({ className }: { className?: string }) {
 					duration={0.5}
 				/>
 				<div className="relative grid grid-cols-5 gap-4 xl:gap-5">
-					{WORKFLOW_STEPS.map(step => (
+					{steps.map(step => (
 						<StepNode key={step.title} label={step.label} title={step.title} description={step.description} className="min-h-[10.75rem]" />
 					))}
 				</div>
@@ -120,26 +126,26 @@ export function WorkflowBeam({ className }: { className?: string }) {
 					duration={0.5}
 				/>
 				<div className="relative grid grid-cols-3 gap-4">
-					<StepNode label={WORKFLOW_STEPS[0].label} title={WORKFLOW_STEPS[0].title} description={WORKFLOW_STEPS[0].description} className="min-h-[10.25rem]" />
-					<StepNode label={WORKFLOW_STEPS[1].label} title={WORKFLOW_STEPS[1].title} description={WORKFLOW_STEPS[1].description} className="min-h-[10.25rem]" />
-					<StepNode label={WORKFLOW_STEPS[2].label} title={WORKFLOW_STEPS[2].title} description={WORKFLOW_STEPS[2].description} className="min-h-[10.25rem]" />
+					<StepNode label={steps[0].label} title={steps[0].title} description={steps[0].description} className="min-h-[10.25rem]" />
+					<StepNode label={steps[1].label} title={steps[1].title} description={steps[1].description} className="min-h-[10.25rem]" />
+					<StepNode label={steps[2].label} title={steps[2].title} description={steps[2].description} className="min-h-[10.25rem]" />
 				</div>
 				<div className="relative mt-5 grid grid-cols-2 gap-4 px-[4%]">
-					<StepNode label={WORKFLOW_STEPS[4].label} title={WORKFLOW_STEPS[4].title} description={WORKFLOW_STEPS[4].description} className="min-h-[10.25rem]" />
-					<StepNode label={WORKFLOW_STEPS[3].label} title={WORKFLOW_STEPS[3].title} description={WORKFLOW_STEPS[3].description} className="min-h-[10.25rem]" />
+					<StepNode label={steps[4].label} title={steps[4].title} description={steps[4].description} className="min-h-[10.25rem]" />
+					<StepNode label={steps[3].label} title={steps[3].title} description={steps[3].description} className="min-h-[10.25rem]" />
 				</div>
 			</div>
 
 			{/* ── Mobile (<md) ── 수직 리스트 + 카드 사이 20px 수직 connector */}
 			<div className="flex flex-col md:hidden">
-				{WORKFLOW_STEPS.map((step, index) => (
+				{steps.map((step, index) => (
 					<div key={step.title}>
 						<article className="relative border border-stone-900/10 bg-[#faf7f3] px-5 py-8 flex flex-col items-center text-center">
 							<p className="text-[0.52rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">{step.label}</p>
 							<h3 className="mt-2 text-[1rem] font-semibold uppercase tracking-[0.11em] text-stone-950 [font-family:var(--font-newsreader)]">{step.title}</h3>
 							<p className="mt-2 text-sm leading-6 text-stone-500 break-keep">{step.description.replace('\n', ' ')}</p>
 						</article>
-						{index < WORKFLOW_STEPS.length - 1 && <MobileConnector duration={0.9} />}
+						{index < steps.length - 1 && <MobileConnector duration={0.9} />}
 					</div>
 				))}
 			</div>

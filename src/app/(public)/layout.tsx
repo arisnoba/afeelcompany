@@ -1,7 +1,4 @@
-import { SiteFooter } from '@/components/site/SiteFooter';
-import { SiteHeader } from '@/components/site/SiteHeader';
-import { PublicSmoothScroll } from '@/components/site/PublicSmoothScroll';
-import { getSiteCompanyProfile } from '@/lib/site';
+import { PublicShell } from '@/components/site/PublicShell';
 
 export const dynamic = 'force-dynamic';
 
@@ -10,17 +7,5 @@ export default async function PublicLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
-	const profile = await getSiteCompanyProfile();
-
-	return (
-		<PublicSmoothScroll>
-			<div className="min-h-screen text-stone-950 [font-family:var(--font-manrope)]">
-				<div className="relative flex min-h-screen flex-col">
-					<SiteHeader />
-					<main className="flex-1 pb-16">{children}</main>
-					<SiteFooter profile={profile} />
-				</div>
-			</div>
-		</PublicSmoothScroll>
-	);
+	return <PublicShell locale="ko">{children}</PublicShell>;
 }

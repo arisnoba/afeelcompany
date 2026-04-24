@@ -1,4 +1,7 @@
-export const PUBLIC_ABOUT_COPY = '브랜드와 셀럽을 연결하여 실질적인 노출을 만듭니다.';
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/config';
+import { getSiteDictionary } from '@/i18n/site-copy';
+
+export const PUBLIC_ABOUT_COPY = getSiteDictionary(DEFAULT_LOCALE).footer.descriptionFallback;
 
 const LEGACY_PUBLIC_ABOUT_COPIES = new Set([
 	'브랜드와 셀럽의 접점을 설계하고, 한 번 정리한 포트폴리오를 웹과 소개서, 소셜까지 이어 붙이는 패션 PR 스튜디오입니다.',
@@ -13,4 +16,12 @@ export function resolvePublicAboutCopy(value?: string | null) {
 	}
 
 	return copy;
+}
+
+export function getLocalizedPublicAboutCopy(locale: Locale, value?: string | null) {
+	if (locale === DEFAULT_LOCALE) {
+		return resolvePublicAboutCopy(value);
+	}
+
+	return getSiteDictionary(locale).footer.descriptionFallback;
 }

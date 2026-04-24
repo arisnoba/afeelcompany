@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next';
 
+import { LOCALES, getLocalizedPath } from '@/i18n/config';
 import { toAbsoluteUrl } from '@/lib/seo';
 
 const PUBLIC_ROUTES: Array<{
@@ -15,9 +16,11 @@ const PUBLIC_ROUTES: Array<{
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
-	return PUBLIC_ROUTES.map(route => ({
-		url: toAbsoluteUrl(route.path),
-		changeFrequency: route.changeFrequency,
-		priority: route.priority,
-	}));
+	return PUBLIC_ROUTES.flatMap(route =>
+		LOCALES.map(locale => ({
+			url: toAbsoluteUrl(getLocalizedPath(locale, route.path)),
+			changeFrequency: route.changeFrequency,
+			priority: route.priority,
+		}))
+	);
 }
