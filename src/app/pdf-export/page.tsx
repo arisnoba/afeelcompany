@@ -192,22 +192,32 @@ function AboutStoryPage({
 function AboutExpertisePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: PdfAboutCopy }) {
 	return (
 		<AboutPageFrame label={copy.expertiseEyebrow} pageNum={pageNum} totalPages={totalPages}>
-			<div className="flex h-full flex-col gap-20">
-				<div className="flex flex-col gap-8">
+			<div className="flex h-full flex-col gap-14 pt-10">
+				<div className="flex flex-col gap-4">
 					<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 						{copy.expertiseTitle}
 					</h2>
-					<p className="text-base leading-7 text-stone-600">{copy.expertiseDescription}</p>
+					<p className="text-lg leading-7 text-stone-600">{copy.expertiseDescription}</p>
 				</div>
 
-				<div className="grid flex-1 gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-					{copy.serviceItems.map(item => (
-						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
-							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
-							<h3 className="text-3xl font-light leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-								{item.headline}
-							</h3>
-							<p className="text-base leading-7 text-stone-600">{item.description}</p>
+				<div className="relative grid flex-1 border-y border-stone-900/8" style={{ gridTemplateColumns: 'repeat(4, 1fr)' }}>
+					{copy.serviceItems.map((item, index) => (
+						<article key={item.title} className="relative flex flex-col justify-between border-l border-stone-900/8 px-4 py-5 first:border-l-0">
+							<div className="flex items-start justify-between gap-3">
+								<p className="text-sm font-semibold tracking-[0.22em] text-stone-300">{String(index + 1).padStart(2, '0')}</p>
+								<p className="max-w-[16ch] text-right text-[8px] font-semibold uppercase leading-4 tracking-[0.2em] text-stone-400">{item.title}</p>
+							</div>
+
+							<div className="my-10 h-px bg-[#715a3e]" />
+
+							<div>
+								<h3 className="text-[2rem] font-light leading-[0.95] tracking-[-0.055em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+									{item.headline}
+								</h3>
+								<p className="mt-4 max-w-[24ch] text-[11px] leading-6 text-stone-600">{item.description}</p>
+							</div>
+
+							<p className="text-[9px] uppercase tracking-[0.28em] text-stone-300">AFEEL / {String(index + 1).padStart(2, '0')}</p>
 						</article>
 					))}
 				</div>
@@ -219,24 +229,29 @@ function AboutExpertisePage({ copy, pageNum, totalPages }: AboutPageProps & { co
 function AboutEdgePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: PdfAboutCopy }) {
 	return (
 		<AboutPageFrame label={copy.edgeEyebrow} pageNum={pageNum} totalPages={totalPages}>
-			<div className="flex h-full flex-col gap-5 justify-between">
-				<div className="grid gap-4">
-					<div className="flex items-end justify-between gap-8">
-						<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							{copy.edgeTitle}
-						</h2>
-						<p className="text-right text-[12px] leading-7 text-stone-600">{copy.edgeDescription}</p>
-					</div>
+			<div className="flex h-full gap-14 pt-10">
+				<div className="flex w-1/3 flex-col items-start gap-4">
+					<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						{copy.edgeTitle}
+					</h2>
+					<p className="text-[14px] leading-7 text-stone-600">{copy.edgeDescription}</p>
 				</div>
 
-				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
-					{copy.edgeItems.map(item => (
-						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
-							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
-							<h3 className="text-2xl font-light leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-								{item.headline}
-							</h3>
-							<p className="text-base leading-7 text-stone-600">{item.description}</p>
+				<div className="flex flex-col w-2/3 border-b border-stone-900/8">
+					{copy.edgeItems.map((item, index) => (
+						<article key={item.title} className="relative flex justify-between border-t border-stone-900/8 py-5 h-full">
+							<p className="text-[9px] w-2/4 font-semibold uppercase tracking-[0.22em] text-stone-400">{item.title}</p>
+
+							<div className="w-full">
+								<h3 className="text-[2.4rem] font-light tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+									{item.headline}
+								</h3>
+								<p className="mt-3 text-[14px] leading-6 text-stone-600">{item.description}</p>
+							</div>
+
+							<p className="text-8xl font-light leading-[0.9em] tracking-[-0.08em] text-stone-200/50" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+								{String(index + 1).padStart(2, '0')}
+							</p>
 						</article>
 					))}
 				</div>
@@ -347,7 +362,7 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 				<div className="relative h-full overflow-hidden">
 					{/* Background Logo */}
 					<div className="absolute inset-y-0 right-0 h-full w-full opacity-[0.05] flex justify-end">
-						<PdfImage src={brochure.heroImageUrl} alt={`${brochure.title}`} className="h-full w-full object-contain invert" />
+						<PdfImage src={brochure.heroImageUrl} alt={`${brochure.title}`} className="h-full w-auto object-contain invert" />
 					</div>
 
 					{/* Content */}
@@ -448,12 +463,12 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 				<div className="grid h-full" style={{ gridTemplateColumns: '50% 50%' }}>
 					{/* Left: Contact details */}
 					<div className="flex flex-col justify-between px-12 py-10 border-r border-stone-900/8">
-						<div className="grid gap-2">
+						<div className="grid gap-10">
 							<div className="flex items-center gap-3">
 								<span className="h-px w-6 bg-[#715a3e]" />
 								<p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-400">Contact</p>
 							</div>
-							<h2 className="text-[2.6rem] font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								Get In Touch.
 							</h2>
 						</div>
@@ -467,7 +482,7 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 									</a>
 								</dd>
 							</div>
-							<div className="h-px bg-stone-100" />
+
 							<div className="grid gap-1.5">
 								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.contact.directLabel}</dt>
 								<dd>
@@ -476,7 +491,7 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 									</a>
 								</dd>
 							</div>
-							<div className="h-px bg-stone-100" />
+
 							<div className="grid gap-1.5">
 								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.contact.addressLabel}</dt>
 								<dd>
@@ -485,7 +500,7 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 									</a>
 								</dd>
 							</div>
-							<div className="h-px bg-stone-100" />
+
 							<div className="grid gap-1.5">
 								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.footer.siteLabel}</dt>
 								<dd>
@@ -494,9 +509,8 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 									</a>
 								</dd>
 							</div>
+							<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">AFEEL Company · Seoul, Korea</p>
 						</dl>
-
-						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">AFEEL Company · Seoul, Korea</p>
 					</div>
 
 					{/* Right: Map */}
