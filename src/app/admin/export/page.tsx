@@ -4,6 +4,7 @@ import Link from 'next/link'
 
 import { AdminPageIntro } from '@/components/admin/AdminPageIntro'
 import { buttonVariants } from '@/components/ui/button'
+import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, type Locale } from '@/i18n/config'
 import {
   Card,
   CardContent,
@@ -12,6 +13,21 @@ import {
   CardTitle,
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
+
+function getPdfExportHref(locale: Locale, print = false) {
+  const params = new URLSearchParams()
+
+  if (locale !== DEFAULT_LOCALE) {
+    params.set('locale', locale)
+  }
+
+  if (print) {
+    params.set('print', '1')
+  }
+
+  const query = params.toString()
+  return query ? `/pdf-export?${query}` : '/pdf-export'
+}
 
 export default function AdminExportPage() {
   return (
@@ -37,43 +53,31 @@ export default function AdminExportPage() {
           </CardDescription>
         </CardHeader>
 
-        <CardContent className="grid gap-4 px-6 py-6 sm:grid-cols-2">
-          <div className="rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium text-foreground">미리보기</p>
-              <p className="text-sm leading-6 text-muted-foreground">
-                현재 데이터로 구성된 브로셔 화면을 먼저 확인합니다.
-              </p>
+        <CardContent className="grid gap-4 px-6 py-6 lg:grid-cols-3">
+          {LOCALES.map((locale) => (
+            <div key={locale} className="rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
+              <div className="flex flex-col gap-2">
+                <p className="text-sm font-medium text-foreground">
+                  {LOCALE_LABELS[locale]} PDF
+                </p>
+                <p className="text-sm leading-6 text-muted-foreground">
+                  {locale === DEFAULT_LOCALE
+                    ? '기본 한국어 브로셔를 확인하거나 저장합니다.'
+                    : `${LOCALE_LABELS[locale]} 언어 브로셔를 확인하거나 저장합니다.`}
+                </p>
+              </div>
+              <div className="mt-5">
+                <Link
+                  href={getPdfExportHref(locale, true)}
+                  target="_blank"
+                  rel="noreferrer"
+                  className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto')}
+                >
+                  PDF 출력
+                </Link>
+              </div>
             </div>
-            <Link
-              href="/pdf-export"
-              target="_blank"
-              rel="noreferrer"
-              className={cn(buttonVariants({ size: 'lg' }), 'mt-5 w-full sm:w-auto')}
-            >
-              브로셔 미리보기 열기
-            </Link>
-          </div>
-
-          <div className="rounded-[24px] border border-black/6 bg-[#fbfdfb] p-5">
-            <div className="flex flex-col gap-2">
-              <p className="text-sm font-medium text-foreground">PDF 저장</p>
-              <p className="text-sm leading-6 text-muted-foreground">
-                인쇄 대화상자를 바로 열어 PDF 저장 또는 프린터 출력으로 이어집니다.
-              </p>
-            </div>
-            <Link
-              href="/pdf-export?print=1"
-              target="_blank"
-              rel="noreferrer"
-              className={cn(
-                buttonVariants({ size: 'lg', variant: 'outline' }),
-                'mt-5 w-full sm:w-auto'
-              )}
-            >
-              PDF 저장 화면 열기
-            </Link>
-          </div>
+          ))}
         </CardContent>
       </Card>
     </div>

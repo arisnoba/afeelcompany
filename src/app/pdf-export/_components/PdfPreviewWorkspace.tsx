@@ -3,6 +3,7 @@
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
+import { useSearchParams } from 'next/navigation'
 import {
   ArrowLeft,
   ArrowRight,
@@ -16,6 +17,7 @@ import type { Swiper as SwiperInstance } from 'swiper'
 
 import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 import { cn } from '@/lib/utils'
 import { waitForPdfRenderReady } from './wait-for-pdf-render'
 
@@ -47,14 +49,16 @@ interface PdfPreviewSection {
 
 interface PdfPreviewWorkspaceProps {
   sections: PdfPreviewSection[]
+  locale: Locale
 }
 
-export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
+export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspaceProps) {
   const [mode, setMode] = useState<PreviewMode>('scroll')
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
   const [pendingPrint, setPendingPrint] = useState(false)
   const [downloading, setDownloading] = useState(false)
+  const searchParams = useSearchParams()
 
   const activeSection = sections[activeIndex]?.id ?? sections[0]?.id ?? 'cover'
   const sectionIds = useMemo(() => sections.map((section) => section.id), [sections])
@@ -142,6 +146,15 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
     }
   }, [mode, pendingPrint])
 
+  useEffect(() => {
+    if (searchParams.get('print') !== '1') {
+      return
+    }
+
+    setPendingPrint(true)
+    setMode('scroll')
+  }, [searchParams])
+
   function scrollToSection(index: number) {
     const sectionId = sectionIds[index]
 
@@ -198,13 +211,14 @@ export function PdfPreviewWorkspace({ sections }: PdfPreviewWorkspaceProps) {
       duration: Infinity,
     })
     try {
-      const res = await fetch('/api/pdf')
+      const apiUrl = locale === DEFAULT_LOCALE ? '/api/pdf' : `/api/pdf?locale=${locale}`
+      const res = await fetch(apiUrl)
       if (!res.ok) throw new Error('PDF 생성 실패')
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
       a.href = url
-      a.download = 'afeel-company-brochure.pdf'
+      a.download = `afeel-company-brochure-${locale}.pdf`
       a.click()
       URL.revokeObjectURL(url)
       toast.success('PDF 파일 다운로드를 시작합니다.', {

@@ -1,14 +1,52 @@
 import Link from 'next/link';
-import { LayoutDashboard, Image, Users, Camera, FileText, Settings, UserCircle, PlusCircle, ArrowRight } from 'lucide-react';
+import type { ComponentType } from 'react';
+import type { LucideProps } from 'lucide-react';
+import { Image, Users, FileText, Settings, UserCircle, PlusCircle, ArrowRight } from 'lucide-react';
+import { DEFAULT_LOCALE, LOCALES, LOCALE_LABELS, type Locale } from '@/i18n/config';
 import { getDashboardStats } from '@/lib/admin';
 import { cn } from '@/lib/utils';
 
 export const dynamic = 'force-dynamic';
 
+type DashboardMetric = {
+	label: string;
+	value: number;
+};
+
+type DashboardAction = {
+	href: string;
+	label: string;
+};
+
+type DashboardCardData = {
+	href: string;
+	title: string;
+	description: string;
+	icon: ComponentType<LucideProps>;
+	metrics?: DashboardMetric[];
+	actions?: DashboardAction[];
+	color: string;
+	bgColor: string;
+};
+
+function getPdfPrintHref(locale: Locale) {
+	const params = new URLSearchParams({ print: '1' });
+
+	if (locale !== DEFAULT_LOCALE) {
+		params.set('locale', locale);
+	}
+
+	return `/pdf-export?${params.toString()}`;
+}
+
 export default async function AdminDashboardPage() {
 	const stats = await getDashboardStats();
+	const pdfActions = LOCALES.map(locale => ({
+		href: getPdfPrintHref(locale),
+		label: `${LOCALE_LABELS[locale]} 출력`,
+	}));
 
-	const PRIMARY_CARDS = [
+	const PRIMARY_CARDS: DashboardCardData[] = [
 		{
 			href: '/admin/portfolio',
 			title: '포트폴리오 관리',
@@ -36,12 +74,13 @@ export default async function AdminDashboardPage() {
 		},
 	];
 
-	const SECONDARY_CARDS = [
+	const SECONDARY_CARDS: DashboardCardData[] = [
 		{
-			href: '/admin/pdf-export',
+			href: '/admin/export',
 			title: 'PDF 익스포트',
 			description: '포트폴리오 브로셔를 PDF로 생성하고 다운로드합니다.',
 			icon: FileText,
+			actions: pdfActions,
 			color: 'text-orange-600',
 			bgColor: 'bg-orange-50',
 		},
@@ -95,14 +134,14 @@ export default async function AdminDashboardPage() {
 	);
 }
 
-function DashboardCard({ card }: { card: any }) {
+function DashboardCard({ card }: { card: DashboardCardData }) {
+	const Icon = card.icon;
+
 	return (
-		<Link
-			href={card.href}
-			className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 transition-all hover:border-stone-900/10 hover:shadow-sm">
-			<div className="flex flex-col gap-4">
+		<article className="group relative flex flex-col justify-between overflow-hidden rounded-2xl border border-stone-200 bg-white p-6 transition-all hover:border-stone-900/10 hover:shadow-sm">
+			<Link href={card.href} className="flex flex-1 flex-col gap-4">
 				<div className={cn('flex size-12 items-center justify-center rounded-xl', card.bgColor)}>
-					<card.icon className={cn('size-6', card.color)} />
+					<Icon className={cn('size-6', card.color)} />
 				</div>
 				<div>
 					<h3 className="text-lg font-bold text-stone-900">{card.title}</h3>
@@ -111,7 +150,7 @@ function DashboardCard({ card }: { card: any }) {
 
 				{card.metrics && (
 					<div className="mt-2 flex flex-wrap gap-4 border-t border-stone-100 pt-4">
-						{card.metrics.map((metric: any) => (
+						{card.metrics.map(metric => (
 							<div key={metric.label} className="grid gap-0.5">
 								<span className="text-[0.62rem] font-bold uppercase tracking-wider text-stone-400">{metric.label}</span>
 								<span className="text-sm font-semibold text-stone-900">{metric.value}</span>
@@ -119,11 +158,27 @@ function DashboardCard({ card }: { card: any }) {
 						))}
 					</div>
 				)}
-			</div>
-			<div className="mt-6 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-400 transition-colors group-hover:text-stone-900">
+			</Link>
+
+			{card.actions ? (
+				<div className="mt-5 flex flex-wrap gap-2 border-t border-stone-100 pt-4">
+					{card.actions.map(action => (
+						<Link
+							key={action.href}
+							href={action.href}
+							target="_blank"
+							rel="noreferrer"
+							className="rounded-full border border-stone-200 bg-stone-50 px-3 py-1.5 text-[0.68rem] font-bold text-stone-700 transition hover:border-stone-900/20 hover:bg-stone-900 hover:text-white">
+							{action.label}
+						</Link>
+					))}
+				</div>
+			) : null}
+
+			<Link href={card.href} className="mt-6 flex items-center gap-1.5 text-xs font-bold uppercase tracking-wider text-stone-400 transition-colors group-hover:text-stone-900">
 				관리하기 <ArrowRight className="size-3" />
-			</div>
-		</Link>
+			</Link>
+		</article>
 	);
 }
 

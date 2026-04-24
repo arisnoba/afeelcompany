@@ -1,5 +1,7 @@
 import type { NextRequest } from 'next/server'
 
+import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
+
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 // Vercel Pro: 300s / Hobby: 60s
@@ -18,8 +20,11 @@ function getDefaultChromiumUrl(): string {
  * Locally: uses the system Chrome/Chromium binary.
  */
 export async function GET(request: NextRequest): Promise<Response> {
-  const origin = new URL(request.url).origin
-  const targetUrl = `${origin}/pdf-export`
+  const requestUrl = new URL(request.url)
+  const origin = requestUrl.origin
+  const localeParam = requestUrl.searchParams.get('locale')
+  const locale = localeParam && isLocale(localeParam) ? localeParam : DEFAULT_LOCALE
+  const targetUrl = locale === DEFAULT_LOCALE ? `${origin}/pdf-export` : `${origin}/pdf-export?locale=${locale}`
 
   let browser: import('puppeteer-core').Browser | null = null
 
@@ -88,7 +93,7 @@ export async function GET(request: NextRequest): Promise<Response> {
       status: 200,
       headers: {
         'Content-Type': 'application/pdf',
-        'Content-Disposition': 'attachment; filename="afeel-company-brochure.pdf"',
+        'Content-Disposition': `attachment; filename="afeel-company-brochure-${locale}.pdf"`,
         'Cache-Control': 'no-store',
       },
     })

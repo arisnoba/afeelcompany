@@ -1,7 +1,9 @@
 import { buildBrandLogoUrlMap, findBrandLogoUrl, getBrandsWithLogos } from '@/lib/client-brands'
-import { resolvePublicAboutCopy } from '@/lib/company-copy'
+import { getLocalizedPublicAboutCopy } from '@/lib/company-copy'
 import { sql } from '@/lib/db'
 import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
+import { getLocalizedSiteAddress } from '@/lib/site-address'
+import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 import type { PdfClientBrand, PdfDocument, PdfPortfolioItem } from '@/types/pdf'
 
 import { pdfFixtureDocument } from './pdf-fixtures'
@@ -66,7 +68,18 @@ function mapClientBrands(rows: ClientBrandRow[]): PdfClientBrand[] {
   }))
 }
 
-export async function getPdfDocument(): Promise<PdfDocument> {
+function localizeFixtureDocument(locale: Locale): PdfDocument {
+  return {
+    ...pdfFixtureDocument,
+    aboutText: getLocalizedPublicAboutCopy(locale, pdfFixtureDocument.aboutText),
+    contact: {
+      ...pdfFixtureDocument.contact,
+      address: getLocalizedSiteAddress(locale, pdfFixtureDocument.contact.address),
+    },
+  }
+}
+
+export async function getPdfDocument(locale: Locale = DEFAULT_LOCALE): Promise<PdfDocument> {
   try {
     const [profileResult, workResult, brandResult] = await Promise.all([
       sql<CompanyProfileRow>`
@@ -105,7 +118,7 @@ export async function getPdfDocument(): Promise<PdfDocument> {
     ])
 
     if (workResult.rows.length === 0) {
-      return pdfFixtureDocument
+      return localizeFixtureDocument(locale)
     }
 
     const profile = profileResult.rows[0]
@@ -118,17 +131,17 @@ export async function getPdfDocument(): Promise<PdfDocument> {
       title: pdfFixtureDocument.title,
       issueDate: pdfFixtureDocument.issueDate,
       heroImageUrl: pdfFixtureDocument.heroImageUrl,
-      aboutText: resolvePublicAboutCopy(profile?.about_text ?? pdfFixtureDocument.aboutText),
+      aboutText: getLocalizedPublicAboutCopy(locale, profile?.about_text ?? pdfFixtureDocument.aboutText),
       contact: {
         email: profile?.contact_email ?? pdfFixtureDocument.contact.email,
         phone: profile?.contact_phone ?? pdfFixtureDocument.contact.phone,
-        address: profile?.address ?? pdfFixtureDocument.contact.address,
+        address: getLocalizedSiteAddress(locale, profile?.address ?? pdfFixtureDocument.contact.address),
       },
       workItems,
       clientBrands: allClientBrands.length > 0 ? allClientBrands : pdfFixtureDocument.clientBrands,
       sectionOrder: SECTION_ORDER,
     }
   } catch {
-    return pdfFixtureDocument
+    return localizeFixtureDocument(locale)
   }
 }

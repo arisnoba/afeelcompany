@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 import type { ReactNode } from 'react';
 
+import { DEFAULT_LOCALE, isLocale, type Locale } from '@/i18n/config';
+import { getSiteDictionary } from '@/i18n/site-copy';
 import type { PdfClientBrand, PdfPortfolioItem } from '@/types/pdf';
 
 import { BrochureSheet } from './_components/BrochureSheet';
@@ -13,84 +15,14 @@ export const dynamic = 'force-dynamic';
 // ── Items per page ──────────────────────────
 const WORK_PER_PAGE = 8; // 4×2 grid
 const CLIENT_PER_PAGE = 42; // 6×4 grid
-const ABOUT_INTRO_LIMIT = 380;
-const ABOUT_STORY_LIMIT = 520;
-const ABOUT_CONTINUATION_LIMIT = 760;
-
-const ABOUT_EDGE_ITEMS = [
-	{
-		title: 'Strategic Curation',
-		headline: '기획된 우연',
-		description: '브랜드 이미지에 부합하는 셀럽을 매칭합니다.',
-	},
-	{
-		title: 'Endless Archive',
-		headline: '꼼꼼한 기록',
-		description: '노출 현황을 누락 없이 실시간으로 공유합니다.',
-	},
-	{
-		title: 'Proven Impact',
-		headline: '확실한 결과',
-		description: '판매 성과와 지표로 이어지는 작업을 지향합니다.',
-	},
-] as const;
-
-const ABOUT_FOCUS_ITEMS = [
-	{
-		label: 'Positioning',
-		value: '브랜드 포지셔닝',
-	},
-	{
-		label: 'Placement',
-		value: '에디토리얼 플레이스먼트',
-	},
-	{
-		label: 'Archive',
-		value: '아카이브 관리',
-	},
-] as const;
-
-const ABOUT_STORY_LINES = [
-	'의류 협찬에서 끝내지 않습니다.',
-	'스타의 이미지와 브랜드의 미학을 먼저 읽습니다.',
-	'그 만남이 자연스러운 콘텐츠가 되도록 배치합니다.',
-	'숫자를 부풀리기보다, 실제로 일어나는 일에 집중합니다.',
-] as const;
-
-const ABOUT_SERVICE_ITEMS = [
-	{
-		title: 'Brand Positioning',
-		headline: '브랜드 포지셔닝',
-		description: '브랜드의 지향점에 맞춰 노출 전략을 수립합니다.',
-	},
-	{
-		title: 'Editorial Placement',
-		headline: '에디토리얼 플레이스먼트',
-		description: '매체 특성에 맞는 적합한 스타일링과 협찬을 진행합니다.',
-	},
-	{
-		title: 'Digital Strategy',
-		headline: '디지털 전략',
-		description: '데이터를 바탕으로 검색량 및 판매 전환에 기여합니다.',
-	},
-	{
-		title: 'Archive Management',
-		headline: '아카이브 관리',
-		description: '모든 활동 내역을 기록하여 체계적으로 관리합니다.',
-	},
-] as const;
-
-const ABOUT_SOCIAL_PROOF_LINES = ['새로운 시즌 PR을 준비하는 브랜드.', '의류 협찬 및 스타일링이 필요한 관계자.', '어필컴퍼니로 문의해 주시기 바랍니다.'] as const;
-
-const WORKFLOW_STEPS = [
-	{ label: 'STEP 01', title: 'STRATEGY', description: '브랜드 분석 및\n목표 설정' },
-	{ label: 'STEP 02', title: 'MATCHING', description: '아티스트 큐레이션 및\n리스트 확정' },
-	{ label: 'STEP 03', title: 'EXECUTION', description: '현장 협찬 실행 및\n제품 핸들링' },
-	{ label: 'STEP 04', title: 'EXPOSURE', description: '다양한 미디어 채널\n노출 확인' },
-	{ label: 'STEP 05', title: 'ANALYSIS', description: '성과 데이터 분석 및\n사후 리포트' },
-] as const;
 
 const CONTACT_ADDRESS_URL = 'https://naver.me/5WUmv4Fu';
+
+type PdfSearchParams = {
+	locale?: string | string[];
+};
+
+type PdfAboutCopy = ReturnType<typeof getSiteDictionary>['about'];
 
 // ── Utilities ───────────────────────────────
 
@@ -102,51 +34,9 @@ function chunk<T>(array: T[], size: number): T[][] {
 	return result;
 }
 
-function normalizeAboutText(text: string): string {
-	const normalized = text
-		.replace(/\r\n?/g, '\n')
-		.split(/\n{2,}/)
-		.map(paragraph => paragraph.replace(/\s+/g, ' ').trim())
-		.filter(Boolean)
-		.join('\n\n');
-
-	return normalized || text.replace(/\s+/g, ' ').trim();
-}
-
-function takeTextChunk(text: string, limit: number): [string, string] {
-	if (text.length <= limit) {
-		return [text.trim(), ''];
-	}
-
-	const breakpoints = ['\n\n', '. ', '! ', '? ', '.\n', '!\n', '?\n', '다. ', '요. ', ' '];
-	let splitIndex = -1;
-
-	for (const breakpoint of breakpoints) {
-		const index = text.lastIndexOf(breakpoint, limit);
-
-		if (index >= Math.floor(limit * 0.55)) {
-			splitIndex = index + breakpoint.length;
-			break;
-		}
-	}
-
-	if (splitIndex === -1) {
-		splitIndex = limit;
-	}
-
-	return [text.slice(0, splitIndex).trim(), text.slice(splitIndex).trim()];
-}
-
-function toParagraphs(text: string): string[] {
-	return text
-		.split(/\n+/)
-		.map(paragraph => paragraph.trim())
-		.filter(Boolean);
-}
-
-function getStoryCards(pageNum: number): string[] {
-	const start = ((pageNum - 1) * 2) % ABOUT_STORY_LINES.length;
-	return [ABOUT_STORY_LINES[start], ABOUT_STORY_LINES[(start + 1) % ABOUT_STORY_LINES.length]];
+function resolveLocale(value: string | string[] | undefined): Locale {
+	const locale = Array.isArray(value) ? value[0] : value;
+	return locale && isLocale(locale) ? locale : DEFAULT_LOCALE;
 }
 
 function getMailtoHref(email: string): string {
@@ -156,27 +46,6 @@ function getMailtoHref(email: string): string {
 function getTelHref(phone: string): string {
 	const normalized = phone.replace(/[^\d+]/g, '');
 	return `tel:${normalized}`;
-}
-
-function splitAboutNarrative(text: string) {
-	const normalized = normalizeAboutText(text);
-	const [introText, afterIntro] = takeTextChunk(normalized, ABOUT_INTRO_LIMIT);
-	const [storyText, afterStory] = afterIntro ? takeTextChunk(afterIntro, ABOUT_STORY_LIMIT) : ['효과적인 노출로 브랜드 인지도를 높이는 데 집중합니다.', ''];
-
-	const continuations: string[] = [];
-	let remaining = afterStory;
-
-	while (remaining) {
-		const [pageText, rest] = takeTextChunk(remaining, ABOUT_CONTINUATION_LIMIT);
-		continuations.push(pageText);
-		remaining = rest;
-	}
-
-	return {
-		introParagraphs: toParagraphs(introText),
-		storyParagraphs: toParagraphs(storyText),
-		continuationParagraphs: continuations.map(toParagraphs),
-	};
 }
 
 interface PdfImageProps {
@@ -230,57 +99,40 @@ function AboutPageFrame({
 // ── Footer bar shared by text-heavy about pages ─
 
 function AboutIntroPage({
-	paragraphs,
+	copy,
+	locale,
 	pageNum,
 	totalPages,
 }: AboutPageProps & {
-	paragraphs: string[];
+	copy: PdfAboutCopy;
+	locale: Locale;
 }) {
+	const storyLines = locale === DEFAULT_LOCALE ? [copy.storyLines.slice(0, 2).join(' '), copy.storyLines.slice(2, 4).join(' '), copy.storyLines.slice(4).join(' ')] : copy.storyLines;
+
 	return (
 		<AboutPageFrame label="About AFEEL" pageNum={pageNum} totalPages={totalPages}>
-			<div className="grid h-full gap-10" style={{ gridTemplateColumns: '42% 58%' }}>
-				{/* Left: Identity */}
-				<div className="flex flex-col justify-between border-r border-stone-900/8 pr-8">
+			<div className="h-full">
+				<div className="flex w-full h-full flex-col justify-between">
 					<div className="grid gap-5">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">Results, not promises.</p>
-						<h2 className="text-[3rem] leading-[0.93] tracking-[-0.065em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							스타일링 협찬을 통해
-							<br />
-							브랜드의 가시성을
-							<br />
-							<span className="italic text-[#715a3e]">높입니다.</span>
+						<h2 className="text-[7.5rem] leading-[0.93] tracking-[-0.065em] text-stone-950 font-light" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							{copy.heroTitleLines.map((line, index) => (
+								<span key={`${line.text}-${index}`}>
+									{line.text}
+									{index < copy.heroTitleLines.length - 1 ? <br /> : null}
+								</span>
+							))}
 						</h2>
-						<p className="text-[12px] leading-7 text-stone-600">스타일링 협찬을 통해 브랜드의 가시성을 높입니다.</p>
+						<p className="text-base leading-7 text-stone-600">{copy.heroDescription}</p>
 					</div>
-
-					<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8">
-						{ABOUT_FOCUS_ITEMS.map(item => (
-							<div key={item.label} className="grid gap-1 bg-[#faf7f3] px-5 py-4">
-								<p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-stone-400">{item.label}</p>
-								<p className="text-[12px] font-medium leading-5 text-stone-800">{item.value}</p>
-							</div>
-						))}
-					</div>
-				</div>
-
-				{/* Right: Editorial text */}
-				<div className="flex h-full flex-col justify-between pl-2">
 					<div className="grid gap-5">
-						<div className="flex items-center gap-3">
-							<span className="h-px w-4 bg-stone-300" />
-							<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-400">Editorial Note</p>
-						</div>
-						<div className="h-px bg-stone-900/8" />
-						{paragraphs.map((paragraph, index) => (
-							<p key={`intro-${index}`} className="text-[13.5px] leading-[2.05] text-stone-600">
-								{paragraph}
-							</p>
-						))}
-					</div>
-
-					<div className="flex items-center justify-between border-t border-stone-900/8 pt-4">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-stone-400">Fashion PR Editorial Archive</p>
-						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
+						<h2 className="text-[2rem] leading-[1.4em] tracking-[-0.02em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							{storyLines.map((line, index) => (
+								<span key={`${line}-${index}`}>
+									{line}
+									{index < storyLines.length - 1 ? <br /> : null}
+								</span>
+							))}
+						</h2>
 					</div>
 				</div>
 			</div>
@@ -292,31 +144,32 @@ function AboutIntroPage({
 const STEP_LINE_TOPS = ['70%', '58%', '44%', '32%', '18%'] as const;
 
 function AboutStoryPage({
+	copy,
 	pageNum,
 	totalPages,
 }: AboutPageProps & {
-	paragraphs: string[];
+	copy: PdfAboutCopy;
 }) {
 	return (
-		<AboutPageFrame label="Our Process" pageNum={pageNum} totalPages={totalPages}>
+		<AboutPageFrame label={copy.processEyebrow} pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-20">
 				{/* Header */}
 				<div className="flex flex-col gap-4">
-					<h2 className="text-5xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-						How It Works
+					<h2 className="text-7xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						{copy.processTitle}
 					</h2>
-					<p className="text-lg leading-7 text-stone-600">브랜드 분석부터 성과 리포트까지, 어필컴퍼니의 5단계 협업 프로세스입니다.</p>
+					<p className="text-lg leading-7 text-stone-600">{copy.processDescription}</p>
 				</div>
 
 				{/* 점진적 상승 단계 컬럼 */}
 				<div className="relative flex flex-1">
-					{WORKFLOW_STEPS.map((step, index) => (
+					{copy.workflowSteps.map((step, index) => (
 						<div key={step.title} className="relative flex w-full pl-2 flex-col justify-between border-l border-stone-100">
 							{/* 단계 번호 — 상단 */}
 							<p className="left-2 text-sm font-semibold tracking-[0.22em] text-stone-300">{String(index + 1).padStart(2, '0')}</p>
 
 							{/* 강조선 — 단계마다 높이 다름 */}
-							<div className="absolute left-2 right-2 inset-0 h-[1.5px] bg-[#715a3e]" style={{ top: STEP_LINE_TOPS[index] }} />
+							<div className="absolute left-2 right-2 inset-0 h-px bg-[#715a3e]" style={{ top: STEP_LINE_TOPS[index] }} />
 
 							{/* 콘텐츠 — 강조선 바로 아래 */}
 							<div className="absolute inset-x-2" style={{ top: `calc(${STEP_LINE_TOPS[index]} + 20px)` }}>
@@ -327,7 +180,7 @@ function AboutStoryPage({
 							</div>
 
 							{/* 단계 레이블 — 하단 */}
-							<p className="text-sm tracking-widest text-stone-400">{step.title}</p>
+							<p className="text-xs tracking-widest text-stone-400">{step.title}</p>
 						</div>
 					))}
 				</div>
@@ -336,79 +189,19 @@ function AboutStoryPage({
 	);
 }
 
-function AboutContinuationPage({
-	paragraphs,
-	pageNum,
-	totalPages,
-}: AboutPageProps & {
-	paragraphs: string[];
-}) {
-	const storyCards = getStoryCards(pageNum);
-
+function AboutExpertisePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: PdfAboutCopy }) {
 	return (
-		<AboutPageFrame label="Story Continuation" pageNum={pageNum} totalPages={totalPages}>
-			<div className="grid h-full gap-8" style={{ gridTemplateColumns: '28% 72%' }}>
-				<div className="flex flex-col justify-between border-r border-stone-900/8 pr-6">
-					<div className="grid gap-4">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-400">Continuation</p>
-						<h2 className="text-[2.3rem] leading-[1.02] tracking-[-0.055em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							Story
-							<br />
-							Continuation
-						</h2>
-						<p className="text-[11px] leading-6 text-stone-600">소개문이 길어지더라도 페이지를 나눠 읽는 리듬을 유지합니다.</p>
-					</div>
-
-					<div className="grid gap-3 border-t border-stone-900/8 pt-4">
-						{storyCards.map(line => (
-							<div key={line} className="flex items-start gap-3">
-								<span className="mt-[9px] h-px w-3 shrink-0 bg-[#715a3e]" />
-								<p className="text-[10px] leading-5 text-stone-600">{line}</p>
-							</div>
-						))}
-					</div>
-				</div>
-
-				{/* Right */}
-				<div className="flex h-full flex-col justify-between pl-4">
-					<div className="grid gap-5">
-						<div className="flex items-center gap-3">
-							<span className="h-px w-4 bg-stone-300" />
-							<p className="text-[9px] font-semibold uppercase tracking-[0.32em] text-stone-400">Story Continued</p>
-						</div>
-						<div className="h-px bg-stone-900/8" />
-						{paragraphs.map((paragraph, index) => (
-							<p key={`continuation-${index}`} className="text-[13.5px] leading-[2.05] text-stone-600">
-								{paragraph}
-							</p>
-						))}
-					</div>
-
-					<div className="flex items-center justify-between border-t border-stone-900/8 pt-4">
-						<p className="text-[9px] font-semibold uppercase tracking-[0.28em] text-stone-400">Fashion PR Editorial Archive</p>
-						<p className="text-[9px] uppercase tracking-[0.24em] text-stone-300">afeelcompany.com</p>
-					</div>
-				</div>
-			</div>
-		</AboutPageFrame>
-	);
-}
-
-function AboutExpertisePage({ pageNum, totalPages }: AboutPageProps) {
-	return (
-		<AboutPageFrame label="Core Expertise" pageNum={pageNum} totalPages={totalPages}>
+		<AboutPageFrame label={copy.expertiseEyebrow} pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-20">
-				<div className="grid gap-4">
-					<div className="flex items-end justify-between gap-8">
-						<h2 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							What We Do
-						</h2>
-						<p className="max-w-[34ch] text-right text-[12px] leading-7 text-stone-600">포지셔닝에서 아카이빙까지, 브랜드와 셀럽이 만나는 모든 접점을 함께 다룹니다.</p>
-					</div>
+				<div className="flex flex-col gap-8">
+					<h2 className="text-7xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						{copy.expertiseTitle}
+					</h2>
+					<p className="text-base leading-7 text-stone-600">{copy.expertiseDescription}</p>
 				</div>
 
 				<div className="grid flex-1 gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
-					{ABOUT_SERVICE_ITEMS.map(item => (
+					{copy.serviceItems.map(item => (
 						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
 							<h3 className="text-3xl leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
@@ -423,21 +216,21 @@ function AboutExpertisePage({ pageNum, totalPages }: AboutPageProps) {
 	);
 }
 
-function AboutEdgePage({ pageNum, totalPages }: AboutPageProps) {
+function AboutEdgePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: PdfAboutCopy }) {
 	return (
-		<AboutPageFrame label="Our Edge" pageNum={pageNum} totalPages={totalPages}>
+		<AboutPageFrame label={copy.edgeEyebrow} pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-5 justify-between">
 				<div className="grid gap-4">
 					<div className="flex items-end justify-between gap-8">
 						<h2 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-							Why AFEEL
+							{copy.edgeTitle}
 						</h2>
-						<p className="max-w-[34ch] text-right text-[12px] leading-7 text-stone-600">미학, 기록, 그리고 상업적 결과를 함께 생각합니다.</p>
+						<p className="text-right text-[12px] leading-7 text-stone-600">{copy.edgeDescription}</p>
 					</div>
 				</div>
 
 				<div className="grid gap-px overflow-hidden border border-stone-900/8 bg-stone-900/8 md:grid-cols-3">
-					{ABOUT_EDGE_ITEMS.map(item => (
+					{copy.edgeItems.map(item => (
 						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
 							<h3 className="text-2xl leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
@@ -447,17 +240,6 @@ function AboutEdgePage({ pageNum, totalPages }: AboutPageProps) {
 						</article>
 					))}
 				</div>
-
-				{/* <div className="grid gap-4 bg-stone-950 px-8 py-7 text-white">
-					<p className="text-[8px] font-semibold uppercase tracking-[0.28em] text-[#ccead6]">Target Alignment</p>
-					<div className="grid gap-1">
-						{ABOUT_SOCIAL_PROOF_LINES.map(line => (
-							<p key={line} className="text-[22px] leading-tight tracking-[-0.04em]" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
-								{line}
-							</p>
-						))}
-					</div>
-				</div> */}
 			</div>
 		</AboutPageFrame>
 	);
@@ -546,10 +328,12 @@ function ClientSheet({ brands, pageNum, totalPages, totalBrands }: ClientSheetPr
 
 // ── Page ────────────────────────────────────
 
-export default async function PdfExportPage() {
-	const brochure = await getPdfDocument();
+export default async function PdfExportPage({ searchParams }: { searchParams?: Promise<PdfSearchParams> }) {
+	const resolvedSearchParams = await searchParams;
+	const locale = resolveLocale(resolvedSearchParams?.locale);
+	const dictionary = getSiteDictionary(locale);
+	const brochure = await getPdfDocument(locale);
 
-	const aboutNarrative = splitAboutNarrative(brochure.aboutText);
 	const workChunks = chunk(brochure.workItems, WORK_PER_PAGE);
 	const clientChunks = chunk(brochure.clientBrands, CLIENT_PER_PAGE);
 
@@ -579,7 +363,7 @@ export default async function PdfExportPage() {
 								<br />
 								<span className="italic text-[#715a3e]">& Styling.</span>
 							</h1>
-							<p className="max-w-[32ch] text-base leading-7 text-stone-600">브랜드와 셀럽을 잇는 순간을 설계합니다.</p>
+							<p className="max-w-[32ch] text-base leading-7 text-stone-600">{dictionary.home.metadata.description}</p>
 						</div>
 
 						<div className="flex items-end justify-between border-t border-stone-900/8 pt-6">
@@ -599,23 +383,19 @@ export default async function PdfExportPage() {
 	const aboutSections: { key: string; render: (pageNum: number, totalPages: number) => ReactNode }[] = [
 		{
 			key: 'intro',
-			render: (pageNum, totalPages) => <AboutIntroPage paragraphs={aboutNarrative.introParagraphs} pageNum={pageNum} totalPages={totalPages} />,
+			render: (pageNum, totalPages) => <AboutIntroPage copy={dictionary.about} locale={locale} pageNum={pageNum} totalPages={totalPages} />,
 		},
 		{
 			key: 'story',
-			render: (pageNum, totalPages) => <AboutStoryPage paragraphs={aboutNarrative.storyParagraphs} pageNum={pageNum} totalPages={totalPages} />,
+			render: (pageNum, totalPages) => <AboutStoryPage copy={dictionary.about} pageNum={pageNum} totalPages={totalPages} />,
 		},
-		...aboutNarrative.continuationParagraphs.map((paragraphs, index) => ({
-			key: `continuation-${index + 1}`,
-			render: (pageNum: number, totalPages: number) => <AboutContinuationPage paragraphs={paragraphs} pageNum={pageNum} totalPages={totalPages} />,
-		})),
 		{
 			key: 'expertise',
-			render: (pageNum, totalPages) => <AboutExpertisePage pageNum={pageNum} totalPages={totalPages} />,
+			render: (pageNum, totalPages) => <AboutExpertisePage copy={dictionary.about} pageNum={pageNum} totalPages={totalPages} />,
 		},
 		{
 			key: 'edge',
-			render: (pageNum, totalPages) => <AboutEdgePage pageNum={pageNum} totalPages={totalPages} />,
+			render: (pageNum, totalPages) => <AboutEdgePage copy={dictionary.about} pageNum={pageNum} totalPages={totalPages} />,
 		},
 	];
 
@@ -680,7 +460,7 @@ export default async function PdfExportPage() {
 
 						<dl className="grid gap-7">
 							<div className="grid gap-1.5">
-								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">이메일</dt>
+								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.contact.emailLabel}</dt>
 								<dd>
 									<a href={getMailtoHref(brochure.contact.email)} className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4">
 										{brochure.contact.email}
@@ -689,7 +469,7 @@ export default async function PdfExportPage() {
 							</div>
 							<div className="h-px bg-stone-100" />
 							<div className="grid gap-1.5">
-								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">전화</dt>
+								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.contact.directLabel}</dt>
 								<dd>
 									<a href={getTelHref(brochure.contact.phone)} className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4">
 										{brochure.contact.phone}
@@ -698,7 +478,7 @@ export default async function PdfExportPage() {
 							</div>
 							<div className="h-px bg-stone-100" />
 							<div className="grid gap-1.5">
-								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">주소</dt>
+								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.contact.addressLabel}</dt>
 								<dd>
 									<a href={CONTACT_ADDRESS_URL} target="_blank" rel="noreferrer" className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4">
 										{brochure.contact.address}
@@ -707,7 +487,7 @@ export default async function PdfExportPage() {
 							</div>
 							<div className="h-px bg-stone-100" />
 							<div className="grid gap-1.5">
-								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">웹사이트</dt>
+								<dt className="text-[9px] uppercase tracking-[0.32em] text-stone-400">{dictionary.footer.siteLabel}</dt>
 								<dd>
 									<a href="https://afeelcompany.com" className="text-[18px] font-medium text-stone-950 underline decoration-stone-300 underline-offset-4">
 										afeelcompany.com
@@ -728,5 +508,5 @@ export default async function PdfExportPage() {
 		),
 	});
 
-	return <PdfPreviewWorkspace sections={sections} />;
+	return <PdfPreviewWorkspace sections={sections} locale={locale} />;
 }
