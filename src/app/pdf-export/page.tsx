@@ -125,7 +125,7 @@ function AboutIntroPage({
 						<p className="text-base leading-7 text-stone-600">{copy.heroDescription}</p>
 					</div>
 					<div className="grid gap-5">
-						<h2 className="text-[2rem] leading-[1.4em] tracking-[-0.02em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						<h2 className="text-[2rem] font-light leading-[1.4em] tracking-[-0.02em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 							{storyLines.map((line, index) => (
 								<span key={`${line}-${index}`}>
 									{line}
@@ -155,7 +155,7 @@ function AboutStoryPage({
 			<div className="flex h-full flex-col gap-20">
 				{/* Header */}
 				<div className="flex flex-col gap-4">
-					<h2 className="text-7xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+					<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 						{copy.processTitle}
 					</h2>
 					<p className="text-lg leading-7 text-stone-600">{copy.processDescription}</p>
@@ -173,7 +173,7 @@ function AboutStoryPage({
 
 							{/* 콘텐츠 — 강조선 바로 아래 */}
 							<div className="absolute inset-x-2" style={{ top: `calc(${STEP_LINE_TOPS[index]} + 20px)` }}>
-								<p className="text-lg font-semibold whitespace-pre-line leading-tight text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+								<p className="text-lg font-medium whitespace-pre-line leading-tight text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 									{step.description}
 								</p>
 								{/* <p className="mt-1.5 whitespace-pre-line text-[9px] leading-[1.6] text-stone-500">{step.description}</p> */}
@@ -194,7 +194,7 @@ function AboutExpertisePage({ copy, pageNum, totalPages }: AboutPageProps & { co
 		<AboutPageFrame label={copy.expertiseEyebrow} pageNum={pageNum} totalPages={totalPages}>
 			<div className="flex h-full flex-col gap-20">
 				<div className="flex flex-col gap-8">
-					<h2 className="text-7xl leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+					<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 						{copy.expertiseTitle}
 					</h2>
 					<p className="text-base leading-7 text-stone-600">{copy.expertiseDescription}</p>
@@ -204,7 +204,7 @@ function AboutExpertisePage({ copy, pageNum, totalPages }: AboutPageProps & { co
 					{copy.serviceItems.map(item => (
 						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
-							<h3 className="text-3xl leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<h3 className="text-3xl font-light leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								{item.headline}
 							</h3>
 							<p className="text-base leading-7 text-stone-600">{item.description}</p>
@@ -222,7 +222,7 @@ function AboutEdgePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: P
 			<div className="flex h-full flex-col gap-5 justify-between">
 				<div className="grid gap-4">
 					<div className="flex items-end justify-between gap-8">
-						<h2 className="text-[3rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+						<h2 className="text-7xl font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 							{copy.edgeTitle}
 						</h2>
 						<p className="text-right text-[12px] leading-7 text-stone-600">{copy.edgeDescription}</p>
@@ -233,7 +233,7 @@ function AboutEdgePage({ copy, pageNum, totalPages }: AboutPageProps & { copy: P
 					{copy.edgeItems.map(item => (
 						<article key={item.title} className="grid content-start gap-4 bg-[#faf7f3] p-8">
 							<p className="text-xs font-semibold uppercase tracking-[0.12em] text-stone-400">{item.title}</p>
-							<h3 className="text-2xl leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<h3 className="text-2xl font-light leading-none tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								{item.headline}
 							</h3>
 							<p className="text-base leading-7 text-stone-600">{item.description}</p>
@@ -276,7 +276,7 @@ function WorkSheet({ items, pageNum, totalPages }: WorkSheetProps) {
 
 						<div className="grid gap-1 border-t border-stone-900/8 bg-[#fcfaf7] px-4 py-3 text-stone-950">
 							<p className="text-[9px] font-bold uppercase tracking-[0.24em] text-[#715a3e]">{item.brandName}</p>
-							<p className="text-[16px] leading-tight tracking-[-0.04em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<p className="text-[16px] font-light leading-tight tracking-[-0.04em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								{item.celebrityName ?? item.title}
 							</p>
 							{/* {item.celebrityName ? <p className="text-[9px] leading-4 text-stone-500">{item.title}</p> : null} */}
@@ -358,10 +358,10 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 						</div>
 
 						<div className="grid gap-5">
-							<h1 className="w-full text-9xl leading-[0.91] tracking-[-0.05em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<h1 className="w-full text-9xl leading-[0.91] tracking-[-0.05em] font-light text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								Fashion PR
 								<br />
-								<span className="italic text-[#715a3e]">& Styling.</span>
+								<span className="italic text-[#715a3e] font-light">& Styling.</span>
 							</h1>
 							<p className="max-w-[32ch] text-base leading-7 text-stone-600">{dictionary.home.metadata.description}</p>
 						</div>
@@ -453,7 +453,7 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 								<span className="h-px w-6 bg-[#715a3e]" />
 								<p className="text-[9px] font-medium uppercase tracking-[0.36em] text-stone-400">Contact</p>
 							</div>
-							<h2 className="text-[2.6rem] leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
+							<h2 className="text-[2.6rem] font-light leading-[0.95] tracking-[-0.06em] text-stone-950" style={{ fontFamily: 'var(--font-brochure-serif)' }}>
 								Get In Touch.
 							</h2>
 						</div>
