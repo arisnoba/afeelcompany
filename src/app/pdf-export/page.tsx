@@ -1,8 +1,10 @@
 /* eslint-disable @next/next/no-img-element */
+import type { Metadata } from 'next';
 import type { ReactNode } from 'react';
 
 import { DEFAULT_LOCALE, isLocale, type Locale } from '@/i18n/config';
 import { getSiteDictionary } from '@/i18n/site-copy';
+import { createNoIndexMetadata } from '@/lib/seo';
 import type { PdfClientBrand, PdfPortfolioItem } from '@/types/pdf';
 
 import { BrochureSheet } from './_components/BrochureSheet';
@@ -37,6 +39,14 @@ function chunk<T>(array: T[], size: number): T[][] {
 function resolveLocale(value: string | string[] | undefined): Locale {
 	const locale = Array.isArray(value) ? value[0] : value;
 	return locale && isLocale(locale) ? locale : DEFAULT_LOCALE;
+}
+
+export async function generateMetadata({ searchParams }: { searchParams?: Promise<PdfSearchParams> }): Promise<Metadata> {
+	const resolvedSearchParams = await searchParams;
+	const locale = resolveLocale(resolvedSearchParams?.locale);
+	const dictionary = getSiteDictionary(locale);
+
+	return createNoIndexMetadata(dictionary.pdfExport.metadata.title);
 }
 
 function getMailtoHref(email: string): string {

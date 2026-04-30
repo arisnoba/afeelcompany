@@ -133,6 +133,11 @@ type SiteDictionary = {
 			errorMessages: Record<string, string>;
 		};
 	};
+	pdfExport: {
+		metadata: {
+			title: string;
+		};
+	};
 };
 
 const DICTIONARIES: Record<Locale, SiteDictionary> = {
@@ -289,6 +294,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
+		pdfExport: {
+			metadata: {
+				title: '회사소개서 다운로드',
+			},
+		},
 	},
 	en: {
 		siteName: 'AFEEL COMPANY',
@@ -443,6 +453,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
+		pdfExport: {
+			metadata: {
+				title: 'Company Profile Download',
+			},
+		},
 	},
 	zh: {
 		siteName: 'AFEEL COMPANY',
@@ -595,6 +610,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 					CONTACT_DESTINATION_NOT_CONFIGURED: '收件邮箱尚未设置。',
 					SEND_FAILED: '发送咨询时发生错误，请稍后再试。',
 				},
+			},
+		},
+		pdfExport: {
+			metadata: {
+				title: '公司简介下载',
 			},
 		},
 	},
