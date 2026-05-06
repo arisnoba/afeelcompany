@@ -133,12 +133,17 @@ type SiteDictionary = {
 			errorMessages: Record<string, string>;
 		};
 	};
-	pdfExport: {
-		metadata: {
+		pdfExport: {
+			metadata: {
+				title: string;
+			};
+		};
+		notFound: {
 			title: string;
+			description: string;
+			homeLabel: string;
 		};
 	};
-};
 
 const DICTIONARIES: Record<Locale, SiteDictionary> = {
 	ko: {
@@ -294,13 +299,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-		pdfExport: {
-			metadata: {
-				title: '회사소개서 다운로드',
+			pdfExport: {
+				metadata: {
+					title: '회사소개서 다운로드',
+				},
+			},
+			notFound: {
+				title: '페이지를 찾을 수 없습니다',
+				description: '이전 쇼핑몰 주소이거나 이동된 페이지일 수 있습니다. 현재 AFEEL COMPANY의 주요 페이지로 이동해 주세요.',
+				homeLabel: 'HOME',
 			},
 		},
-	},
-	en: {
+		en: {
 		siteName: 'AFEEL COMPANY',
 		nav: {
 			home: 'HOME',
@@ -453,13 +463,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-		pdfExport: {
-			metadata: {
-				title: 'Company Profile Download',
+			pdfExport: {
+				metadata: {
+					title: 'Company Profile Download',
+				},
+			},
+			notFound: {
+				title: 'Page not found',
+				description: 'This may be an old shop URL or a page that has moved. Continue to one of the current AFEEL COMPANY pages.',
+				homeLabel: 'HOME',
 			},
 		},
-	},
-	zh: {
+		zh: {
 		siteName: 'AFEEL COMPANY',
 		nav: {
 			home: '首页',
@@ -612,13 +627,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-		pdfExport: {
-			metadata: {
-				title: '公司简介下载',
+			pdfExport: {
+				metadata: {
+					title: '公司简介下载',
+				},
+			},
+			notFound: {
+				title: '找不到页面',
+				description: '这可能是旧商城地址，或页面已经移动。请前往当前 AFEEL COMPANY 的主要页面。',
+				homeLabel: '首页',
 			},
 		},
-	},
-};
+	};
 
 export function getSiteDictionary(locale: Locale) {
 	return DICTIONARIES[locale];
