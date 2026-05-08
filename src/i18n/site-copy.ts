@@ -133,17 +133,17 @@ type SiteDictionary = {
 			errorMessages: Record<string, string>;
 		};
 	};
-		pdfExport: {
-			metadata: {
-				title: string;
-			};
-		};
-		notFound: {
+	pdfExport: {
+		metadata: {
 			title: string;
-			description: string;
-			homeLabel: string;
 		};
 	};
+	notFound: {
+		title: string;
+		description: string;
+		homeLabel: string;
+	};
+};
 
 const DICTIONARIES: Record<Locale, SiteDictionary> = {
 	ko: {
@@ -299,18 +299,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-			pdfExport: {
-				metadata: {
-					title: '회사소개서 다운로드',
-				},
-			},
-			notFound: {
-				title: '페이지를 찾을 수 없습니다',
-				description: '이전 쇼핑몰 주소이거나 이동된 페이지일 수 있습니다. 현재 AFEEL COMPANY의 주요 페이지로 이동해 주세요.',
-				homeLabel: 'HOME',
+		pdfExport: {
+			metadata: {
+				title: '회사소개서 다운로드',
 			},
 		},
-		en: {
+		notFound: {
+			title: '페이지를 찾을 수 없습니다',
+			description: '이동된 페이지일 수 있습니다. 현재 AFEEL COMPANY의 주요 페이지로 이동해 주세요.',
+			homeLabel: 'HOME',
+		},
+	},
+	en: {
 		siteName: 'AFEEL COMPANY',
 		nav: {
 			home: 'HOME',
@@ -463,18 +463,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-			pdfExport: {
-				metadata: {
-					title: 'Company Profile Download',
-				},
-			},
-			notFound: {
-				title: 'Page not found',
-				description: 'This may be an old shop URL or a page that has moved. Continue to one of the current AFEEL COMPANY pages.',
-				homeLabel: 'HOME',
+		pdfExport: {
+			metadata: {
+				title: 'Company Profile Download',
 			},
 		},
-		zh: {
+		notFound: {
+			title: 'Page not found',
+			description: 'This may be an old shop URL or a page that has moved. Continue to one of the current AFEEL COMPANY pages.',
+			homeLabel: 'HOME',
+		},
+	},
+	zh: {
 		siteName: 'AFEEL COMPANY',
 		nav: {
 			home: '首页',
@@ -516,14 +516,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
 			heroDescription: '我们通过策略化造型曝光提升品牌可见度。',
-			storyLines: [
-				'我们不只是为艺人穿搭。',
-				'我们先看清艺人与品牌之间的气质连接。',
-				'自然，不做作，',
-				'更重视真实反应，而不是表面数字。',
-				'那些长期合作的品牌',
-				'很清楚他们为什么选择我们。',
-			],
+			storyLines: ['我们不只是为艺人穿搭。', '我们先看清艺人与品牌之间的气质连接。', '自然，不做作，', '更重视真实反应，而不是表面数字。', '那些长期合作的品牌', '很清楚他们为什么选择我们。'],
 			processEyebrow: '合作流程',
 			processTitle: 'How It Works',
 			processDescription: '从品牌分析到成效报告，这就是 AFEEL COMPANY 的五步协作流程。',
@@ -627,18 +620,18 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				},
 			},
 		},
-			pdfExport: {
-				metadata: {
-					title: '公司简介下载',
-				},
-			},
-			notFound: {
-				title: '找不到页面',
-				description: '这可能是旧商城地址，或页面已经移动。请前往当前 AFEEL COMPANY 的主要页面。',
-				homeLabel: '首页',
+		pdfExport: {
+			metadata: {
+				title: '公司简介下载',
 			},
 		},
-	};
+		notFound: {
+			title: '找不到页面',
+			description: '这可能是旧商城地址，或页面已经移动。请前往当前 AFEEL COMPANY 的主要页面。',
+			homeLabel: '首页',
+		},
+	},
+};
 
 export function getSiteDictionary(locale: Locale) {
 	return DICTIONARIES[locale];
