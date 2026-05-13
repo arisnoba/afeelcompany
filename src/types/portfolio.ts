@@ -1,15 +1,11 @@
-export const PORTFOLIO_CATEGORIES = ['남성', '여성', '악세서리', '슈즈'] as const
+export const PORTFOLIO_CATEGORIES = ['남성', '여성', '악세서리'] as const
 
 export type PortfolioCategory = (typeof PORTFOLIO_CATEGORIES)[number]
 
 const PORTFOLIO_CATEGORY_SET = new Set<string>(PORTFOLIO_CATEGORIES)
 const PORTFOLIO_CATEGORY_SEPARATOR = '|'
-const PORTFOLIO_CATEGORY_ALIASES: Record<string, PortfolioCategory> = {
-  신발: '슈즈',
-}
-
 function toCanonicalPortfolioCategory(value: string): string {
-  return PORTFOLIO_CATEGORY_ALIASES[value] ?? value
+  return value
 }
 
 export function isPortfolioCategory(value: string): value is PortfolioCategory {

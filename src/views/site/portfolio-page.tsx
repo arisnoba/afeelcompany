@@ -5,7 +5,7 @@ import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { DEFAULT_LOCALE, type Locale } from '@/i18n/config';
 import { getSiteDictionary } from '@/i18n/site-copy';
 import { createPageMetadata } from '@/lib/seo';
-import { getPublicPortfolioItems } from '@/lib/site';
+import { getPublicPortfolioInitialPage } from '@/lib/site';
 
 export function getPortfolioMetadata(locale: Locale): Metadata {
 	const copy = getSiteDictionary(locale).portfolio.metadata;
@@ -21,7 +21,7 @@ export function getPortfolioMetadata(locale: Locale): Metadata {
 
 export async function PortfolioPageView({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
 	const copy = getSiteDictionary(locale).portfolio;
-	const items = await getPublicPortfolioItems();
+	const initialPage = await getPublicPortfolioInitialPage();
 
 	return (
 		<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
@@ -36,7 +36,7 @@ export async function PortfolioPageView({ locale = DEFAULT_LOCALE }: { locale?: 
 				</section>
 
 				<PortfolioGalleryClient
-					items={items}
+					initialPage={initialPage}
 					filterAllLabel={copy.filterAllLabel}
 					pageLabel={copy.pageLabel}
 					emptySelectionLabel={copy.emptySelectionLabel}

@@ -5,7 +5,7 @@ CREATE TABLE IF NOT EXISTS portfolio_items (
   client_brand_id UUID REFERENCES client_brands(id),
   brand_name TEXT NOT NULL,
   celebrity_name TEXT,
-  category TEXT NOT NULL,            -- 상의/하의/신발/악세서리/기타
+  category TEXT NOT NULL,            -- 남성/여성/악세서리
   instagram_url TEXT,
   image_url TEXT NOT NULL,          -- normal 이미지
   thumbnail_url TEXT,               -- hover 이미지
@@ -94,3 +94,6 @@ ADD COLUMN IF NOT EXISTS updated_at TIMESTAMPTZ DEFAULT NOW();
 
 CREATE INDEX IF NOT EXISTS admin_users_email_idx ON admin_users (email);
 CREATE INDEX IF NOT EXISTS portfolio_items_client_brand_id_idx ON portfolio_items (client_brand_id);
+CREATE INDEX IF NOT EXISTS portfolio_items_public_cursor_idx
+  ON portfolio_items (sort_order ASC, created_at DESC, id ASC)
+  WHERE show_on_web = true;

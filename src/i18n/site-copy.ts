@@ -257,7 +257,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				남성: '남성',
 				여성: '여성',
 				악세서리: '악세서리',
-				슈즈: '슈즈',
 			},
 		},
 		contact: {
@@ -421,7 +420,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				남성: 'Men',
 				여성: 'Women',
 				악세서리: 'Accessories',
-				슈즈: 'Shoes',
 			},
 		},
 		contact: {
@@ -578,7 +576,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				남성: '男装',
 				여성: '女装',
 				악세서리: '配饰',
-				슈즈: '鞋履',
 			},
 		},
 		contact: {

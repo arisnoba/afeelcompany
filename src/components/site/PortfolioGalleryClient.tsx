@@ -1,7 +1,8 @@
 'use client';
 
 import Image from 'next/image';
-import { useState } from 'react';
+import { RotateCcw } from 'lucide-react';
+import { useCallback, useRef, useState, useEffect } from 'react';
 
 import { PortfolioLightbox } from '@/components/site/PortfolioLightbox';
 import { BlurFade } from '@/components/ui/blur-fade';
@@ -9,15 +10,14 @@ import {
 	PORTFOLIO_CATEGORIES,
 	getPortfolioDisplayName,
 	getPortfolioImageAlt,
-	includesPortfolioCategory,
 	type PortfolioCategory,
 } from '@/types/portfolio';
-import type { PublicPortfolioItem } from '@/types/site';
+import type { PublicPortfolioInitialPage, PublicPortfolioItem, PublicPortfolioPageResult } from '@/types/site';
 
 const ITEMS_PER_PAGE = 12;
 
 interface PortfolioGalleryClientProps {
-	items: PublicPortfolioItem[];
+	initialPage: PublicPortfolioInitialPage;
 	filterAllLabel?: string;
 	pageLabel?: string;
 	emptySelectionLabel?: string;
@@ -26,8 +26,43 @@ interface PortfolioGalleryClientProps {
 	defaultTitle?: string;
 }
 
+interface PortfolioPageResponse {
+	success: boolean;
+	data?: PublicPortfolioPageResult;
+	error?: string;
+}
+
+async function fetchPortfolioPage({
+	category,
+	cursor,
+}: {
+	category: PortfolioCategory | null;
+	cursor?: string | null;
+}): Promise<PublicPortfolioPageResult> {
+	const params = new URLSearchParams({
+		limit: String(ITEMS_PER_PAGE),
+	});
+
+	if (category) {
+		params.set('category', category);
+	}
+
+	if (cursor) {
+		params.set('cursor', cursor);
+	}
+
+	const response = await fetch(`/api/public/portfolio?${params.toString()}`);
+	const payload = (await response.json()) as PortfolioPageResponse;
+
+	if (!response.ok || !payload.success || !payload.data) {
+		throw new Error(payload.error ?? 'PORTFOLIO_LOAD_FAILED');
+	}
+
+	return payload.data;
+}
+
 export function PortfolioGalleryClient({
-	items,
+	initialPage,
 	filterAllLabel = '전체',
 	pageLabel = '포트폴리오 페이지',
 	emptySelectionLabel = '선택한 카테고리에 해당하는 작업이 없습니다.',
@@ -37,18 +72,16 @@ export function PortfolioGalleryClient({
 }: PortfolioGalleryClientProps) {
 	const [selectedCategory, setSelectedCategory] = useState(filterAllLabel);
 	const [activeItemId, setActiveItemId] = useState<string | null>(null);
-	const [currentPage, setCurrentPage] = useState(1);
+	const [items, setItems] = useState(initialPage.items);
+	const [nextCursor, setNextCursor] = useState(initialPage.nextCursor);
+	const [isLoading, setIsLoading] = useState(false);
+	const [loadError, setLoadError] = useState(false);
+	const loadMoreRef = useRef<HTMLDivElement | null>(null);
+	const requestIdRef = useRef(0);
 
-	const filters = [filterAllLabel, ...PORTFOLIO_CATEGORIES.filter(category => items.some(item => includesPortfolioCategory(item.category, category)))];
+	const filters = [filterAllLabel, ...PORTFOLIO_CATEGORIES.filter(category => initialPage.categoryCounts[category] > 0)];
 
-	const filteredItems =
-		selectedCategory === filterAllLabel ? items : items.filter(item => includesPortfolioCategory(item.category, selectedCategory as PortfolioCategory));
-
-	const pageCount = Math.ceil(filteredItems.length / ITEMS_PER_PAGE);
-	const activePage = Math.min(currentPage, pageCount || 1);
-	const pageStartIndex = (activePage - 1) * ITEMS_PER_PAGE;
-	const visibleItems = filteredItems.slice(pageStartIndex, pageStartIndex + ITEMS_PER_PAGE);
-	const activeItem = filteredItems.find(item => item.id === activeItemId) ?? null;
+	const activeItem = items.find(item => item.id === activeItemId) ?? null;
 
 	function handleItemClick(item: PublicPortfolioItem) {
 		if (item.instagramUrl) {
@@ -58,6 +91,110 @@ export function PortfolioGalleryClient({
 
 		setActiveItemId(item.id);
 	}
+
+	const handleCategorySelect = useCallback(
+		async (filter: string, force = false) => {
+			if (filter === selectedCategory && !force) {
+				return;
+			}
+
+			const requestId = requestIdRef.current + 1;
+			requestIdRef.current = requestId;
+			setSelectedCategory(filter);
+			setActiveItemId(null);
+			setLoadError(false);
+
+			if (filter === filterAllLabel) {
+				setItems(initialPage.items);
+				setNextCursor(initialPage.nextCursor);
+				setIsLoading(false);
+				return;
+			}
+
+			setItems([]);
+			setNextCursor(null);
+			setIsLoading(true);
+
+			try {
+				const page = await fetchPortfolioPage({
+					category: filter as PortfolioCategory,
+				});
+
+				if (requestIdRef.current !== requestId) {
+					return;
+				}
+
+				setItems(page.items);
+				setNextCursor(page.nextCursor);
+			} catch {
+				if (requestIdRef.current === requestId) {
+					setLoadError(true);
+				}
+			} finally {
+				if (requestIdRef.current === requestId) {
+					setIsLoading(false);
+				}
+			}
+		},
+		[filterAllLabel, initialPage.items, initialPage.nextCursor, selectedCategory]
+	);
+
+	const loadNextPage = useCallback(async () => {
+		if (!nextCursor || isLoading) {
+			return;
+		}
+
+		const category = selectedCategory === filterAllLabel ? null : (selectedCategory as PortfolioCategory);
+		const requestId = requestIdRef.current + 1;
+		requestIdRef.current = requestId;
+		setIsLoading(true);
+		setLoadError(false);
+
+		try {
+			const page = await fetchPortfolioPage({
+				category,
+				cursor: nextCursor,
+			});
+
+			if (requestIdRef.current !== requestId) {
+				return;
+			}
+
+			setItems(currentItems => [...currentItems, ...page.items]);
+			setNextCursor(page.nextCursor);
+		} catch {
+			if (requestIdRef.current === requestId) {
+				setLoadError(true);
+			}
+		} finally {
+			if (requestIdRef.current === requestId) {
+				setIsLoading(false);
+			}
+		}
+	}, [filterAllLabel, isLoading, nextCursor, selectedCategory]);
+
+	useEffect(() => {
+		const target = loadMoreRef.current;
+
+		if (!target || !nextCursor || isLoading) {
+			return;
+		}
+
+		const observer = new IntersectionObserver(
+			entries => {
+				if (entries[0]?.isIntersecting) {
+					void loadNextPage();
+				}
+			},
+			{ rootMargin: '640px 0px' }
+		);
+
+		observer.observe(target);
+
+		return () => {
+			observer.disconnect();
+		};
+	}, [isLoading, loadNextPage, nextCursor]);
 
 	return (
 		<section className="grid gap-10">
@@ -69,11 +206,7 @@ export function PortfolioGalleryClient({
 						<button
 							key={filter}
 							type="button"
-							onClick={() => {
-								setSelectedCategory(filter);
-								setActiveItemId(null);
-								setCurrentPage(1);
-							}}
+							onClick={() => void handleCategorySelect(filter)}
 							className={`border-b pb-1 text-sm font-semibold uppercase tracking-[0.26em] transition ${
 								isActive ? 'border-stone-950 text-stone-950' : 'border-transparent text-stone-400 hover:text-stone-950'
 							}`}>
@@ -83,11 +216,11 @@ export function PortfolioGalleryClient({
 				})}
 			</div>
 
-			{filteredItems.length === 0 ? (
+			{items.length === 0 && !isLoading && !loadError ? (
 				<div className="rounded-[1.75rem] border border-dashed border-stone-300 bg-stone-50 px-6 py-16 text-center text-sm text-stone-500">{emptySelectionLabel}</div>
 			) : (
 				<div className="grid grid-cols-2 gap-4 sm:grid-cols-3 sm:gap-6 xl:grid-cols-4">
-					{visibleItems.map((item, index) => {
+					{items.map((item, index) => {
 						const hoverImageUrl = item.hoverImageUrl ?? item.imageUrl;
 						const rawDisplayName = getPortfolioDisplayName(item);
 						const displayName = rawDisplayName === '포트폴리오' ? defaultTitle : rawDisplayName;
@@ -137,30 +270,18 @@ export function PortfolioGalleryClient({
 				</div>
 			)}
 
-			{pageCount > 1 ? (
-				<div className="flex flex-wrap justify-center gap-2 pt-2" aria-label={pageLabel}>
-					{Array.from({ length: pageCount }, (_, index) => {
-						const page = index + 1;
-						const isActive = page === activePage;
-
-						return (
-							<button
-								key={page}
-								type="button"
-								onClick={() => {
-									setCurrentPage(page);
-									setActiveItemId(null);
-								}}
-								aria-current={isActive ? 'page' : undefined}
-								className={`flex size-10 items-center justify-center border text-sm font-semibold transition ${
-									isActive ? 'border-[#274133] bg-[#274133] text-[#e8f1ec]' : 'border-stone-200 bg-white text-stone-500 hover:border-stone-400 hover:text-stone-950'
-								}`}>
-								{page}
-							</button>
-						);
-					})}
-				</div>
-			) : null}
+			<div ref={loadMoreRef} className="flex min-h-12 items-center justify-center pt-2" aria-label={pageLabel}>
+				{isLoading ? <div className="size-6 animate-spin rounded-full border border-stone-300 border-t-stone-950" /> : null}
+				{loadError ? (
+					<button
+						type="button"
+						onClick={() => void (items.length === 0 ? handleCategorySelect(selectedCategory, true) : loadNextPage())}
+						className="flex size-10 items-center justify-center border border-stone-300 bg-white text-stone-950 transition hover:border-stone-950"
+						aria-label="Retry">
+						<RotateCcw className="size-4" aria-hidden="true" />
+					</button>
+				) : null}
+			</div>
 
 			<PortfolioLightbox
 				item={activeItem}
