@@ -7,11 +7,12 @@ import { ResponsiveStoryReveal } from '@/components/site/ResponsiveStoryReveal';
 import { WorkflowBeam } from '@/components/site/WorkflowBeam';
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { TextRevealByWord } from '@/components/ui/text-reveal';
-import { DEFAULT_LOCALE, type Locale, getLocalizedPath } from '@/i18n/config';
+import { DEFAULT_LOCALE, LOCALE_LANG_TAGS, type Locale, getLocalizedPath } from '@/i18n/config';
 import { getSiteDictionary } from '@/i18n/site-copy';
 import { getBrandsWithLogos } from '@/lib/client-brands';
-import { createPageMetadata } from '@/lib/seo';
-import { getSiteClientBrands } from '@/lib/site';
+import { getLocalizedSiteAddress } from '@/lib/site-address';
+import { SITE_NAME, createPageMetadata, toAbsoluteUrl } from '@/lib/seo';
+import { INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 
 function CircleIcon() {
 	return (
@@ -64,11 +65,81 @@ export function getAboutMetadata(locale: Locale): Metadata {
 	});
 }
 
+function buildAboutPageJsonLd({
+	locale,
+	copy,
+	profile,
+}: {
+	locale: Locale;
+	copy: ReturnType<typeof getSiteDictionary>['about'];
+	profile: Awaited<ReturnType<typeof getSiteCompanyProfile>>;
+}) {
+	const pageUrl = toAbsoluteUrl(getLocalizedPath(locale, '/about'));
+	const organizationId = `${toAbsoluteUrl('/')}#organization`;
+	const address = getLocalizedSiteAddress(locale, profile.address);
+	const organization: Record<string, unknown> = {
+		'@type': 'Organization',
+		'@id': organizationId,
+		name: SITE_NAME,
+		alternateName: '어필컴퍼니',
+		url: toAbsoluteUrl('/'),
+		logo: toAbsoluteUrl('/images/logo.svg'),
+		description: copy.metadata.description,
+		sameAs: [INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL],
+	};
+
+	if (address) {
+		organization.address = {
+			'@type': 'PostalAddress',
+			streetAddress: address,
+		};
+	}
+
+	if (profile.contactEmail || profile.contactPhone) {
+		organization.contactPoint = {
+			'@type': 'ContactPoint',
+			contactType: 'business inquiry',
+			email: profile.contactEmail || undefined,
+			telephone: profile.contactPhone || undefined,
+			availableLanguage: ['ko', 'en', 'zh'],
+		};
+	}
+
+	return {
+		'@context': 'https://schema.org',
+		'@type': 'AboutPage',
+		'@id': `${pageUrl}#about-page`,
+		url: pageUrl,
+		name: copy.metadata.title,
+		description: copy.metadata.description,
+		inLanguage: LOCALE_LANG_TAGS[locale],
+		isPartOf: {
+			'@type': 'WebSite',
+			name: SITE_NAME,
+			url: toAbsoluteUrl('/'),
+		},
+		mainEntity: organization,
+		hasOfferCatalog: {
+			'@type': 'OfferCatalog',
+			name: copy.expertiseTitle,
+			itemListElement: copy.serviceItems.map(item => ({
+				'@type': 'Service',
+				name: item.headline,
+				alternateName: item.title,
+				description: item.description,
+				provider: {
+					'@id': organizationId,
+				},
+			})),
+		},
+	};
+}
+
 export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
 	const dictionary = getSiteDictionary(locale);
 	const copy = dictionary.about;
 	const isEnglish = locale === 'en';
-	const brands = await getSiteClientBrands();
+	const [profile, brands] = await Promise.all([getSiteCompanyProfile(), getSiteClientBrands()]);
 	const rollingBrands = getBrandsWithLogos(brands);
 	const storyRevealText = copy.storyLines.join('\n');
 	const mobileEnglishStoryRevealText = [
@@ -84,9 +155,11 @@ export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Loca
 		'they come back.',
 	].join('\n');
 	const contactHref = getLocalizedPath(locale, '/contact');
+	const aboutPageJsonLd = JSON.stringify(buildAboutPageJsonLd({ locale, copy, profile })).replace(/</g, '\\u003c');
 
 	return (
 		<>
+			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: aboutPageJsonLd }} />
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 				<header className="grid gap-10 py-20 lg:py-48">
 					<div className="grid gap-6">

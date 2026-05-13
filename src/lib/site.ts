@@ -4,6 +4,7 @@ import { resolvePortfolioHoverImageUrl } from '@/lib/portfolio-brand'
 import type { PublicPortfolioItem, SiteClientBrand, SiteCompanyProfile } from '@/types/site';
 
 export const INSTAGRAM_PROFILE_URL = 'https://www.instagram.com/a_feel_company/';
+export const NAVER_BLOG_URL = 'https://blog.naver.com/afeelcompany';
 
 interface CompanyProfileRow {
 	about_text: string | null;

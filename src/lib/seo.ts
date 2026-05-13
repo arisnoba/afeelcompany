@@ -1,11 +1,11 @@
 import type { Metadata } from 'next';
 
 import { DEFAULT_LOCALE, LOCALES, OPEN_GRAPH_LOCALES, type Locale, getLocalizedPath } from '@/i18n/config';
-import { INSTAGRAM_PROFILE_URL } from '@/lib/site';
+import { INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL } from '@/lib/site';
 
 export const SITE_NAME = 'AFEEL COMPANY';
 export const SITE_TITLE_SUFFIX = 'AFEEL COMPANY';
-export const DEFAULT_SITE_DESCRIPTION = '브랜드와 셀럽을 잇는 순간을 설계합니다.';
+export const DEFAULT_SITE_DESCRIPTION = '브랜드와 셀럽을 잇는 순간을 설계하는 패션 PR 에이전시입니다. 단순한 노출을 넘어, 브랜드 가치를 높이는 전략적인 협업과 스타일링을 제안합니다.';
 export const DEFAULT_SITE_KEYWORDS = ['AFEEL Company', '어필컴퍼니', '패션 PR', '셀럽 협찬', '스타 마케팅', '스타일링 포트폴리오'];
 export const DEFAULT_OG_IMAGE = '/images/og.png';
 
@@ -118,7 +118,7 @@ export const organizationJsonLd = {
 	name: SITE_NAME,
 	url: toAbsoluteUrl('/'),
 	logo: toAbsoluteUrl('/images/logo.svg'),
-	sameAs: [INSTAGRAM_PROFILE_URL],
+	sameAs: [INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL],
 };
 
 export const websiteJsonLd = {

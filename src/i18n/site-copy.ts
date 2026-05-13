@@ -169,9 +169,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: 'Fashion PR Agency',
-				description: '브랜드와 셀럽을 잇는 순간을 설계합니다.',
-				keywords: ['패션 PR 에이전시', '셀럽 협업'],
+				title: '패션 PR·셀럽 협찬 에이전시',
+				description: '어필컴퍼니는 패션 브랜드와 셀럽을 연결하는 PR 에이전시입니다. 스타일링 협찬, 브랜드 포지셔닝, 미디어 노출 관리와 성과 리포트를 함께 설계합니다.',
+				keywords: ['패션 PR 에이전시', '셀럽 협찬', '스타일링 협찬', '브랜드 포지셔닝', '스타 마케팅', '어필컴퍼니'],
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
@@ -182,9 +182,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: '회사 소개',
-				description: '패션 PR 철학과 브랜드 포지셔닝 방식, 핵심 서비스를 소개합니다.',
-				keywords: ['회사 소개', '브랜드 포지셔닝'],
+				title: '패션 PR·셀럽 협찬 에이전시 소개',
+				description: '어필컴퍼니는 패션 브랜드와 셀럽을 연결하는 PR 에이전시입니다. 브랜드 분석, 아티스트 매칭, 스타일링 협찬, 미디어 노출 확인, 성과 리포트까지 협업 전 과정을 설계합니다.',
+				keywords: ['어필컴퍼니 소개', '패션 PR 에이전시', '셀럽 협찬', '스타일링 협찬', '브랜드 포지셔닝', '스타 마케팅', '패션 브랜드 PR'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
 			heroDescription: '스타일링 협찬을 통해 브랜드의 가시성을 높입니다.',
@@ -232,9 +232,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		partner: {
 			metadata: {
-				title: '파트너',
-				description: '함께한 브랜드 파트너를 소개합니다.',
-				keywords: ['브랜드 파트너', '협업 브랜드'],
+				title: '협업 브랜드 파트너',
+				description: '어필컴퍼니와 함께한 패션 브랜드 파트너를 소개합니다. 셀럽 협찬과 스타일링 노출을 통해 브랜드 가시성을 만든 협업 기록입니다.',
+				keywords: ['브랜드 파트너', '협업 브랜드', '패션 브랜드 협업', '셀럽 협찬 브랜드', '스타일링 협업'],
 			},
 			titleLines: [{ text: 'Brands' }, { text: 'we worked with.' }],
 			description: '가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.',
@@ -242,9 +242,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		portfolio: {
 			metadata: {
-				title: '포트폴리오',
-				description: '셀럽 스타일링과 브랜드 협업 포트폴리오를 확인할 수 있습니다.',
-				keywords: ['포트폴리오', '브랜드 협업 사례'],
+				title: '셀럽 스타일링 협찬 포트폴리오',
+				description: '셀럽 스타일링, 패션 브랜드 협찬, 미디어 노출 사례를 모은 어필컴퍼니 포트폴리오입니다. 카테고리별 협업 결과와 브랜드 노출 기록을 확인할 수 있습니다.',
+				keywords: ['포트폴리오', '브랜드 협업 사례', '셀럽 스타일링', '패션 협찬 사례', '미디어 노출 사례'],
 			},
 			titleLines: [{ text: 'Select work.' }, { text: 'Made together.' }],
 			filterAllLabel: '전체',
@@ -262,9 +262,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		contact: {
 			metadata: {
-				title: '문의하기',
-				description: '브랜드 협업 및 패션 PR 관련 문의를 남겨주세요.',
-				keywords: ['패션 PR 문의', '브랜드 협업 문의'],
+				title: '패션 PR·브랜드 협업 문의',
+				description: '패션 PR, 셀럽 협찬, 스타일링 협업, 브랜드 포지셔닝 프로젝트를 문의하세요. 어필컴퍼니가 협업 가능 범위와 진행 방식을 검토해 회신합니다.',
+				keywords: ['패션 PR 문의', '브랜드 협업 문의', '셀럽 협찬 문의', '스타일링 협업 문의', '어필컴퍼니 문의'],
 			},
 			title: 'Get In Touch.',
 			addressLabel: 'Address',
@@ -334,8 +334,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		home: {
 			metadata: {
 				title: 'Fashion PR Agency',
-				description: 'We design the moments where brands and celebrities meet.',
-				keywords: ['fashion PR agency', 'celebrity collaboration'],
+				description: 'AFEEL COMPANY is a fashion PR agency connecting brands with celebrities through styling placements, brand positioning, media exposure management, and performance reporting.',
+				keywords: ['fashion PR agency', 'celebrity placement', 'styling placement', 'brand positioning', 'star marketing', 'AFEEL COMPANY'],
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
@@ -346,9 +346,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: 'About',
-				description: 'Discover our fashion PR philosophy, positioning approach, and core services.',
-				keywords: ['about', 'brand positioning'],
+				title: 'Fashion PR & Celebrity Placement Agency',
+				description: 'AFEEL COMPANY is a fashion PR agency connecting brands with celebrities through brand analysis, artist matching, styling placements, media exposure tracking, and performance reporting.',
+				keywords: ['AFEEL COMPANY about', 'fashion PR agency', 'celebrity placement', 'styling placement', 'brand positioning', 'star marketing', 'fashion brand PR'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
 			heroDescription: 'We increase brand visibility through strategic styling placements.',
@@ -396,9 +396,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		partner: {
 			metadata: {
-				title: 'Partners',
-				description: 'Meet the brand partners we have worked with.',
-				keywords: ['brand partners', 'collaboration brands'],
+				title: 'Brand Partners',
+				description: 'Meet the fashion brand partners that have worked with AFEEL COMPANY through celebrity placements, styling collaborations, and media exposure projects.',
+				keywords: ['brand partners', 'collaboration brands', 'fashion brand collaboration', 'celebrity placement brands', 'styling collaboration'],
 			},
 			titleLines: [{ text: 'Brands' }, { text: 'we worked with.' }],
 			description: 'The clearest signal of trust is who keeps working with us.',
@@ -406,9 +406,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		portfolio: {
 			metadata: {
-				title: 'Portfolio',
-				description: 'Explore celebrity styling and brand collaboration portfolios.',
-				keywords: ['portfolio', 'brand collaboration cases'],
+				title: 'Celebrity Styling Placement Portfolio',
+				description: 'Explore AFEEL COMPANY portfolio cases across celebrity styling, fashion brand placements, and media exposure projects, organized by collaboration category.',
+				keywords: ['portfolio', 'brand collaboration cases', 'celebrity styling', 'fashion placement cases', 'media exposure cases'],
 			},
 			titleLines: [{ text: 'Select work.' }, { text: 'Made together.' }],
 			filterAllLabel: 'All',
@@ -426,9 +426,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		contact: {
 			metadata: {
-				title: 'Contact',
-				description: 'Send us your inquiry about brand collaborations and fashion PR.',
-				keywords: ['fashion PR inquiry', 'brand collaboration inquiry'],
+				title: 'Fashion PR & Brand Collaboration Inquiry',
+				description: 'Contact AFEEL COMPANY for fashion PR, celebrity placement, styling collaboration, and brand positioning projects. Our team will review the scope and respond.',
+				keywords: ['fashion PR inquiry', 'brand collaboration inquiry', 'celebrity placement inquiry', 'styling collaboration inquiry', 'AFEEL COMPANY contact'],
 			},
 			title: 'Get In Touch.',
 			addressLabel: 'Address',
@@ -498,8 +498,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		home: {
 			metadata: {
 				title: 'Fashion PR Agency',
-				description: '我们设计品牌与艺人相遇的关键时刻。',
-				keywords: ['时尚公关公司', '艺人合作'],
+				description: 'AFEEL COMPANY 是连接时尚品牌与艺人的公关公司，提供造型协赞、品牌定位、媒体曝光管理与成效报告。',
+				keywords: ['时尚公关公司', '艺人合作', '造型协赞', '品牌定位', '明星营销', 'AFEEL COMPANY'],
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
@@ -510,9 +510,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: '关于我们',
-				description: '了解我们的时尚公关理念、品牌定位方法与核心服务。',
-				keywords: ['关于我们', '品牌定位'],
+				title: '时尚公关与艺人协赞公司介绍',
+				description: 'AFEEL COMPANY 是连接时尚品牌与艺人的公关公司，提供品牌分析、艺人匹配、造型协赞、媒体曝光确认与成效报告等完整协作流程。',
+				keywords: ['AFEEL COMPANY 介绍', '时尚公关公司', '艺人合作', '造型协赞', '品牌定位', '明星营销', '时尚品牌公关'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
 			heroDescription: '我们通过策略化造型曝光提升品牌可见度。',
@@ -553,9 +553,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		partner: {
 			metadata: {
-				title: '合作品牌',
-				description: '查看与我们合作过的品牌伙伴。',
-				keywords: ['合作品牌', '品牌伙伴'],
+				title: '合作品牌伙伴',
+				description: '查看与 AFEEL COMPANY 合作过的时尚品牌伙伴，以及通过艺人协赞、造型合作和媒体曝光建立的合作记录。',
+				keywords: ['合作品牌', '品牌伙伴', '时尚品牌合作', '艺人协赞品牌', '造型合作'],
 			},
 			titleLines: [{ text: '合作过的' }, { text: '品牌伙伴' }],
 			description: '最直接的信任信号，就是持续与我们合作的品牌。',
@@ -563,9 +563,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		portfolio: {
 			metadata: {
-				title: '作品集',
-				description: '查看艺人造型与品牌合作作品集。',
-				keywords: ['作品集', '品牌合作案例'],
+				title: '艺人造型协赞作品集',
+				description: '查看 AFEEL COMPANY 的艺人造型、时尚品牌协赞与媒体曝光案例，并按合作类别浏览品牌曝光记录。',
+				keywords: ['作品集', '品牌合作案例', '艺人造型', '时尚协赞案例', '媒体曝光案例'],
 			},
 			titleLines: [{ text: '精选案例' }, { text: '共同完成。' }],
 			filterAllLabel: '全部',
@@ -583,9 +583,9 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		contact: {
 			metadata: {
-				title: '联系我们',
-				description: '欢迎留下关于品牌合作与时尚公关的咨询内容。',
-				keywords: ['时尚公关咨询', '品牌合作咨询'],
+				title: '时尚公关与品牌合作咨询',
+				description: '欢迎咨询时尚公关、艺人协赞、造型合作与品牌定位项目。AFEEL COMPANY 会审核合作范围与执行方式后回复。',
+				keywords: ['时尚公关咨询', '品牌合作咨询', '艺人协赞咨询', '造型合作咨询', 'AFEEL COMPANY 联系'],
 			},
 			title: 'Get In Touch.',
 			addressLabel: '地址',
