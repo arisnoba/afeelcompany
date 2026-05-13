@@ -9,8 +9,7 @@ const PAGE_PATH = '/kpop-celebrity-placement';
 
 const metadata = {
 	title: '韩流明星造型协赞与韩国艺人品牌合作',
-	description:
-		'AFEEL COMPANY 帮助中国时尚品牌连接韩国韩流明星、K-pop 艺人与演员资源，提供服装、配饰、鞋履等造型协赞、品牌曝光、媒体露出确认与执行报告。',
+	description: 'AFEEL COMPANY 帮助中国时尚品牌连接韩国韩流明星、K-pop 艺人与演员资源，提供服装、配饰、鞋履等造型协赞、品牌曝光、媒体露出确认与执行报告。',
 	keywords: [
 		'韩国明星服装赞助',
 		'韩流明星造型协赞',
@@ -143,7 +142,7 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 		<>
 			<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLd }} />
 
-			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
+			<div className="mx-auto w-full max-w-screen-2xl px-4 [word-break:normal] sm:px-6 lg:px-10">
 				<header className="grid gap-12 py-20 sm:py-24 lg:grid-cols-[minmax(0,1.04fr)_minmax(320px,0.62fr)] lg:items-end lg:gap-16 lg:py-36">
 					<div className="grid gap-8">
 						<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">China Brand Desk</p>
@@ -190,14 +189,12 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 
 				<div className="grid gap-24 py-16 sm:gap-28 sm:py-24 lg:gap-36 lg:py-36">
 					<section className="grid gap-10">
-						<div className="grid gap-4 md:grid-cols-[0.74fr_1fr] md:items-end">
-							<div className="grid gap-4">
+						<div className="flex flex-col gap-4">
+							<div className="grid gap-8">
 								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">What We Handle</p>
-								<h2 className="text-4xl font-light leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">从产品到曝光的韩国本地执行</h2>
+								<h2 className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">从产品到曝光的韩国本地执行</h2>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">
-								协赞不是简单寄出产品。关键在于品牌调性、艺人风格、造型场景和曝光记录是否能连成完整链路。
-							</p>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">协赞不是简单寄出产品。关键在于品牌调性、艺人风格、造型场景和曝光记录是否能连成完整链路。</p>
 						</div>
 
 						<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_0.82fr_1.05fr_0.82fr]">
@@ -214,26 +211,26 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 					</section>
 
 					<section className="grid gap-10">
-						<div className="grid gap-4 md:grid-cols-[0.82fr_1fr] md:items-end">
-							<h2 className="text-4xl font-light leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">合作流程</h2>
+						<div className="flex flex-col gap-4">
+							<h2 className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">合作流程</h2>
 							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">从前期判断到结果归档，流程以可确认的执行记录为中心。</p>
 						</div>
 
 						<div className="grid divide-y divide-stone-900/10 border-y border-stone-900/10">
 							{processSteps.map(step => (
-								<article key={step.label} className="grid gap-5 py-7 md:grid-cols-[8rem_0.45fr_1fr] md:items-start md:gap-8">
+								<article key={step.label} className="grid py-7 grid-cols-4">
 									<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">STEP {step.label}</p>
 									<h3 className="text-xl font-semibold tracking-[-0.02em] text-stone-950">{step.title}</h3>
-									<p className="max-w-3xl text-base leading-7 text-stone-600">{step.description}</p>
+									<p className="col-span-2 text-base leading-7 text-stone-600">{step.description}</p>
 								</article>
 							))}
 						</div>
 					</section>
 
 					<section className="grid gap-10 lg:grid-cols-[0.86fr_1fr] lg:items-start">
-						<div className="sticky top-28 grid gap-5 self-start">
+						<div className="grid gap-5 self-start lg:sticky lg:top-28">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">FAQ</p>
-							<h2 className="text-4xl font-light leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">中国品牌常见问题</h2>
+							<h2 className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">中国品牌常见问题</h2>
 						</div>
 
 						<div className="grid gap-4">
@@ -256,10 +253,14 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 								</p>
 							</div>
 							<div className="flex flex-wrap gap-3">
-								<Link href={aboutHref} className="inline-flex h-12 items-center justify-center border border-white/16 px-6 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-white/10 active:translate-y-px">
+								<Link
+									href={aboutHref}
+									className="inline-flex h-12 items-center justify-center border border-white/16 px-6 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-white transition hover:bg-white/10 active:translate-y-px">
 									了解 AFEEL
 								</Link>
-								<Link href={contactHref} className="inline-flex h-12 items-center justify-center bg-white px-6 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-950 transition hover:bg-stone-100 active:translate-y-px">
+								<Link
+									href={contactHref}
+									className="inline-flex h-12 items-center justify-center bg-white px-6 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-950 transition hover:bg-stone-100 active:translate-y-px">
 									提交咨询
 								</Link>
 							</div>
