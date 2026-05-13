@@ -10,6 +10,7 @@ const llmsText = [
 	`- About: ${toAbsoluteUrl('/about')}`,
 	`- Portfolio: ${toAbsoluteUrl('/portfolio')}`,
 	`- Contact: ${toAbsoluteUrl('/contact')}`,
+	`- China K-pop celebrity placement: ${toAbsoluteUrl('/zh/kpop-celebrity-placement')}`,
 	'',
 	'## Notes',
 	'- /feed is temporarily disabled and should not be indexed or treated as public content.',

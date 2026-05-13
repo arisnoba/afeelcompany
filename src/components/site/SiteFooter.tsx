@@ -17,10 +17,10 @@ function renderValue(value: string, fallback: string) {
 	return value || fallback;
 }
 
-const STUDIO_LINKS = [
-	{ href: '/about', key: 'about' as const },
-	{ href: '/portfolio', key: 'portfolio' as const },
-	{ href: '/contact', key: 'contact' as const },
+const STUDIO_LINKS: Array<{ href: string; key?: keyof ReturnType<typeof getSiteDictionary>['nav']; label?: string }> = [
+	{ href: '/about', key: 'about' },
+	{ href: '/portfolio', key: 'portfolio' },
+	{ href: '/contact', key: 'contact' },
 ];
 
 export function SiteFooter({ profile, locale = DEFAULT_LOCALE }: SiteFooterProps) {
@@ -29,6 +29,7 @@ export function SiteFooter({ profile, locale = DEFAULT_LOCALE }: SiteFooterProps
 	const address = getLocalizedSiteAddress(locale, profile.address);
 	const phone = profile.contactPhone.trim();
 	const email = profile.contactEmail.trim();
+	const studioLinks = locale === 'zh' ? [...STUDIO_LINKS, { href: '/kpop-celebrity-placement', label: 'K-pop协赞' }] : STUDIO_LINKS;
 	const connectLinks = [
 		{ href: INSTAGRAM_PROFILE_URL, label: 'Instagram', external: true },
 		{ href: `https://blog.naver.com/afeelcompany`, label: 'Blog', external: true },
@@ -73,10 +74,10 @@ export function SiteFooter({ profile, locale = DEFAULT_LOCALE }: SiteFooterProps
 				<div className="grid content-start gap-4">
 					<p className="text-[0.62rem] font-semibold uppercase tracking-[0.3em] text-stone-400">{dictionary.footer.siteLabel}</p>
 					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
-						{STUDIO_LINKS.map(item => (
+						{studioLinks.map(item => (
 							<li key={item.href}>
 								<Link href={getLocalizedPath(locale, item.href)} className="transition hover:text-stone-950">
-									{dictionary.nav[item.key]}
+									{item.key ? dictionary.nav[item.key] : item.label}
 								</Link>
 							</li>
 						))}

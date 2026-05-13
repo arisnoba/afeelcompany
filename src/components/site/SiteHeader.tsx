@@ -38,6 +38,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 	const isHome = stripLocaleFromPathname(pathname) === '/';
 	const showSolidHeader = !isHome || isScrolled || mobileOpen;
 	const basePath = stripLocaleFromPathname(pathname);
+	const availableLocales = basePath === '/kpop-celebrity-placement' ? (['zh'] satisfies Locale[]) : LOCALES;
 
 	useEffect(() => {
 		if (!isHome) {
@@ -84,7 +85,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 
 				<div className="hidden items-center gap-3 md:flex">
 					<span className="sr-only">{dictionary.languageSwitcherLabel}</span>
-					{LOCALES.map(nextLocale => {
+					{availableLocales.map(nextLocale => {
 						const href = getLocalizedPath(nextLocale, basePath);
 						const isActive = locale === nextLocale;
 
@@ -104,7 +105,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 
 				<div className="flex items-center gap-4 md:hidden">
 					<div className="flex items-center gap-2">
-						{LOCALES.map(nextLocale => {
+						{availableLocales.map(nextLocale => {
 							const href = getLocalizedPath(nextLocale, basePath);
 							const isActive = locale === nextLocale;
 
