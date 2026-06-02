@@ -244,7 +244,7 @@ export function PortfolioTable({ initialItems, clientBrands }: PortfolioTablePro
 	}
 
 	function handleCreateSuccess(item: PortfolioAdminItem) {
-		const nextItems = sortItems([...items, item]);
+		const nextItems = normalizeSortOrder([item, ...items.filter(currentItem => currentItem.id !== item.id)]);
 		setItems(nextItems);
 		setSavedOrderIds(getItemIds(nextItems));
 		setSheetState(null);

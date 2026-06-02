@@ -159,48 +159,65 @@ export async function POST(request: Request): Promise<Response> {
       hoverFile instanceof File && !managedBrandLogoUrl
         ? await uploadPublicImage(hoverFile, 'portfolio')
         : null
-    const result = await sql<PortfolioUploadRow>`
-      INSERT INTO portfolio_items (
-        title,
-        client_brand_id,
-        brand_name,
-        celebrity_name,
-        category,
-        instagram_url,
-        image_url,
-        thumbnail_url,
-        show_on_web,
-        show_on_pdf,
-        sort_order
-      )
-      VALUES (
-        ${title},
-        ${resolvedClientBrandId},
-        ${resolvedBrandName},
-        ${celebrityName},
-        ${category},
-        ${instagramUrl},
-        ${uploadedNormal.url},
-        ${uploadedHover?.url ?? null},
-        ${showOnWeb},
-        ${showOnPdf},
-        (SELECT COALESCE(MAX(sort_order), -1) + 1 FROM portfolio_items)
-      )
-      RETURNING
-        id,
-        title,
-        client_brand_id,
-        ${managedBrandLogoUrl}::text AS client_brand_logo_url,
-        brand_name,
-        celebrity_name,
-        category,
-        instagram_url,
-        image_url,
-        thumbnail_url,
-        show_on_web,
-        show_on_pdf,
-        sort_order
-    `
+    const client = await sql.connect()
+    let result: { rows: PortfolioUploadRow[] }
+
+    try {
+      await client.query('BEGIN')
+      await client.query('LOCK TABLE portfolio_items IN EXCLUSIVE MODE')
+      await client.sql`
+        UPDATE portfolio_items
+        SET sort_order = sort_order + 1, updated_at = NOW()
+      `
+      result = await client.sql<PortfolioUploadRow>`
+        INSERT INTO portfolio_items (
+          title,
+          client_brand_id,
+          brand_name,
+          celebrity_name,
+          category,
+          instagram_url,
+          image_url,
+          thumbnail_url,
+          show_on_web,
+          show_on_pdf,
+          sort_order
+        )
+        VALUES (
+          ${title},
+          ${resolvedClientBrandId},
+          ${resolvedBrandName},
+          ${celebrityName},
+          ${category},
+          ${instagramUrl},
+          ${uploadedNormal.url},
+          ${uploadedHover?.url ?? null},
+          ${showOnWeb},
+          ${showOnPdf},
+          0
+        )
+        RETURNING
+          id,
+          title,
+          client_brand_id,
+          ${managedBrandLogoUrl}::text AS client_brand_logo_url,
+          brand_name,
+          celebrity_name,
+          category,
+          instagram_url,
+          image_url,
+          thumbnail_url,
+          show_on_web,
+          show_on_pdf,
+          sort_order
+      `
+      await client.query('COMMIT')
+    } catch (error) {
+      await client.query('ROLLBACK')
+      throw error
+    } finally {
+      client.release()
+    }
 
     return Response.json({
       success: true,
