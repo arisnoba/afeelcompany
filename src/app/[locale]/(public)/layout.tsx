@@ -3,7 +3,8 @@ import { notFound } from 'next/navigation';
 import { PublicShell } from '@/components/site/PublicShell';
 import { DEFAULT_LOCALE, LOCALES, isLocale } from '@/i18n/config';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 export function generateStaticParams() {
 	return LOCALES.filter(locale => locale !== DEFAULT_LOCALE).map(locale => ({ locale }));

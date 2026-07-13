@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 
 interface CompanyProfileRow {
   id: string
@@ -81,6 +82,8 @@ export async function PUT(request: Request): Promise<Response> {
       VALUES (${body.aboutText}, ${body.contactEmail}, ${body.contactPhone}, ${body.address})
     `
   }
+
+  revalidatePublicContent()
 
   return Response.json({ success: true })
 }

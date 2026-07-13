@@ -125,7 +125,7 @@ function isLegacyNotFoundPath(pathname: string) {
 	);
 }
 
-export function middleware(request: NextRequest) {
+export function proxy(request: NextRequest) {
 	const pathname = decodePathname(request.nextUrl.pathname);
 
 	if (isLegacyNotFoundPath(pathname)) {

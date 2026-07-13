@@ -1,6 +1,7 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 import type { ClientBrandAdminItem } from '@/types/client-brand'
 
 interface ClientBrandRow {
@@ -90,6 +91,8 @@ export async function POST(request: Request): Promise<Response> {
       )
       RETURNING id, name, logo_url, brand_url, sort_order, is_active
     `
+
+    revalidatePublicContent()
 
     return Response.json({
       success: true,

@@ -3,6 +3,7 @@ import { del } from '@vercel/blob'
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
 import { uploadPublicImage } from '@/lib/blob'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 import type { ClientBrandAdminItem } from '@/types/client-brand'
 
 interface ClientBrandRow {
@@ -113,6 +114,8 @@ export async function PATCH(
       WHERE client_brand_id = ${id}
     `
 
+    revalidatePublicContent()
+
     if (previousLogoUrl) {
       await del(previousLogoUrl)
     }
@@ -174,6 +177,8 @@ export async function DELETE(
     DELETE FROM client_brands
     WHERE id = ${id}
   `
+
+  revalidatePublicContent()
 
   return Response.json({ success: true })
 }

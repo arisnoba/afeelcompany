@@ -10,6 +10,7 @@ import {
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 
 function toBoolean(value: FormDataEntryValue | null): boolean | null {
   if (value === 'true') {
@@ -218,6 +219,8 @@ export async function POST(request: Request): Promise<Response> {
     } finally {
       client.release()
     }
+
+    revalidatePublicContent()
 
     return Response.json({
       success: true,

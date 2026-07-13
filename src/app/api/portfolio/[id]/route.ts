@@ -12,6 +12,7 @@ import {
   isSerializedPortfolioCategories,
   type PortfolioAdminItem,
 } from '@/types/portfolio'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 
 function toBoolean(value: FormDataEntryValue | null): boolean | null {
   if (value === 'true') {
@@ -237,6 +238,8 @@ export async function PATCH(
       return Response.json({ success: false, error: 'UPDATE_FAILED' }, { status: 500 })
     }
 
+    revalidatePublicContent()
+
     if (previousThumbnailUrlToDelete && previousThumbnailUrlToDelete !== nextThumbnailUrl) {
       await del(previousThumbnailUrlToDelete)
     }
@@ -286,6 +289,8 @@ export async function DELETE(
     DELETE FROM portfolio_items
     WHERE id = ${id}
   `
+
+  revalidatePublicContent()
 
   return Response.json({ success: true })
 }

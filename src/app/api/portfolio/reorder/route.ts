@@ -1,5 +1,6 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
+import { revalidatePublicContent } from '@/lib/public-revalidation'
 
 interface ReorderRequestBody {
   items?: Array<{
@@ -28,6 +29,8 @@ export async function POST(request: Request): Promise<Response> {
       `
     )
   )
+
+  revalidatePublicContent()
 
   return Response.json({ success: true })
 }

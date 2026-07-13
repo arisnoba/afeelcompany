@@ -1,6 +1,7 @@
 import { PublicShell } from '@/components/site/PublicShell';
 
-export const dynamic = 'force-dynamic';
+export const dynamic = 'force-static';
+export const revalidate = false;
 
 export default async function PublicLayout({
 	children,

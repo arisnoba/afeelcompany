@@ -1,5 +1,7 @@
 import type { NextConfig } from "next";
 
+const projectRoot = process.cwd();
+
 const legacyPermanentRedirects = [
   {
     source: '/shopinfo',
@@ -24,6 +26,10 @@ const legacyPermanentRedirects = [
 ];
 
 const nextConfig: NextConfig = {
+  outputFileTracingRoot: projectRoot,
+  turbopack: {
+    root: projectRoot,
+  },
   images: {
     remotePatterns: [
       {
