@@ -19,6 +19,10 @@ function isNavItemActive(pathname: string, href: string) {
 	return normalizedPath === href || normalizedPath.startsWith(`${href}/`);
 }
 
+function getLanguageSwitcherHref(locale: Locale, path: string) {
+	return `${getLocalizedPath(locale, path)}?locale=${locale}`;
+}
+
 interface SiteHeaderProps {
 	locale?: Locale;
 }
@@ -86,13 +90,14 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 				<div className="hidden items-center gap-3 md:flex">
 					<span className="sr-only">{dictionary.languageSwitcherLabel}</span>
 					{LOCALES.map(nextLocale => {
-						const href = getLocalizedPath(nextLocale, languageBasePath);
+						const href = getLanguageSwitcherHref(nextLocale, languageBasePath);
 						const isActive = locale === nextLocale;
 
 						return (
 							<Link
 								key={nextLocale}
 								href={href}
+								prefetch={false}
 								aria-current={isActive ? 'page' : undefined}
 								className={`text-[0.68rem] font-semibold uppercase tracking-[0.2em] transition ${
 									isActive ? 'text-[#274133]' : 'text-stone-400 hover:text-[#274133]'
@@ -106,13 +111,14 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 				<div className="flex items-center gap-4 md:hidden">
 					<div className="flex items-center gap-2">
 						{LOCALES.map(nextLocale => {
-							const href = getLocalizedPath(nextLocale, languageBasePath);
+							const href = getLanguageSwitcherHref(nextLocale, languageBasePath);
 							const isActive = locale === nextLocale;
 
 							return (
 								<Link
 									key={nextLocale}
 									href={href}
+									prefetch={false}
 									aria-current={isActive ? 'page' : undefined}
 									className={`text-[0.64rem] font-semibold uppercase tracking-[0.18em] ${
 										isActive ? 'text-[#274133]' : 'text-stone-400'
