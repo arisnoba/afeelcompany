@@ -46,9 +46,8 @@ export function ClientLogoMarquee({
                 src={brand.logoUrl}
                 alt={brand.name}
                 fill
-                unoptimized
                 className={imageClassName ?? 'object-contain grayscale'}
-                sizes="128px"
+                sizes="(max-width: 640px) 112px, 144px"
               />
             </div>
           )
