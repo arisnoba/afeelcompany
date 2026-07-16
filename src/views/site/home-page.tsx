@@ -78,7 +78,7 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 								duration={0.42}
 								className="mt-4 text-4xl tracking-[-0.06em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl md:text-6xl"
 							/>
-							<Link href={portfolioHref} className={portfolioLinkClassName} aria-label={copy.portfolioLinkLabel}>
+							<Link href={portfolioHref} prefetch={false} className={portfolioLinkClassName} aria-label={copy.portfolioLinkLabel}>
 								{copy.portfolioLinkLabel}
 								<ChevronRight className="size-4" />
 							</Link>
@@ -90,7 +90,7 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 							<div className="grid gap-8">
 								<PortfolioPreviewGrid items={featuredItems} href={portfolioHref} emptyLabel={copy.emptyPortfolioLabel} />
 								<div className="flex justify-center">
-									<Link href={portfolioHref} className={portfolioLinkClassName}>
+									<Link href={portfolioHref} prefetch={false} className={portfolioLinkClassName}>
 										{copy.portfolioLinkLabel}
 										<ChevronRight className="size-4" />
 									</Link>

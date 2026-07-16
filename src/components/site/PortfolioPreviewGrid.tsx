@@ -32,7 +32,7 @@ export function PortfolioPreviewGrid({
 
 				return (
 					<BlurFade key={item.id} delay={Math.min(index * 0.07, 0.35)} className="w-full">
-						<Link href={href} className="group relative block aspect-square w-full cursor-pointer overflow-hidden bg-stone-200">
+						<Link href={href} prefetch={false} className="group relative block aspect-square w-full cursor-pointer overflow-hidden bg-stone-200">
 							<div className="relative h-full w-full overflow-hidden">
 								<Image
 									src={item.imageUrl}

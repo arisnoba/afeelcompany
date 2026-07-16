@@ -1,8 +1,20 @@
 'use client';
 
-import { GodRays } from '@paper-design/shaders-react';
+import dynamic from 'next/dynamic';
+
+import { useReducedPublicMotion } from '@/hooks/use-reduced-public-motion';
+
+const GodRays = dynamic(() => import('@paper-design/shaders-react').then(module => module.GodRays), {
+	ssr: false,
+});
 
 export function ShaderGodrays({ className }: { className?: string; intensity?: number }) {
+	const shouldReduceMotion = useReducedPublicMotion();
+
+	if (shouldReduceMotion) {
+		return null;
+	}
+
 	return (
 		<div className={`hero-godrays-drift absolute inset-0 pointer-events-none ${className}`}>
 			<GodRays

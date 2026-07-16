@@ -76,7 +76,7 @@ export function SiteFooter({ profile, locale = DEFAULT_LOCALE }: SiteFooterProps
 					<ul className="grid gap-4 text-sm font-semibold uppercase tracking-wider text-stone-700">
 						{studioLinks.map(item => (
 							<li key={item.href}>
-								<Link href={getLocalizedPath(locale, item.href)} className="transition hover:text-stone-950">
+								<Link href={getLocalizedPath(locale, item.href)} prefetch={false} className="transition hover:text-stone-950">
 									{item.key ? dictionary.nav[item.key] : item.label}
 								</Link>
 							</li>

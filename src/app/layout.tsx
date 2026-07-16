@@ -1,5 +1,5 @@
 import type { Metadata } from 'next';
-import { Geist_Mono, Inter, Manrope, Newsreader } from 'next/font/google';
+import { Manrope, Newsreader } from 'next/font/google';
 import Script from 'next/script';
 import { Analytics } from '@vercel/analytics/next';
 import { SpeedInsights } from '@vercel/speed-insights/next';
@@ -7,11 +7,6 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import './globals.css';
 import { Toaster } from '@/components/ui/sonner';
 import { DEFAULT_OG_IMAGE, DEFAULT_SITE_DESCRIPTION, DEFAULT_SITE_KEYWORDS, SITE_NAME, SITE_TITLE_SUFFIX, SITE_URL, organizationJsonLd, websiteJsonLd } from '@/lib/seo';
-
-const inter = Inter({
-	subsets: ['latin'],
-	variable: '--font-inter',
-});
 
 const manrope = Manrope({
 	subsets: ['latin'],
@@ -21,11 +16,6 @@ const manrope = Manrope({
 const newsreader = Newsreader({
 	subsets: ['latin'],
 	variable: '--font-newsreader',
-});
-
-const geistMono = Geist_Mono({
-	subsets: ['latin'],
-	variable: '--font-geist-mono',
 });
 
 export const metadata: Metadata = {
@@ -83,15 +73,8 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="ko" className={`${inter.variable} ${manrope.variable} ${newsreader.variable} ${geistMono.variable} h-full antialiased`}>
+		<html lang="ko" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
 			<head>
-				<Script id="google-tag-manager" strategy="afterInteractive">
-					{`(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-MMVTFNXT');`}
-				</Script>
 				<Script src="https://www.googletagmanager.com/gtag/js?id=G-G6CC90RSQ0" strategy="afterInteractive" />
 				<Script id="google-analytics" strategy="afterInteractive">
 					{`window.dataLayer = window.dataLayer || [];
@@ -102,14 +85,6 @@ gtag('config', 'G-G6CC90RSQ0');`}
 				</Script>
 			</head>
 			<body className="flex min-h-full flex-col font-sans">
-				<noscript>
-					<iframe
-						src="https://www.googletagmanager.com/ns.html?id=GTM-MMVTFNXT"
-						height="0"
-						width="0"
-						style={{ display: 'none', visibility: 'hidden' }}
-					/>
-				</noscript>
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
 				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 				{children}
