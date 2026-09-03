@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 
 import { AnimatedPageTitle } from '@/components/ui/animated-page-title';
 import { LOCALE_LANG_TAGS, type Locale, getLocalizedPath } from '@/i18n/config';
-import { SITE_NAME, createPageMetadata, toAbsoluteUrl } from '@/lib/seo';
+import { ORGANIZATION_ID, WEBSITE_ID, createPageMetadata, toAbsoluteUrl } from '@/lib/seo';
 
 const PAGE_PATH = '/kpop-celebrity-placement';
 
@@ -30,35 +30,35 @@ const metadata = {
 	],
 };
 
-const searchTerms = ['韩国明星服装赞助', 'K-pop明星造型协赞', '韩国艺人品牌合作', '韩国明星穿搭曝光', '韩国明星同款推广', '韩国明星配饰赞助'];
+const collaborationTopics = ['韩国艺人造型协赞', 'K-pop 艺人品牌合作', '韩国演员造型合作', '服装产品协赞', '配饰与鞋履协赞', '公开露出追踪'];
 
 const processSteps = [
 	{ label: '01', title: '品牌分析', description: '确认品牌定位、目标艺人气质、产品类别与希望获得的曝光场景。' },
 	{ label: '02', title: '艺人匹配', description: '根据品牌风格筛选适合的韩流明星、K-pop 艺人、演员及造型场景。' },
 	{ label: '03', title: '产品执行', description: '协助沟通造型需求、产品寄送、样衣管理和现场协赞执行。' },
 	{ label: '04', title: '曝光确认', description: '追踪社交媒体、节目、活动、机场穿搭和媒体图片中的实际露出。' },
-	{ label: '05', title: '结果报告', description: '整理曝光记录、图片链接、艺人信息与后续合作建议，形成执行报告。' },
+	{ label: '05', title: '结果报告', description: '按双方确认的范围整理公开露出、图片链接、艺人信息与后续合作建议。' },
 ];
 
 const serviceItems = [
 	{ title: '服装协赞', description: '女装、男装、设计师品牌和季节性系列的艺人造型协赞。' },
 	{ title: '配饰与鞋履', description: '包袋、鞋履、饰品等更适合造型露出的单品协作。' },
-	{ title: '品牌曝光管理', description: '围绕明星穿搭、社交媒体传播和媒体报道确认真实曝光。' },
+	{ title: '品牌曝光管理', description: '追踪已公开的明星穿搭、社交媒体和媒体报道，并整理确认记录。' },
 	{ title: '韩国本地执行', description: '以首尔为基础处理沟通、产品流转、造型团队协作和记录归档。' },
 ];
 
 const faqItems = [
 	{
-		question: '中国品牌可以通过 AFEEL COMPANY 接触 K-pop 明星协赞吗？',
-		answer: '可以。我们会先判断品牌定位、产品类别和目标艺人风格，再评估适合的韩国艺人造型协赞路径。',
+		question: '中国品牌可以通过 AFEEL COMPANY 开展 K-pop 艺人造型合作吗？',
+		answer: '可以先提交品牌资料。我们会判断品牌定位、产品类别和目标艺人风格，再评估适合的韩国艺人造型协赞路径。',
 	},
 	{
 		question: '适合哪些品牌咨询？',
-		answer: '服装、配饰、鞋履、美妆和生活方式品牌都可以咨询，尤其适合希望通过韩国艺人穿搭获得品牌曝光的中国品牌。',
+		answer: '服装、配饰和鞋履品牌可以咨询，尤其适合希望通过韩国艺人公开穿搭建立品牌认知的中国时尚品牌。',
 	},
 	{
-		question: '合作后会提供曝光记录吗？',
-		answer: '会。我们会整理媒体露出、社交平台链接、图片记录和后续建议，方便品牌内部复盘和二次传播。',
+		question: '合作结果如何记录？',
+		answer: '我们会按双方确认的范围整理已公开的媒体露出、社交平台链接、图片记录和后续建议，供品牌内部复盘。',
 	},
 ];
 
@@ -88,48 +88,79 @@ export function getKpopPlacementMetadata(locale: Locale): Metadata {
 function buildKpopPlacementJsonLd(locale: Locale) {
 	const pageUrl = toAbsoluteUrl(getLocalizedPath(locale, PAGE_PATH));
 	const serviceId = `${pageUrl}#service`;
+	const faqId = `${pageUrl}#faq`;
+	const webpageId = `${pageUrl}#webpage`;
 
-	return [
-		{
-			'@context': 'https://schema.org',
-			'@type': 'Service',
-			'@id': serviceId,
-			name: metadata.title,
-			description: metadata.description,
-			provider: {
-				'@type': 'Organization',
-				name: SITE_NAME,
-				url: toAbsoluteUrl('/'),
-			},
-			areaServed: ['China', 'South Korea'],
-			serviceType: ['韩流明星造型协赞', 'K-pop明星造型协赞', '韩国艺人品牌合作', '韩国明星服装赞助', 'Korean celebrity fashion PR', 'K-pop star product placement'],
-			availableLanguage: ['zh-Hans', 'ko', 'en'],
-			url: pageUrl,
-		},
-		{
-			'@context': 'https://schema.org',
-			'@type': 'FAQPage',
-			mainEntity: faqItems.map(item => ({
-				'@type': 'Question',
-				name: item.question,
-				acceptedAnswer: {
-					'@type': 'Answer',
-					text: item.answer,
-				},
-			})),
-		},
-		{
-			'@context': 'https://schema.org',
-			'@type': 'WebPage',
-			name: metadata.title,
-			description: metadata.description,
-			url: pageUrl,
-			inLanguage: LOCALE_LANG_TAGS[locale],
-			mainEntity: {
+	return {
+		'@context': 'https://schema.org',
+		'@graph': [
+			{
+				'@type': 'Service',
 				'@id': serviceId,
+				name: metadata.title,
+				description: metadata.description,
+				provider: {
+					'@id': ORGANIZATION_ID,
+				},
+				areaServed: ['China', 'South Korea'],
+				serviceType: ['韩流明星造型协赞', 'K-pop明星造型协赞', '韩国艺人品牌合作', '韩国明星服装赞助', 'Korean celebrity fashion PR', 'K-pop star product placement'],
+				availableLanguage: ['zh-Hans', 'ko', 'en'],
+				url: pageUrl,
 			},
-		},
-	];
+			{
+				'@type': 'FAQPage',
+				'@id': faqId,
+				url: `${pageUrl}#faq`,
+				inLanguage: LOCALE_LANG_TAGS[locale],
+				isPartOf: {
+					'@id': WEBSITE_ID,
+				},
+				mainEntity: faqItems.map(item => ({
+					'@type': 'Question',
+					name: item.question,
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: item.answer,
+					},
+				})),
+			},
+			{
+				'@type': 'WebPage',
+				'@id': webpageId,
+				name: metadata.title,
+				description: metadata.description,
+				url: pageUrl,
+				inLanguage: LOCALE_LANG_TAGS[locale],
+				isPartOf: {
+					'@id': WEBSITE_ID,
+				},
+				mainEntity: {
+					'@id': serviceId,
+				},
+				hasPart: {
+					'@id': faqId,
+				},
+			},
+			{
+				'@type': 'BreadcrumbList',
+				'@id': `${pageUrl}#breadcrumb`,
+				itemListElement: [
+					{
+						'@type': 'ListItem',
+						position: 1,
+						name: '首页',
+						item: toAbsoluteUrl(getLocalizedPath(locale, '/')),
+					},
+					{
+						'@type': 'ListItem',
+						position: 2,
+						name: metadata.title,
+						item: pageUrl,
+					},
+				],
+			},
+		],
+	};
 }
 
 export function KpopPlacementPageView({ locale }: { locale: Locale }) {
@@ -154,7 +185,7 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 
 					<div className="grid gap-8 border-t border-stone-900/10 pt-8 lg:border-l lg:border-t-0 lg:pl-10 lg:pt-0">
 						<p className="text-lg leading-8 text-stone-600 sm:text-xl sm:leading-9">
-							AFEEL COMPANY 帮助中国时尚品牌进入韩国明星造型场景。我们连接韩流明星、K-pop 艺人、演员与造型团队，执行服装、配饰、鞋履等协赞，并确认真实曝光结果。
+							AFEEL COMPANY 帮助中国时尚品牌进入韩国明星造型场景。我们连接韩流明星、K-pop 艺人、演员与造型团队，执行服装、配饰、鞋履等协赞，追踪已公开的露出，并按双方确认的范围整理执行记录。
 						</p>
 						<div className="flex flex-wrap gap-3">
 							<Link
@@ -174,11 +205,11 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 				<section className="border-y border-stone-900/8 bg-[#faf7f3] px-5 py-10 sm:px-8 sm:py-14 lg:px-12">
 					<div className="grid gap-8 lg:grid-cols-[0.72fr_1fr] lg:items-start">
 						<div className="grid gap-3">
-							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Search Intent</p>
-							<h2 className="text-3xl font-light leading-tight tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-4xl">中国品牌会怎样搜索？</h2>
+							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">Collaboration Scope</p>
+							<h2 className="text-3xl font-light leading-tight tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-4xl">常见合作需求</h2>
 						</div>
 						<div className="flex flex-wrap gap-3">
-							{searchTerms.map(term => (
+							{collaborationTopics.map(term => (
 								<span key={term} className="border border-stone-900/10 bg-white/70 px-4 py-3 text-sm font-medium text-stone-700">
 									{term}
 								</span>
@@ -188,13 +219,15 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 				</section>
 
 				<div className="grid gap-24 py-16 sm:gap-28 sm:py-24 lg:gap-36 lg:py-36">
-					<section className="grid gap-10">
+					<section id="service" aria-labelledby="service-title" className="grid gap-10">
 						<div className="flex flex-col gap-4">
 							<div className="grid gap-8">
 								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">What We Handle</p>
-								<h2 className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">从产品到曝光的韩国本地执行</h2>
+								<h2 id="service-title" className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+									从产品到曝光的韩国本地执行
+								</h2>
 							</div>
-							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">协赞不是简单寄出产品。关键在于品牌调性、艺人风格、造型场景和曝光记录是否能连成完整链路。</p>
+							<p className="max-w-2xl text-base leading-8 text-stone-600 sm:text-lg">艺人造型协赞，是指为艺人造型提供服装、鞋履或配饰，并追踪已公开的露出。关键在于品牌调性、艺人风格、造型场景和执行记录是否能连成完整链路。</p>
 						</div>
 
 						<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-[1.05fr_0.82fr_1.05fr_0.82fr]">
@@ -227,10 +260,12 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 						</div>
 					</section>
 
-					<section className="grid gap-10 lg:grid-cols-[0.86fr_1fr] lg:items-start">
+					<section id="faq" aria-labelledby="faq-title" className="grid gap-10 lg:grid-cols-[0.86fr_1fr] lg:items-start">
 						<div className="grid gap-5 self-start lg:sticky lg:top-28">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">FAQ</p>
-							<h2 className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">中国品牌常见问题</h2>
+							<h2 id="faq-title" className="text-4xl font-light leading-none tracking-[-0.02em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+								中国品牌常见问题
+							</h2>
 						</div>
 
 						<div className="grid gap-4">
@@ -249,7 +284,7 @@ export function KpopPlacementPageView({ locale }: { locale: Locale }) {
 							<div className="grid gap-4">
 								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">For China Brands</p>
 								<p className="max-w-4xl text-2xl leading-snug tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-									如果你的品牌希望通过韩国韩流明星、K-pop 艺人或演员穿搭获得真实曝光，请先发送品牌资料、产品类别和目标合作方向。
+									如果你的品牌希望探索韩国韩流明星、K-pop 艺人或演员造型合作机会，请先发送品牌资料、产品类别和目标合作方向。
 								</p>
 							</div>
 							<div className="flex flex-wrap gap-3">

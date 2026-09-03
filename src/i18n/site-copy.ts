@@ -20,6 +20,11 @@ type EdgeItem = {
 	description: string;
 };
 
+type FaqItem = {
+	question: string;
+	answer: string;
+};
+
 type SiteDictionary = {
 	siteName: string;
 	nav: Record<NavKey, string>;
@@ -43,6 +48,10 @@ type SiteDictionary = {
 		};
 		heroBadge: string;
 		heroTitleLines: Array<{ text: string; className?: string }>;
+		overviewEyebrow: string;
+		overviewTitle: string;
+		overviewDescription: string;
+		overviewLinkLabel: string;
 		selectedWorkTitle: string;
 		clientsTitle: string;
 		portfolioLinkLabel: string;
@@ -72,9 +81,13 @@ type SiteDictionary = {
 		collaborationEyebrow: string;
 		collaborationBody: string[];
 		collaborationCta: string;
+		faqEyebrow: string;
+		faqTitle: string;
+		faqDescription: string;
 		workflowSteps: WorkflowStep[];
 		serviceItems: ServiceItem[];
 		edgeItems: EdgeItem[];
+		faqItems: FaqItem[];
 	};
 	partner: {
 		metadata: {
@@ -175,6 +188,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
+			overviewEyebrow: 'Agency Scope',
+			overviewTitle: '어필컴퍼니는 어떤 일을 하나요?',
+			overviewDescription:
+				'어필컴퍼니는 서울을 기반으로 패션 브랜드와 셀럽의 스타일링 협찬을 연결하는 패션 PR 에이전시입니다. 협의한 범위에 따라 브랜드 분석, 아티스트 매칭, 제품 핸들링, 공개 노출 확인과 결과 리포트를 진행합니다.',
+			overviewLinkLabel: '서비스와 프로세스 보기',
 			selectedWorkTitle: 'Selected Work.',
 			clientsTitle: 'Our Clients.',
 			portfolioLinkLabel: 'More',
@@ -207,10 +225,13 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			edgeDescription: '미학, 기록, 그리고 상업적 결과를 함께 생각합니다.',
 			clientsEyebrow: 'Social Proof',
 			clientsTitle: 'Our Clients',
-			clientsDescription: '숫자를 대신할 수 있는 가장 좋은 신뢰 신호는 함께 일하고 있는 얼굴입니다.',
+			clientsDescription: '공개 가능한 협업 브랜드를 통해 어필컴퍼니의 작업 범위를 소개합니다.',
 			collaborationEyebrow: 'For Collaboration',
 			collaborationBody: ['브랜드와 셀럽이 만나는 순간을 함께 기획하고 싶다면,', '어필컴퍼니로 연락 주세요.'],
 			collaborationCta: 'Inquire for Collaboration',
+			faqEyebrow: 'Frequently Asked Questions',
+			faqTitle: '협업 전 자주 묻는 질문',
+			faqDescription: '서비스 범위와 진행 방식, 결과 확인 방법을 협업 전에 확인할 수 있습니다.',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: '브랜드 분석 및\n목표 설정' },
 				{ label: 'STEP 02', title: 'MATCHING', description: '아티스트 큐레이션 및\n리스트 확정' },
@@ -221,13 +242,31 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			serviceItems: [
 				{ title: 'Brand Positioning', headline: '브랜드 포지셔닝', description: '브랜드의 지향점에 맞춰 노출 전략을 수립합니다.' },
 				{ title: 'Editorial Placement', headline: '에디토리얼 플레이스먼트', description: '매체 특성에 맞는 적합한 스타일링과 협찬을 진행합니다.' },
-				{ title: 'Digital Strategy', headline: '디지털 전략', description: '데이터를 바탕으로 검색량 및 판매 전환에 기여합니다.' },
+				{ title: 'Digital Strategy', headline: '디지털 전략', description: '협의한 디지털 채널의 공개 반응과 노출을 확인해 기록합니다.' },
 				{ title: 'Archive Management', headline: '아카이브 관리', description: '모든 활동 내역을 기록하여 체계적으로 관리합니다.' },
 			],
 			edgeItems: [
 				{ title: 'Strategic Curation', headline: '기획된 우연', description: '브랜드 이미지에 부합하는 셀럽을 매칭합니다.' },
-				{ title: 'Endless Archive', headline: '꼼꼼한 기록', description: '노출 현황을 누락 없이 실시간으로 공유합니다.' },
-				{ title: 'Proven Impact', headline: '확실한 결과', description: '판매 성과와 지표로 이어지는 작업을 지향합니다.' },
+				{ title: 'Endless Archive', headline: '꼼꼼한 기록', description: '협의한 채널에서 확인된 노출을 기록해 공유합니다.' },
+				{ title: 'Proven Impact', headline: '확인된 결과', description: '확인된 결과와 후속 활용에 필요한 자료를 정리합니다.' },
+			],
+			faqItems: [
+				{
+					question: '어필컴퍼니는 어떤 서비스를 제공하나요?',
+					answer: '브랜드 포지셔닝, 아티스트 매칭, 스타일링 협찬, 미디어 노출 확인, 디지털 전략과 결과 아카이빙을 함께 다룹니다.',
+				},
+				{
+					question: '셀럽 협찬은 어떤 순서로 진행되나요?',
+					answer: '브랜드와 목표를 먼저 분석한 뒤 아티스트를 큐레이션하고, 협찬 실행, 노출 확인, 성과 분석과 사후 리포트 순서로 진행합니다.',
+				},
+				{
+					question: '협업 결과는 어떻게 확인할 수 있나요?',
+					answer: '진행 중인 노출 현황을 기록하고, 확인된 미디어와 디지털 반응을 정리해 협업 결과와 후속 판단에 필요한 자료를 공유합니다.',
+				},
+				{
+					question: '상담 전에 어떤 정보를 준비하면 되나요?',
+					answer: '브랜드 소개, 제품 카테고리, 목표 고객, 희망하는 아티스트나 노출 방향을 알려주시면 협업 가능 범위와 진행 방식을 검토할 수 있습니다.',
+				},
 			],
 		},
 		partner: {
@@ -338,6 +377,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
+			overviewEyebrow: 'Agency Scope',
+			overviewTitle: 'What does AFEEL COMPANY do?',
+			overviewDescription:
+				'AFEEL COMPANY is a Seoul-based fashion PR agency connecting fashion brands with celebrity styling opportunities. Depending on the agreed scope, we support brand review, talent matching, product handling, public exposure tracking, and post-campaign reporting.',
+			overviewLinkLabel: 'View services and process',
 			selectedWorkTitle: 'Selected Work.',
 			clientsTitle: 'Our Clients.',
 			portfolioLinkLabel: 'More',
@@ -370,10 +414,13 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			edgeDescription: 'We think about aesthetics, documentation, and commercial results together.',
 			clientsEyebrow: 'Social Proof',
 			clientsTitle: 'Our Clients',
-			clientsDescription: 'The strongest signal of trust is the faces still choosing to work with us.',
+			clientsDescription: 'Our publicly listed collaborators show the range of brand work documented by AFEEL COMPANY.',
 			collaborationEyebrow: 'For Collaboration',
 			collaborationBody: ['If you want to shape the moment where a brand meets a celebrity,', 'contact AFEEL COMPANY.'],
 			collaborationCta: 'Inquire for Collaboration',
+			faqEyebrow: 'Frequently Asked Questions',
+			faqTitle: 'What brands ask before working with us',
+			faqDescription: 'Review our service scope, collaboration process, and reporting approach before starting a conversation.',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: 'Brand analysis and\ngoal setting' },
 				{ label: 'STEP 02', title: 'MATCHING', description: 'Artist curation and\nlist confirmation' },
@@ -384,13 +431,31 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			serviceItems: [
 				{ title: 'Brand Positioning', headline: 'Brand Positioning', description: 'We build exposure strategies that fit the brand’s direction.' },
 				{ title: 'Editorial Placement', headline: 'Editorial Placement', description: 'We execute styling and placements tailored to each media format.' },
-				{ title: 'Digital Strategy', headline: 'Digital Strategy', description: 'We contribute to search growth and sales conversion with data-led execution.' },
+				{ title: 'Digital Strategy', headline: 'Digital Strategy', description: 'We track and document public exposure and responses across agreed digital channels.' },
 				{ title: 'Archive Management', headline: 'Archive Management', description: 'We document every activity and manage the archive systematically.' },
 			],
 			edgeItems: [
 				{ title: 'Strategic Curation', headline: 'Planned Serendipity', description: 'We match celebrities who align with the image a brand wants to build.' },
-				{ title: 'Endless Archive', headline: 'Meticulous Records', description: 'We share exposure tracking in real time without losing detail.' },
-				{ title: 'Proven Impact', headline: 'Clear Results', description: 'We aim for work that leads to measurable sales and business signals.' },
+				{ title: 'Endless Archive', headline: 'Meticulous Records', description: 'We document and share confirmed exposure across the agreed channels.' },
+				{ title: 'Proven Impact', headline: 'Confirmed Results', description: 'We organize confirmed results and materials for follow-up use.' },
+			],
+			faqItems: [
+				{
+					question: 'What services does AFEEL COMPANY provide?',
+					answer: 'We cover brand positioning, artist matching, styling placements, media exposure tracking, digital strategy, and result archiving.',
+				},
+				{
+					question: 'How does a celebrity placement project work?',
+					answer: 'We analyze the brand and goals, curate artists, execute the placement, confirm exposure, and close with performance analysis and a post-campaign report.',
+				},
+				{
+					question: 'How are collaboration results documented?',
+					answer: 'We record confirmed exposure and organize relevant media and digital responses into materials that support result review and next-step decisions.',
+				},
+				{
+					question: 'What should a brand prepare before an inquiry?',
+					answer: 'Share your brand introduction, product category, target audience, and preferred artist or exposure direction so we can review the appropriate scope and process.',
+				},
 			],
 		},
 		partner: {
@@ -501,6 +566,11 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			},
 			heroBadge: 'Fashion PR Agency',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
+			overviewEyebrow: '服务范围',
+			overviewTitle: 'AFEEL COMPANY 提供哪些服务？',
+			overviewDescription:
+				'AFEEL COMPANY 是一家位于首尔的时尚公关公司，帮助时尚品牌开展韩国艺人造型合作。根据双方确认的合作范围，我们提供品牌分析、艺人匹配、产品流转、公开露出追踪和执行报告。',
+			overviewLinkLabel: '查看服务与流程',
 			selectedWorkTitle: '精选案例',
 			clientsTitle: '合作客户',
 			portfolioLinkLabel: '更多',
@@ -526,10 +596,13 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			edgeDescription: '我们同时思考审美、记录与商业结果。',
 			clientsEyebrow: '合作证明',
 			clientsTitle: 'Our Clients',
-			clientsDescription: '最有说服力的信任信号，是仍然持续与我们合作的那些面孔。',
+			clientsDescription: '通过可公开的合作品牌，介绍 AFEEL COMPANY 的工作范围。',
 			collaborationEyebrow: '合作洽谈',
 			collaborationBody: ['如果你想一起策划品牌与艺人相遇的关键时刻，', '欢迎联系 AFEEL COMPANY。'],
 			collaborationCta: '预约合作咨询',
+			faqEyebrow: '常见问题',
+			faqTitle: '合作前常见问题',
+			faqDescription: '在咨询前了解服务范围、合作流程与结果记录方式。',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: '品牌分析与\n目标设定' },
 				{ label: 'STEP 02', title: 'MATCHING', description: '艺人筛选与\n名单确认' },
@@ -540,13 +613,31 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			serviceItems: [
 				{ title: 'Brand Positioning', headline: '品牌定位', description: '根据品牌方向制定合适的曝光策略。' },
 				{ title: 'Editorial Placement', headline: '媒体植入', description: '按媒介特性执行最合适的造型与协赞安排。' },
-				{ title: 'Digital Strategy', headline: '数字策略', description: '以数据为基础，推动搜索量增长与销售转化。' },
+				{ title: 'Digital Strategy', headline: '数字策略', description: '追踪并记录双方约定的数字渠道中的公开露出与反馈。' },
 				{ title: 'Archive Management', headline: '档案管理', description: '系统记录每一次执行内容，并持续维护归档。' },
 			],
 			edgeItems: [
 				{ title: 'Strategic Curation', headline: '被设计的契合', description: '我们为品牌匹配真正符合品牌气质的艺人。' },
-				{ title: 'Endless Archive', headline: '细致记录', description: '我们实时共享曝光进度，不遗漏任何细节。' },
-				{ title: 'Proven Impact', headline: '明确结果', description: '我们追求能真正转化为销售与指标的工作成果。' },
+				{ title: 'Endless Archive', headline: '细致记录', description: '记录并共享双方约定渠道中已确认的公开露出。' },
+				{ title: 'Proven Impact', headline: '确认结果', description: '整理已确认的结果与后续使用所需资料。' },
+			],
+			faqItems: [
+				{
+					question: 'AFEEL COMPANY 提供哪些服务？',
+					answer: '我们提供品牌定位、艺人匹配、造型协赞、媒体曝光确认、数字策略和结果归档等服务。',
+				},
+				{
+					question: '艺人协赞项目如何进行？',
+					answer: '我们先分析品牌与目标，再筛选艺人、执行协赞、确认曝光，最后完成成效分析与后续报告。',
+				},
+				{
+					question: '合作结果如何记录？',
+					answer: '我们记录已确认的曝光，并整理相关媒体与数字反馈，为结果复盘和后续决策提供资料。',
+				},
+				{
+					question: '咨询前需要准备哪些信息？',
+					answer: '请提供品牌介绍、产品类别、目标人群，以及希望合作的艺人或曝光方向，以便我们评估合适的服务范围与流程。',
+				},
 			],
 		},
 		partner: {

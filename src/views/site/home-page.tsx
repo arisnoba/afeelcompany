@@ -32,6 +32,7 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 
 	const heroBody = getLocalizedPublicAboutCopy(locale, profile.aboutText);
 	const clientLogoBrands = getBrandsWithLogos(clientBrands);
+	const overviewHref = getLocalizedPath(locale, locale === 'zh' ? '/kpop-celebrity-placement' : '/about');
 	const portfolioHref = getLocalizedPath(locale, '/portfolio');
 	const portfolioLinkClassName =
 		'hidden md:inline-flex items-center gap-3 border border-stone-900/10 bg-white/70 px-6 py-3 text-[0.68rem] font-semibold uppercase tracking-[0.28em] text-stone-900 transition hover:border-stone-900/20 hover:bg-white';
@@ -68,7 +69,33 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 			</section>
 
 			<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
-				<div className="grid gap-24 py-16 sm:gap-28 sm:py-24 lg:gap-32 lg:py-40">
+				<div className="grid grid-cols-1 gap-24 py-16 sm:gap-28 sm:py-24 lg:gap-32 lg:py-40">
+					<section aria-labelledby="agency-scope-title" className="grid grid-cols-[minmax(0,1fr)] gap-12 bg-[#f6f3f2] px-6 py-10 [word-break:normal] sm:px-10 sm:py-14 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20 lg:px-14 lg:py-16">
+						<div className="grid content-start gap-6">
+							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{copy.overviewEyebrow}</p>
+							<h2 id="agency-scope-title" className="max-w-xl text-4xl font-light leading-tight tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+								{copy.overviewTitle}
+							</h2>
+							<p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">{copy.overviewDescription}</p>
+							<div>
+								<Link href={overviewHref} prefetch={false} className="inline-flex items-center gap-3 text-[0.68rem] font-semibold uppercase tracking-[0.24em] text-stone-950 transition hover:text-[#274133]">
+									{copy.overviewLinkLabel}
+									<ChevronRight className="size-4" />
+								</Link>
+							</div>
+						</div>
+
+						<div className="grid grid-cols-[minmax(0,1fr)] gap-4 sm:grid-cols-2">
+							{dictionary.about.serviceItems.map(item => (
+								<article key={item.title} className="grid grid-cols-[minmax(0,1fr)] content-start gap-4 bg-white p-6 sm:p-7">
+									<p className="text-[0.58rem] font-semibold uppercase tracking-[0.28em] text-stone-400">{item.title}</p>
+									<h3 className="text-2xl tracking-[-0.04em] text-stone-950 [font-family:var(--font-newsreader)]">{item.headline}</h3>
+									<p className="text-sm leading-7 text-stone-600 sm:text-base">{item.description}</p>
+								</article>
+							))}
+						</div>
+					</section>
+
 					<section className="grid gap-12">
 						<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
 							<AnimatedPageTitle

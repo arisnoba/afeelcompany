@@ -1,6 +1,6 @@
 import type { Metadata } from 'next';
 
-import { DEFAULT_LOCALE, LOCALES, OPEN_GRAPH_LOCALES, type Locale, getLocalizedPath } from '@/i18n/config';
+import { DEFAULT_LOCALE, LOCALES, LOCALE_LANG_TAGS, OPEN_GRAPH_LOCALES, type Locale, getLocalizedPath } from '@/i18n/config';
 import { INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL } from '@/lib/site';
 
 export const SITE_NAME = 'AFEEL COMPANY';
@@ -42,7 +42,7 @@ export function toAbsoluteUrl(path = '/') {
 
 function buildLanguageAlternates(path: string) {
 	return {
-		...Object.fromEntries(LOCALES.map(locale => [locale, getLocalizedPath(locale, path)])),
+		...Object.fromEntries(LOCALES.map(locale => [LOCALE_LANG_TAGS[locale], getLocalizedPath(locale, path)])),
 		'x-default': getLocalizedPath(DEFAULT_LOCALE, path),
 	};
 }
@@ -112,19 +112,34 @@ export function createNoIndexMetadata(title?: string): Metadata {
 	};
 }
 
+export const ORGANIZATION_ID = `${toAbsoluteUrl('/')}#organization`;
+export const WEBSITE_ID = `${toAbsoluteUrl('/')}#website`;
+
 export const organizationJsonLd = {
 	'@context': 'https://schema.org',
 	'@type': 'Organization',
+	'@id': ORGANIZATION_ID,
 	name: SITE_NAME,
+	alternateName: ['어필컴퍼니', 'AFEELCOMPANY'],
 	url: toAbsoluteUrl('/'),
 	logo: toAbsoluteUrl('/images/logo.svg'),
+	description: DEFAULT_SITE_DESCRIPTION,
 	sameAs: [INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL],
+	areaServed: [
+		{ '@type': 'Country', name: 'South Korea' },
+		{ '@type': 'Country', name: 'China' },
+	],
+	knowsAbout: ['Fashion public relations', 'Celebrity styling placement', 'Brand positioning', 'Media exposure tracking', 'Collaboration archive management'],
 };
 
 export const websiteJsonLd = {
 	'@context': 'https://schema.org',
 	'@type': 'WebSite',
+	'@id': WEBSITE_ID,
 	name: SITE_NAME,
 	url: toAbsoluteUrl('/'),
-	inLanguage: 'ko-KR',
+	inLanguage: Object.values(LOCALE_LANG_TAGS),
+	publisher: {
+		'@id': ORGANIZATION_ID,
+	},
 };

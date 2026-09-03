@@ -16,7 +16,7 @@ export async function PublicShell({ children, locale }: PublicShellProps) {
 	return (
 		<PublicSmoothScroll>
 			<LocaleHtmlAttributes lang={LOCALE_LANG_TAGS[locale]} />
-			<div className="min-h-screen text-stone-950 [font-family:var(--font-manrope)]">
+			<div lang={LOCALE_LANG_TAGS[locale]} className="min-h-screen text-stone-950 [font-family:var(--font-manrope)]">
 				<div className="relative flex min-h-screen flex-col">
 					<SiteHeader locale={locale} />
 					<main className="flex-1 pb-16">{children}</main>

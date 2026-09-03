@@ -72,9 +72,14 @@ export default function RootLayout({
 }: Readonly<{
 	children: React.ReactNode;
 }>) {
+	const organizationJson = JSON.stringify(organizationJsonLd).replace(/</g, '\\u003c');
+	const websiteJson = JSON.stringify(websiteJsonLd).replace(/</g, '\\u003c');
+
 	return (
 		<html lang="ko" className={`${manrope.variable} ${newsreader.variable} h-full antialiased`}>
 			<head>
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: organizationJson }} />
+				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: websiteJson }} />
 				<Script src="https://www.googletagmanager.com/gtag/js?id=G-G6CC90RSQ0" strategy="afterInteractive" />
 				<Script id="google-analytics" strategy="afterInteractive">
 					{`window.dataLayer = window.dataLayer || [];
@@ -85,8 +90,6 @@ gtag('config', 'G-G6CC90RSQ0');`}
 				</Script>
 			</head>
 			<body className="flex min-h-full flex-col font-sans">
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }} />
-				<script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteJsonLd) }} />
 				{children}
 				<Toaster />
 				<Analytics />

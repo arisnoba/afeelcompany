@@ -1,7 +1,7 @@
 import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
-import { DEFAULT_LOCALE, getLocalizedPath, getPathnameLocale, isLocale, stripLocaleFromPathname, type Locale } from '@/i18n/config';
+import { DEFAULT_LOCALE, LOCALE_LANG_TAGS, getLocalizedPath, getPathnameLocale, isLocale, stripLocaleFromPathname, type Locale } from '@/i18n/config';
 
 const LOCALE_COOKIE_NAME = 'afeel-locale';
 const PUBLIC_PATHS = new Set(['/', '/about', '/partner', '/portfolio', '/contact', '/feed']);
@@ -159,11 +159,15 @@ function nextWithLocaleHeader(request: NextRequest, locale: Locale) {
 	const requestHeaders = new Headers(request.headers);
 	requestHeaders.set('x-afeel-locale', locale);
 
-	return NextResponse.next({
+	const response = NextResponse.next({
 		request: {
 			headers: requestHeaders,
 		},
 	});
+
+	response.headers.set('Content-Language', LOCALE_LANG_TAGS[locale]);
+
+	return response;
 }
 
 function withLocaleCookie(response: NextResponse, locale: Locale) {

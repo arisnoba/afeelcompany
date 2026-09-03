@@ -11,7 +11,7 @@ import { DEFAULT_LOCALE, LOCALE_LANG_TAGS, type Locale, getLocalizedPath } from 
 import { getSiteDictionary } from '@/i18n/site-copy';
 import { getBrandsWithLogos } from '@/lib/client-brands';
 import { getLocalizedSiteAddress } from '@/lib/site-address';
-import { SITE_NAME, createPageMetadata, toAbsoluteUrl } from '@/lib/seo';
+import { ORGANIZATION_ID, SITE_NAME, WEBSITE_ID, createPageMetadata, toAbsoluteUrl } from '@/lib/seo';
 import { INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL, getSiteClientBrands, getSiteCompanyProfile } from '@/lib/site';
 
 function CircleIcon() {
@@ -75,11 +75,11 @@ function buildAboutPageJsonLd({
 	profile: Awaited<ReturnType<typeof getSiteCompanyProfile>>;
 }) {
 	const pageUrl = toAbsoluteUrl(getLocalizedPath(locale, '/about'));
-	const organizationId = `${toAbsoluteUrl('/')}#organization`;
+	const faqId = `${pageUrl}#faq`;
 	const address = getLocalizedSiteAddress(locale, profile.address);
 	const organization: Record<string, unknown> = {
 		'@type': 'Organization',
-		'@id': organizationId,
+		'@id': ORGANIZATION_ID,
 		name: SITE_NAME,
 		alternateName: '어필컴퍼니',
 		url: toAbsoluteUrl('/'),
@@ -105,33 +105,77 @@ function buildAboutPageJsonLd({
 		};
 	}
 
+	organization.hasOfferCatalog = {
+		'@type': 'OfferCatalog',
+		name: copy.expertiseTitle,
+		itemListElement: copy.serviceItems.map(item => ({
+			'@type': 'Service',
+			name: item.headline,
+			alternateName: item.title,
+			description: item.description,
+			provider: {
+				'@id': ORGANIZATION_ID,
+			},
+		})),
+	};
+
 	return {
 		'@context': 'https://schema.org',
-		'@type': 'AboutPage',
-		'@id': `${pageUrl}#about-page`,
-		url: pageUrl,
-		name: copy.metadata.title,
-		description: copy.metadata.description,
-		inLanguage: LOCALE_LANG_TAGS[locale],
-		isPartOf: {
-			'@type': 'WebSite',
-			name: SITE_NAME,
-			url: toAbsoluteUrl('/'),
-		},
-		mainEntity: organization,
-		hasOfferCatalog: {
-			'@type': 'OfferCatalog',
-			name: copy.expertiseTitle,
-			itemListElement: copy.serviceItems.map(item => ({
-				'@type': 'Service',
-				name: item.headline,
-				alternateName: item.title,
-				description: item.description,
-				provider: {
-					'@id': organizationId,
+		'@graph': [
+			organization,
+			{
+				'@type': 'AboutPage',
+				'@id': `${pageUrl}#about-page`,
+				url: pageUrl,
+				name: copy.metadata.title,
+				description: copy.metadata.description,
+				inLanguage: LOCALE_LANG_TAGS[locale],
+				isPartOf: {
+					'@id': WEBSITE_ID,
 				},
-			})),
-		},
+				mainEntity: {
+					'@id': ORGANIZATION_ID,
+				},
+				hasPart: {
+					'@id': faqId,
+				},
+			},
+			{
+				'@type': 'FAQPage',
+				'@id': faqId,
+				url: `${pageUrl}#faq`,
+				inLanguage: LOCALE_LANG_TAGS[locale],
+				isPartOf: {
+					'@id': WEBSITE_ID,
+				},
+				mainEntity: copy.faqItems.map(item => ({
+					'@type': 'Question',
+					name: item.question,
+					acceptedAnswer: {
+						'@type': 'Answer',
+						text: item.answer,
+					},
+				})),
+			},
+			{
+				'@type': 'BreadcrumbList',
+				'@id': `${pageUrl}#breadcrumb`,
+				itemListElement: [
+					{
+						'@type': 'ListItem',
+						position: 1,
+						name: getSiteDictionary(locale).nav.home,
+						item: toAbsoluteUrl(getLocalizedPath(locale, '/')),
+					},
+					{
+						'@type': 'ListItem',
+						position: 2,
+						name: copy.metadata.title,
+						item: pageUrl,
+					},
+				],
+			},
+		],
 	};
 }
 
@@ -256,6 +300,25 @@ export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Loca
 									<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-stone-400">{item.title}</p>
 									<h3 className="text-3xl tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)]">{item.headline}</h3>
 									<p className="text-sm leading-8 text-stone-600 sm:text-base">{item.description}</p>
+								</article>
+							))}
+						</div>
+					</section>
+
+					<section id="faq" aria-labelledby="faq-title" className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
+						<div className="grid content-start gap-5 lg:sticky lg:top-28 lg:self-start">
+							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">{copy.faqEyebrow}</p>
+							<h2 id="faq-title" className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
+								{copy.faqTitle}
+							</h2>
+							<p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">{copy.faqDescription}</p>
+						</div>
+
+						<div className="grid gap-4">
+							{copy.faqItems.map(item => (
+								<article key={item.question} className="grid gap-4 bg-[#faf7f3] p-7 sm:p-8">
+									<h3 className="text-xl font-semibold leading-8 tracking-[-0.02em] text-stone-950">{item.question}</h3>
+									<p className="text-base leading-8 text-stone-600">{item.answer}</p>
 								</article>
 							))}
 						</div>
