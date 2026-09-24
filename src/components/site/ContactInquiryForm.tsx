@@ -4,6 +4,8 @@ import { FormEvent, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { hasInquiryMessageContent } from '@/lib/contact-inquiry';
+
 type ContactInquiryFormProps = {
 	canSubmit: boolean;
 	text: {
@@ -13,9 +15,12 @@ type ContactInquiryFormProps = {
 		companyPlaceholder: string;
 		emailLabel: string;
 		emailPlaceholder: string;
+		phoneLabel: string;
+		phonePlaceholder: string;
 		websiteLabel: string;
 		messageLabel: string;
 		messagePlaceholder: string;
+		messageTemplate: string;
 		submitIdleLabel: string;
 		submitPendingLabel: string;
 		replyNotice: string;
@@ -29,6 +34,7 @@ type ContactFormState = {
 	name: string;
 	company: string;
 	email: string;
+	phone: string;
 	message: string;
 	website: string;
 };
@@ -37,13 +43,14 @@ type ContactApiResponse =
 	| { success: true; duplicate?: boolean }
 	| {
 			success: false;
-			error?: 'INVALID_PAYLOAD' | 'DUPLICATE_SUBMISSION' | 'INVALID_EMAIL' | 'EMAIL_NOT_CONFIGURED' | 'CONTACT_DESTINATION_NOT_CONFIGURED' | 'SEND_FAILED';
+			error?: 'INVALID_PAYLOAD' | 'EMPTY_MESSAGE' | 'DUPLICATE_SUBMISSION' | 'INVALID_EMAIL' | 'EMAIL_NOT_CONFIGURED' | 'CONTACT_DESTINATION_NOT_CONFIGURED' | 'SEND_FAILED';
 	  };
 
 const INITIAL_STATE: ContactFormState = {
 	name: '',
 	company: '',
 	email: '',
+	phone: '',
 	message: '',
 	website: '',
 };
@@ -53,7 +60,8 @@ function FieldLabel({ children }: { children: React.ReactNode }) {
 }
 
 export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFormProps) {
-	const [form, setForm] = useState<ContactFormState>(INITIAL_STATE);
+	const initialState = { ...INITIAL_STATE, message: text.messageTemplate };
+	const [form, setForm] = useState<ContactFormState>(initialState);
 	const [isPending, setIsPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
@@ -64,6 +72,13 @@ export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFo
 		event.preventDefault();
 
 		if (!canSubmit || submissionPending.current) {
+			return;
+		}
+
+		if (!hasInquiryMessageContent(form.message)) {
+			setError(errorMessages.EMPTY_MESSAGE);
+			setSuccessMessage(null);
+			toast.error(errorMessages.EMPTY_MESSAGE, { id: 'contact-inquiry', position: 'top-center', description: undefined, duration: 8000 });
 			return;
 		}
 
@@ -93,13 +108,13 @@ export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFo
 			}
 
 			if (result.duplicate) {
-				setForm(INITIAL_STATE);
+				setForm(initialState);
 				setSuccessMessage(errorMessages.DUPLICATE_SUBMISSION);
 				toast.info(errorMessages.DUPLICATE_SUBMISSION, { id: toastId, position: 'top-center', duration: 8000 });
 				return;
 			}
 
-			setForm(INITIAL_STATE);
+			setForm(initialState);
 			setSuccessMessage(text.successLabel);
 			toast.success(text.successLabel, { id: toastId, position: 'top-center', description: text.replyNotice, duration: 8000 });
 		} catch {
@@ -138,18 +153,33 @@ export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFo
 				</label>
 			</div>
 
-			<label className="flex flex-col items-start gap-1.5">
-				<FieldLabel>{text.emailLabel}</FieldLabel>
-				<input
-					type="email"
-					name="email"
-					value={form.email}
-					onChange={event => setForm(current => ({ ...current, email: event.target.value }))}
-					placeholder={text.emailPlaceholder}
-					className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
-					required
-				/>
-			</label>
+			<div className="grid gap-10 md:grid-cols-2 md:gap-12">
+				<label className="flex flex-col items-start gap-1.5">
+					<FieldLabel>{text.emailLabel}</FieldLabel>
+					<input
+						type="email"
+						name="email"
+						value={form.email}
+						onChange={event => setForm(current => ({ ...current, email: event.target.value }))}
+						placeholder={text.emailPlaceholder}
+						className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+						required
+					/>
+				</label>
+				<label className="flex flex-col items-start gap-1.5">
+					<FieldLabel>{text.phoneLabel}</FieldLabel>
+					<input
+						type="tel"
+						name="phone"
+						autoComplete="tel"
+						maxLength={50}
+						value={form.phone}
+						onChange={event => setForm(current => ({ ...current, phone: event.target.value }))}
+						placeholder={text.phonePlaceholder}
+						className="w-full border-0 border-b border-stone-300/60 bg-transparent px-0 py-3 text-base text-stone-900 placeholder:text-stone-400/80 focus:border-stone-900 focus:outline-none"
+					/>
+				</label>
+			</div>
 
 			<label className="hidden" aria-hidden="true">
 				<FieldLabel>{text.websiteLabel}</FieldLabel>

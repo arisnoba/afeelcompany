@@ -2,11 +2,13 @@ import { createHash } from 'node:crypto'
 
 import { getSiteCompanyProfile } from '@/lib/site'
 import { resend } from '@/lib/resend'
+import { hasInquiryMessageContent } from '@/lib/contact-inquiry'
 
 type ContactRequestPayload = {
 	name?: string
 	company?: string
 	email?: string
+	phone?: string
 	message?: string
 	website?: string
 }
@@ -54,17 +56,20 @@ function buildSubmissionFingerprint({
 	name,
 	company,
 	email,
+	phone,
 	message,
 }: {
 	name: string
 	company: string
 	email: string
+	phone: string
 	message: string
 }) {
 	const normalizedPayload = JSON.stringify({
 		name: normalizeForFingerprint(name),
 		company: normalizeForFingerprint(company),
 		email: normalizeForFingerprint(email),
+		phone: normalizeForFingerprint(phone),
 		message: normalizeForFingerprint(message),
 	})
 
@@ -77,6 +82,7 @@ export async function POST(request: Request): Promise<Response> {
 	const name = normalizeField(body.name, 100)
 	const company = normalizeField(body.company, 100)
 	const email = normalizeField(body.email, 200)
+	const phone = normalizeField(body.phone, 50)
 	const message = normalizeField(body.message, 5000)
 	const website = normalizeField(body.website, 500)
 
@@ -84,8 +90,12 @@ export async function POST(request: Request): Promise<Response> {
 		return Response.json({ success: true })
 	}
 
-	if (!name || !email || !message) {
+	if (!name || !email) {
 		return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
+	}
+
+	if (!hasInquiryMessageContent(message)) {
+		return Response.json({ success: false, error: 'EMPTY_MESSAGE' }, { status: 400 })
 	}
 
 	if (!EMAIL_PATTERN.test(email)) {
@@ -99,6 +109,7 @@ export async function POST(request: Request): Promise<Response> {
 		name,
 		company,
 		email,
+		phone,
 		message,
 	})
 
@@ -126,6 +137,7 @@ export async function POST(request: Request): Promise<Response> {
 	const escapedName = escapeHtml(name)
 	const escapedCompany = escapeHtml(company || '-')
 	const escapedEmail = escapeHtml(email)
+	const escapedPhone = escapeHtml(phone || '-')
 	const escapedMessage = escapeHtml(message).replaceAll('\n', '<br />')
 
 	const { error } = await resend.emails.send({
@@ -138,6 +150,7 @@ export async function POST(request: Request): Promise<Response> {
 			`이름: ${name}`,
 			`회사명: ${company || '-'}`,
 			`이메일: ${email}`,
+			`연락처: ${phone || '-'}`,
 			'',
 			'[문의 내용]',
 			message,
@@ -159,6 +172,10 @@ export async function POST(request: Request): Promise<Response> {
 						<tr>
 							<td style="padding:10px 0;border-bottom:1px solid #eee7de;font-size:13px;color:#7b776f;">이메일</td>
 							<td style="padding:10px 0;border-bottom:1px solid #eee7de;font-size:15px;color:#171717;">${escapedEmail}</td>
+						</tr>
+						<tr>
+							<td style="padding:10px 0;border-bottom:1px solid #eee7de;font-size:13px;color:#7b776f;">연락처</td>
+							<td style="padding:10px 0;border-bottom:1px solid #eee7de;font-size:15px;color:#171717;">${escapedPhone}</td>
 						</tr>
 					</table>
 					<div style="font-size:13px;color:#7b776f;margin-bottom:8px;">문의 내용</div>

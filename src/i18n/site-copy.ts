@@ -126,9 +126,12 @@ type SiteDictionary = {
 			companyPlaceholder: string;
 			emailLabel: string;
 			emailPlaceholder: string;
+			phoneLabel: string;
+			phonePlaceholder: string;
 			websiteLabel: string;
 			messageLabel: string;
 			messagePlaceholder: string;
+			messageTemplate: string;
 			submitIdleLabel: string;
 			submitPendingLabel: string;
 			replyNotice: string;
@@ -290,9 +293,12 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				companyPlaceholder: 'Organization',
 				emailLabel: 'Email Address',
 				emailPlaceholder: 'email@address.com',
+				phoneLabel: 'Phone Number',
+				phonePlaceholder: '선택 입력',
 				websiteLabel: 'Website',
 				messageLabel: 'Message',
 				messagePlaceholder: 'Project details and inquiry',
+				messageTemplate: '브랜드명: \n브랜드 소개/웹사이트: \n희망 일정/기간: \n관심 서비스: \n문의 내용: ',
 				submitIdleLabel: 'Submit Inquiry',
 				submitPendingLabel: 'Sending...',
 				replyNotice: '회신은 입력하신 이메일 주소로 보내드립니다.',
@@ -300,6 +306,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				successLabel: '문의가 전송되었습니다. 확인 후 빠르게 답변드리겠습니다.',
 				errorMessages: {
 					INVALID_PAYLOAD: '이름, 이메일, 문의 내용을 다시 확인해 주세요.',
+					EMPTY_MESSAGE: '안내 항목에 내용을 채우거나 문의 내용을 직접 입력해 주세요.',
 					DUPLICATE_SUBMISSION: '같은 문의가 이미 접수되어 한 번만 전달했습니다.',
 					INVALID_EMAIL: '올바른 이메일 주소를 입력해 주세요.',
 					EMAIL_NOT_CONFIGURED: '메일 전송 설정이 아직 완료되지 않았습니다.',
@@ -459,9 +466,12 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				companyPlaceholder: 'Organization',
 				emailLabel: 'Email Address',
 				emailPlaceholder: 'email@address.com',
+				phoneLabel: 'Phone Number',
+				phonePlaceholder: 'Optional',
 				websiteLabel: 'Website',
 				messageLabel: 'Message',
 				messagePlaceholder: 'Project details and inquiry',
+				messageTemplate: 'Brand name: \nBrand overview / website: \nPreferred schedule / duration: \nServices of interest: \nInquiry details: ',
 				submitIdleLabel: 'Submit Inquiry',
 				submitPendingLabel: 'Sending...',
 				replyNotice: 'We will reply to the email address you provide.',
@@ -469,6 +479,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				successLabel: 'Your inquiry has been sent. We will get back to you soon.',
 				errorMessages: {
 					INVALID_PAYLOAD: 'Please check your name, email, and message again.',
+					EMPTY_MESSAGE: 'Please fill in the suggested fields or write your inquiry in your own words.',
 					DUPLICATE_SUBMISSION: 'This inquiry was already received and forwarded once.',
 					INVALID_EMAIL: 'Please enter a valid email address.',
 					EMAIL_NOT_CONFIGURED: 'Email sending has not been configured yet.',
@@ -621,9 +632,12 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				companyPlaceholder: '机构名称',
 				emailLabel: '邮箱地址',
 				emailPlaceholder: 'email@address.com',
+				phoneLabel: '联系电话',
+				phonePlaceholder: '选填',
 				websiteLabel: '网站',
 				messageLabel: '留言',
 				messagePlaceholder: '项目内容与咨询说明',
+				messageTemplate: '品牌名称：\n品牌介绍/网站：\n希望的时间/周期：\n感兴趣的服务：\n咨询内容：',
 				submitIdleLabel: '提交咨询',
 				submitPendingLabel: '发送中...',
 				replyNotice: '我们会回复到你填写的邮箱地址。',
@@ -631,6 +645,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				successLabel: '咨询已发送成功，我们会尽快回复。',
 				errorMessages: {
 					INVALID_PAYLOAD: '请再次确认姓名、邮箱和咨询内容。',
+					EMPTY_MESSAGE: '请填写提示项目，或直接输入您的咨询内容。',
 					DUPLICATE_SUBMISSION: '相同咨询已收到，并仅转发一次。',
 					INVALID_EMAIL: '请输入有效的邮箱地址。',
 					EMAIL_NOT_CONFIGURED: '邮件发送设置尚未完成。',
