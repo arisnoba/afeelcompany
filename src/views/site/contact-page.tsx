@@ -60,7 +60,7 @@ export async function ContactPageView({ locale = DEFAULT_LOCALE }: { locale?: Lo
 								<address className="not-italic text-xl leading-snug text-stone-900 [font-family:var(--font-newsreader)] sm:text-2xl">{renderValue(address, copy.pendingLabel)}</address>
 							</ContactDetail>
 
-							<div className="flex flex-col gap-6 md:flex-row md:gap-12">
+							<div className="flex flex-col gap-6 md:flex-row md:gap-12 lg:flex-col xl:flex-row">
 								<div className="flex-1">
 									<ContactDetail label={copy.emailLabel}>
 										{email ? (
@@ -88,7 +88,7 @@ export async function ContactPageView({ locale = DEFAULT_LOCALE }: { locale?: Lo
 						</div>
 					</div>
 
-					<div className="flex flex-1 flex-col gap-8 border border-stone-900/10 bg-[#f6f3f2] p-8 sm:p-10 lg:p-12">
+					<div className="flex flex-1 flex-col gap-8 border border-stone-200 p-8 sm:p-10 lg:p-12">
 						<div className="flex flex-col gap-4">
 							<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#715a3e]">{copy.panelEyebrow}</p>
 							<AnimatedPageTitle

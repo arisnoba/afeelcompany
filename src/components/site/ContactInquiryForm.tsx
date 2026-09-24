@@ -1,7 +1,8 @@
 'use client';
 
-import { FormEvent, useState } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { ArrowUpRight } from 'lucide-react';
+import { toast } from 'sonner';
 
 type ContactInquiryFormProps = {
 	canSubmit: boolean;
@@ -56,18 +57,21 @@ export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFo
 	const [isPending, setIsPending] = useState(false);
 	const [error, setError] = useState<string | null>(null);
 	const [successMessage, setSuccessMessage] = useState<string | null>(null);
+	const submissionPending = useRef(false);
 	const errorMessages = text.errorMessages as Record<NonNullable<Extract<ContactApiResponse, { success: false }>['error']>, string>;
 
 	async function handleSubmit(event: FormEvent<HTMLFormElement>) {
 		event.preventDefault();
 
-		if (!canSubmit || isPending) {
+		if (!canSubmit || submissionPending.current) {
 			return;
 		}
 
+		submissionPending.current = true;
 		setIsPending(true);
 		setError(null);
 		setSuccessMessage(null);
+		const toastId = toast.loading(text.submitPendingLabel, { id: 'contact-inquiry', position: 'top-center', description: undefined });
 
 		try {
 			const response = await fetch('/api/contact', {
@@ -82,20 +86,27 @@ export default function ContactInquiryForm({ canSubmit, text }: ContactInquiryFo
 
 			if (!response.ok || !result.success) {
 				const errorCode = result.success ? 'SEND_FAILED' : (result.error ?? 'SEND_FAILED');
-				setError(errorMessages[errorCode]);
+				const message = errorMessages[errorCode] ?? errorMessages.SEND_FAILED;
+				setError(message);
+				toast.error(message, { id: toastId, position: 'top-center', duration: 8000 });
 				return;
 			}
 
 			if (result.duplicate) {
+				setForm(INITIAL_STATE);
 				setSuccessMessage(errorMessages.DUPLICATE_SUBMISSION);
+				toast.info(errorMessages.DUPLICATE_SUBMISSION, { id: toastId, position: 'top-center', duration: 8000 });
 				return;
 			}
 
 			setForm(INITIAL_STATE);
 			setSuccessMessage(text.successLabel);
+			toast.success(text.successLabel, { id: toastId, position: 'top-center', description: text.replyNotice, duration: 8000 });
 		} catch {
 			setError(errorMessages.SEND_FAILED);
+			toast.error(errorMessages.SEND_FAILED, { id: toastId, position: 'top-center', duration: 8000 });
 		} finally {
+			submissionPending.current = false;
 			setIsPending(false);
 		}
 	}

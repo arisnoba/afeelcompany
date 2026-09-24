@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 const GOOGLE_MAPS_SCRIPT_ID = 'google-maps-javascript-api';
+const GOOGLE_MAPS_CALLBACK = '__afeelGoogleMapsReady';
 
 const WHITE_MAP_STYLES = [
 	{ elementType: 'geometry', stylers: [{ color: '#f5f3ef' }] },
@@ -40,6 +41,17 @@ type GoogleMapsGeocoderResult = {
 	};
 };
 
+type GoogleMapsOverlay = {
+	onAdd: () => void;
+	draw: () => void;
+	onRemove: () => void;
+	setMap: (map: unknown | null) => void;
+	getPanes: () => { overlayMouseTarget: HTMLElement } | null;
+	getProjection: () => {
+		fromLatLngToDivPixel: (location: GoogleMapsLocation) => { x: number; y: number } | null;
+	};
+};
+
 type GoogleMapsNamespace = {
 	Geocoder: new () => {
 		geocode: (
@@ -61,26 +73,12 @@ type GoogleMapsNamespace = {
 			zoomControl: boolean;
 		}
 	) => unknown;
-	Marker: new (options: {
-		icon: {
-			fillColor: string;
-			fillOpacity: number;
-			path: string;
-			scale: number;
-			strokeColor: string;
-			strokeWeight: number;
-		};
-		map: unknown;
-		position: GoogleMapsLocation;
-		title: string;
-	}) => unknown;
-	SymbolPath: {
-		CIRCLE: string;
-	};
+	OverlayView: new () => GoogleMapsOverlay;
 };
 
 declare global {
 	interface Window {
+		__afeelGoogleMapsReady?: () => void;
 		google?: {
 			maps?: GoogleMapsNamespace;
 		};
@@ -94,31 +92,38 @@ function loadGoogleMapsScript(apiKey: string) {
 		return Promise.reject(new Error('Google Maps can only load in the browser.'));
 	}
 
-	if (window.google?.maps) {
-		return Promise.resolve();
-	}
-
 	if (googleMapsScriptPromise) {
 		return googleMapsScriptPromise;
 	}
 
+	if (window.google?.maps?.Map && window.google.maps.OverlayView) {
+		return Promise.resolve();
+	}
+
 	googleMapsScriptPromise = new Promise<void>((resolve, reject) => {
 		const existingScript = document.getElementById(GOOGLE_MAPS_SCRIPT_ID) as HTMLScriptElement | null;
+		const script = existingScript ?? document.createElement('script');
 
-		if (existingScript) {
-			existingScript.addEventListener('load', () => resolve(), { once: true });
-			existingScript.addEventListener('error', () => reject(new Error('Failed to load Google Maps.')), { once: true });
-			return;
-		}
+		window[GOOGLE_MAPS_CALLBACK] = () => {
+			delete window[GOOGLE_MAPS_CALLBACK];
+			resolve();
+		};
+		script.onerror = () => {
+			delete window[GOOGLE_MAPS_CALLBACK];
+			script.remove();
+			reject(new Error('Failed to load Google Maps.'));
+		};
 
-		const script = document.createElement('script');
+		if (existingScript) return;
+
 		script.id = GOOGLE_MAPS_SCRIPT_ID;
-		script.src = `https://maps.googleapis.com/maps/api/js?key=${apiKey}`;
+		const params = new URLSearchParams({ key: apiKey, loading: 'async', callback: GOOGLE_MAPS_CALLBACK });
+		script.src = `https://maps.googleapis.com/maps/api/js?${params}`;
 		script.async = true;
-		script.defer = true;
-		script.onload = () => resolve();
-		script.onerror = () => reject(new Error('Failed to load Google Maps.'));
 		document.head.appendChild(script);
+	}).catch((error) => {
+		googleMapsScriptPromise = null;
+		throw error;
 	});
 
 	return googleMapsScriptPromise;
@@ -140,6 +145,7 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 		}
 
 		let cancelled = false;
+		let marker: GoogleMapsOverlay | null = null;
 
 		loadGoogleMapsScript(apiKey)
 			.then(() => {
@@ -174,19 +180,25 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 						styles: WHITE_MAP_STYLES,
 					});
 
-					new maps.Marker({
-						map,
-						position: location,
-						title: address,
-						icon: {
-							path: maps.SymbolPath.CIRCLE,
-							scale: 9,
-							fillColor: '#171717',
-							fillOpacity: 1,
-							strokeColor: '#ffffff',
-							strokeWeight: 3,
-						},
-					});
+					// Advanced markers require a map ID, which disables WHITE_MAP_STYLES.
+					// Use an overlay to preserve the styled map and the fixed-size location dot.
+					const dot = document.createElement('div');
+					dot.title = address;
+					dot.setAttribute('role', 'img');
+					dot.setAttribute('aria-label', address);
+					dot.style.cssText = 'position:absolute;width:21px;height:21px;box-sizing:border-box;border:3px solid #fff;border-radius:50%;background:#171717;transform:translate(-50%,-50%)';
+					const overlay = new maps.OverlayView();
+					overlay.onAdd = () => overlay.getPanes()?.overlayMouseTarget.appendChild(dot);
+					overlay.draw = () => {
+						const point = overlay.getProjection().fromLatLngToDivPixel(location);
+						if (point) {
+							dot.style.left = `${point.x}px`;
+							dot.style.top = `${point.y}px`;
+						}
+					};
+					overlay.onRemove = () => dot.remove();
+					overlay.setMap(map);
+					marker = overlay;
 
 					setLoadedAddress(address);
 				});
@@ -195,6 +207,7 @@ export default function ContactMap({ address, apiKey }: ContactMapProps) {
 
 		return () => {
 			cancelled = true;
+			marker?.setMap(null);
 		};
 	}, [address, apiKey]);
 
