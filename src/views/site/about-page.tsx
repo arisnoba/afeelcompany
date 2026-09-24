@@ -1,7 +1,6 @@
 import type { Metadata } from 'next';
-import Image from 'next/image';
-import Link from 'next/link';
 
+import { CollaborationCta } from '@/components/site/CollaborationCta';
 import { ClientLogoMarquee } from '@/components/site/ClientLogoMarquee';
 import { ResponsiveStoryReveal } from '@/components/site/ResponsiveStoryReveal';
 import { WorkflowBeam } from '@/components/site/WorkflowBeam';
@@ -75,7 +74,6 @@ function buildAboutPageJsonLd({
 	profile: Awaited<ReturnType<typeof getSiteCompanyProfile>>;
 }) {
 	const pageUrl = toAbsoluteUrl(getLocalizedPath(locale, '/about'));
-	const faqId = `${pageUrl}#faq`;
 	const address = getLocalizedSiteAddress(locale, profile.address);
 	const organization: Record<string, unknown> = {
 		'@type': 'Organization',
@@ -136,26 +134,6 @@ function buildAboutPageJsonLd({
 				mainEntity: {
 					'@id': ORGANIZATION_ID,
 				},
-				hasPart: {
-					'@id': faqId,
-				},
-			},
-			{
-				'@type': 'FAQPage',
-				'@id': faqId,
-				url: `${pageUrl}#faq`,
-				inLanguage: LOCALE_LANG_TAGS[locale],
-				isPartOf: {
-					'@id': WEBSITE_ID,
-				},
-				mainEntity: copy.faqItems.map(item => ({
-					'@type': 'Question',
-					name: item.question,
-					acceptedAnswer: {
-						'@type': 'Answer',
-						text: item.answer,
-					},
-				})),
 			},
 			{
 				'@type': 'BreadcrumbList',
@@ -198,7 +176,6 @@ export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Loca
 		'long term know exactly why',
 		'they come back.',
 	].join('\n');
-	const contactHref = getLocalizedPath(locale, '/contact');
 	const aboutPageJsonLd = JSON.stringify(buildAboutPageJsonLd({ locale, copy, profile })).replace(/</g, '\\u003c');
 
 	return (
@@ -305,25 +282,6 @@ export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Loca
 						</div>
 					</section>
 
-					<section id="faq" aria-labelledby="faq-title" className="grid gap-10 lg:grid-cols-[minmax(0,0.72fr)_minmax(0,1.28fr)] lg:gap-20">
-						<div className="grid content-start gap-5 lg:sticky lg:top-28 lg:self-start">
-							<p className="text-[0.68rem] font-semibold uppercase tracking-[0.34em] text-[#715a3e]">{copy.faqEyebrow}</p>
-							<h2 id="faq-title" className="text-4xl leading-none tracking-[-0.05em] text-stone-950 [font-family:var(--font-newsreader)] sm:text-5xl">
-								{copy.faqTitle}
-							</h2>
-							<p className="max-w-xl text-base leading-8 text-stone-600 sm:text-lg">{copy.faqDescription}</p>
-						</div>
-
-						<div className="grid gap-4">
-							{copy.faqItems.map(item => (
-								<article key={item.question} className="grid gap-4 bg-[#faf7f3] p-7 sm:p-8">
-									<h3 className="text-xl font-semibold leading-8 tracking-[-0.02em] text-stone-950">{item.question}</h3>
-									<p className="text-base leading-8 text-stone-600">{item.answer}</p>
-								</article>
-							))}
-						</div>
-					</section>
-
 					<section className="grid gap-18 md:gap-24">
 						<div className="grid gap-5 md:grid-cols-2 md:items-end">
 							<div className="grid gap-10">
@@ -358,26 +316,7 @@ export async function AboutPageView({ locale = DEFAULT_LOCALE }: { locale?: Loca
 							/>
 						</div>
 
-						<div className="relative grid gap-6 overflow-hidden bg-stone-950 px-8 py-10 text-white sm:px-10">
-							<div className="pointer-events-none absolute right-0 top-0 h-full select-none opacity-5">
-								<Image src="/images/symbol.svg" alt="" width={33} height={30} priority className="h-full w-auto object-contain brightness-0 invert" />
-							</div>
-
-							<div className="relative z-10 grid gap-6">
-								<p className="text-[0.62rem] font-semibold uppercase tracking-[0.32em] text-[#ccead6]">{copy.collaborationEyebrow}</p>
-								<p className="max-w-4xl text-2xl leading-snug tracking-[-0.04em] [font-family:var(--font-newsreader)] sm:text-3xl">
-									{copy.collaborationBody[0]}
-									<br /> {copy.collaborationBody[1]}
-								</p>
-								<div>
-									<Link
-										href={contactHref}
-										className="inline-flex items-center justify-center border border-white/16 bg-white/8 px-8 py-4 text-[0.68rem] font-semibold uppercase tracking-[0.3em] text-white transition hover:bg-white/14">
-										{copy.collaborationCta}
-									</Link>
-								</div>
-							</div>
-						</div>
+						<CollaborationCta locale={locale} />
 					</section>
 				</div>
 			</div>

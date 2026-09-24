@@ -4,7 +4,7 @@ import { NextResponse } from 'next/server';
 import { DEFAULT_LOCALE, LOCALE_LANG_TAGS, getLocalizedPath, getPathnameLocale, isLocale, stripLocaleFromPathname, type Locale } from '@/i18n/config';
 
 const LOCALE_COOKIE_NAME = 'afeel-locale';
-const PUBLIC_PATHS = new Set(['/', '/about', '/partner', '/portfolio', '/contact', '/feed']);
+const PUBLIC_PATHS = new Set(['/', '/about', '/partner', '/portfolio', '/faq', '/contact', '/feed']);
 const LEGACY_NOT_FOUND_PREFIXES = [
 	'/member',
 	'/product',

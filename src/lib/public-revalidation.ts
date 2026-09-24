@@ -2,7 +2,7 @@ import { revalidatePath } from 'next/cache';
 
 import { LOCALES, getLocalizedPath } from '@/i18n/config';
 
-const SHARED_PUBLIC_PATHS = ['/', '/about', '/portfolio', '/partner', '/contact'] as const;
+const SHARED_PUBLIC_PATHS = ['/', '/about', '/portfolio', '/faq', '/partner', '/contact'] as const;
 const ZH_ONLY_PUBLIC_PATHS = ['/kpop-celebrity-placement'] as const;
 
 export function revalidatePublicContent() {

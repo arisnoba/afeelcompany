@@ -20,6 +20,7 @@ function renderValue(value: string, fallback: string) {
 const STUDIO_LINKS: Array<{ href: string; key?: keyof ReturnType<typeof getSiteDictionary>['nav']; label?: string }> = [
 	{ href: '/about', key: 'about' },
 	{ href: '/portfolio', key: 'portfolio' },
+	{ href: '/faq', key: 'faq' },
 	{ href: '/contact', key: 'contact' },
 ];
 

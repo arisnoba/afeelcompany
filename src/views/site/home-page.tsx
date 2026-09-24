@@ -16,13 +16,16 @@ import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from
 export function getHomeMetadata(locale: Locale): Metadata {
 	const copy = getSiteDictionary(locale).home.metadata;
 
-	return createPageMetadata({
-		title: copy.title,
-		description: copy.description,
-		path: '/',
-		keywords: copy.keywords,
-		locale,
-	});
+	return {
+		...createPageMetadata({
+			title: copy.title,
+			description: copy.description,
+			path: '/',
+			keywords: copy.keywords,
+			locale,
+		}),
+		title: { absolute: copy.title },
+	};
 }
 
 export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
@@ -48,7 +51,7 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 				<div className="mx-auto w-full max-w-screen-2xl px-4 sm:px-6 lg:px-10">
 					<div className="relative z-10 grid gap-20 py-10 sm:py-14 lg:py-16">
 						<div className="flex items-center gap-4">
-							<span className="h-px w-14 bg-[#715a3e]" />
+							<span className="h-px w-3 bg-[#715a3e]" />
 							<span className="text-[0.62rem] font-semibold uppercase tracking-[0.4em] text-[#715a3e]"> {copy.heroBadge}</span>
 						</div>
 
@@ -95,6 +98,7 @@ export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Local
 							))}
 						</div>
 					</section>
+
 
 					<section className="grid gap-12">
 						<div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">

@@ -1,6 +1,6 @@
 import type { Locale } from '@/i18n/config';
 
-type NavKey = 'home' | 'about' | 'partner' | 'portfolio' | 'contact';
+type NavKey = 'home' | 'about' | 'partner' | 'portfolio' | 'faq' | 'contact';
 
 type WorkflowStep = {
 	label: string;
@@ -18,11 +18,6 @@ type EdgeItem = {
 	title: string;
 	headline: string;
 	description: string;
-};
-
-type FaqItem = {
-	question: string;
-	answer: string;
 };
 
 type SiteDictionary = {
@@ -81,13 +76,9 @@ type SiteDictionary = {
 		collaborationEyebrow: string;
 		collaborationBody: string[];
 		collaborationCta: string;
-		faqEyebrow: string;
-		faqTitle: string;
-		faqDescription: string;
 		workflowSteps: WorkflowStep[];
 		serviceItems: ServiceItem[];
 		edgeItems: EdgeItem[];
-		faqItems: FaqItem[];
 	};
 	partner: {
 		metadata: {
@@ -166,6 +157,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			about: 'ABOUT',
 			partner: 'PARTNER',
 			portfolio: 'PORTFOLIO',
+			faq: 'FAQ',
 			contact: 'CONTACT',
 		},
 		languageSwitcherLabel: '언어 선택',
@@ -182,16 +174,16 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: '패션 PR·셀럽 협찬 에이전시',
-				description: '어필컴퍼니는 패션 브랜드와 셀럽을 연결하는 PR 에이전시입니다. 스타일링 협찬, 브랜드 포지셔닝, 미디어 노출 관리와 성과 리포트를 함께 설계합니다.',
-				keywords: ['패션 PR 에이전시', '셀럽 협찬', '스타일링 협찬', '브랜드 포지셔닝', '스타 마케팅', '어필컴퍼니'],
+				title: '어필컴퍼니 | 패션 PR 대행사, 연예인 협찬',
+				description: '어필컴퍼니는 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 연예인 스타일링 협찬, 브랜드 포지셔닝, 미디어 노출 관리와 결과 리포트를 통해 브랜드의 가치를 알립니다.',
+				keywords: ['패션 PR 대행사', '패션 PR 에이전시', '연예인 협찬', '셀럽 협찬', '연예인 스타일링 협찬', '브랜드 포지셔닝', '어필컴퍼니'],
 			},
-			heroBadge: 'Fashion PR Agency',
+			heroBadge: 'AFEEL COMPANY',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
 			overviewEyebrow: 'Agency Scope',
 			overviewTitle: '어필컴퍼니는 어떤 일을 하나요?',
 			overviewDescription:
-				'어필컴퍼니는 서울을 기반으로 패션 브랜드와 셀럽의 스타일링 협찬을 연결하는 패션 PR 에이전시입니다. 협의한 범위에 따라 브랜드 분석, 아티스트 매칭, 제품 핸들링, 공개 노출 확인과 결과 리포트를 진행합니다.',
+				'어필컴퍼니는 서울을 기반으로 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 협의한 범위에 따라 브랜드 분석, 아티스트 매칭, 제품 핸들링, 공개 노출 확인과 결과 리포트를 진행합니다.',
 			overviewLinkLabel: '서비스와 프로세스 보기',
 			selectedWorkTitle: 'Selected Work.',
 			clientsTitle: 'Our Clients.',
@@ -200,8 +192,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: '패션 PR·셀럽 협찬 에이전시 소개',
-				description: '어필컴퍼니는 패션 브랜드와 셀럽을 연결하는 PR 에이전시입니다. 브랜드 분석, 아티스트 매칭, 스타일링 협찬, 미디어 노출 확인, 성과 리포트까지 협업 전 과정을 설계합니다.',
+				title: '어필컴퍼니 소개, 패션 PR과 연예인 협찬',
+				description: '어필컴퍼니는 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 브랜드 분석, 아티스트 매칭, 연예인 스타일링 협찬, 미디어 노출 확인, 결과 리포트까지 협업 과정을 소개합니다.',
 				keywords: ['어필컴퍼니 소개', '패션 PR 에이전시', '셀럽 협찬', '스타일링 협찬', '브랜드 포지셔닝', '스타 마케팅', '패션 브랜드 PR'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
@@ -229,9 +221,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			collaborationEyebrow: 'For Collaboration',
 			collaborationBody: ['브랜드와 셀럽이 만나는 순간을 함께 기획하고 싶다면,', '어필컴퍼니로 연락 주세요.'],
 			collaborationCta: 'Inquire for Collaboration',
-			faqEyebrow: 'Frequently Asked Questions',
-			faqTitle: '협업 전 자주 묻는 질문',
-			faqDescription: '서비스 범위와 진행 방식, 결과 확인 방법을 협업 전에 확인할 수 있습니다.',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: '브랜드 분석 및\n목표 설정' },
 				{ label: 'STEP 02', title: 'MATCHING', description: '아티스트 큐레이션 및\n리스트 확정' },
@@ -249,24 +238,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				{ title: 'Strategic Curation', headline: '기획된 우연', description: '브랜드 이미지에 부합하는 셀럽을 매칭합니다.' },
 				{ title: 'Endless Archive', headline: '꼼꼼한 기록', description: '협의한 채널에서 확인된 노출을 기록해 공유합니다.' },
 				{ title: 'Proven Impact', headline: '확인된 결과', description: '확인된 결과와 후속 활용에 필요한 자료를 정리합니다.' },
-			],
-			faqItems: [
-				{
-					question: '어필컴퍼니는 어떤 서비스를 제공하나요?',
-					answer: '브랜드 포지셔닝, 아티스트 매칭, 스타일링 협찬, 미디어 노출 확인, 디지털 전략과 결과 아카이빙을 함께 다룹니다.',
-				},
-				{
-					question: '셀럽 협찬은 어떤 순서로 진행되나요?',
-					answer: '브랜드와 목표를 먼저 분석한 뒤 아티스트를 큐레이션하고, 협찬 실행, 노출 확인, 성과 분석과 사후 리포트 순서로 진행합니다.',
-				},
-				{
-					question: '협업 결과는 어떻게 확인할 수 있나요?',
-					answer: '진행 중인 노출 현황을 기록하고, 확인된 미디어와 디지털 반응을 정리해 협업 결과와 후속 판단에 필요한 자료를 공유합니다.',
-				},
-				{
-					question: '상담 전에 어떤 정보를 준비하면 되나요?',
-					answer: '브랜드 소개, 제품 카테고리, 목표 고객, 희망하는 아티스트나 노출 방향을 알려주시면 협업 가능 범위와 진행 방식을 검토할 수 있습니다.',
-				},
 			],
 		},
 		partner: {
@@ -355,6 +326,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			about: 'ABOUT',
 			partner: 'PARTNER',
 			portfolio: 'PORTFOLIO',
+			faq: 'FAQ',
 			contact: 'CONTACT',
 		},
 		languageSwitcherLabel: 'Language',
@@ -371,16 +343,16 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: 'Fashion PR Agency',
-				description: 'AFEEL COMPANY is a fashion PR agency connecting brands with celebrities through styling placements, brand positioning, media exposure management, and performance reporting.',
+				title: 'AFEEL COMPANY | Fashion PR, Celebrity Placement',
+				description: 'AFEEL COMPANY connects fashion brands with celebrities through styling placements, brand positioning, media exposure tracking, and campaign reports.',
 				keywords: ['fashion PR agency', 'celebrity placement', 'styling placement', 'brand positioning', 'star marketing', 'AFEEL COMPANY'],
 			},
-			heroBadge: 'Fashion PR Agency',
+			heroBadge: 'AFEEL COMPANY',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
 			overviewEyebrow: 'Agency Scope',
 			overviewTitle: 'What does AFEEL COMPANY do?',
 			overviewDescription:
-				'AFEEL COMPANY is a Seoul-based fashion PR agency connecting fashion brands with celebrity styling opportunities. Depending on the agreed scope, we support brand review, talent matching, product handling, public exposure tracking, and post-campaign reporting.',
+				'AFEEL COMPANY is a Seoul-based PR agency connecting fashion brands with celebrities. Depending on the agreed scope, we support brand review, talent matching, product handling, public exposure tracking, and post-campaign reporting.',
 			overviewLinkLabel: 'View services and process',
 			selectedWorkTitle: 'Selected Work.',
 			clientsTitle: 'Our Clients.',
@@ -389,8 +361,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: 'Fashion PR & Celebrity Placement Agency',
-				description: 'AFEEL COMPANY is a fashion PR agency connecting brands with celebrities through brand analysis, artist matching, styling placements, media exposure tracking, and performance reporting.',
+				title: 'Fashion PR Agency, Celebrity Placement',
+				description: 'Explore how AFEEL COMPANY supports fashion brands through brand analysis, celebrity matching, styling placements, media exposure tracking, and campaign reports.',
 				keywords: ['AFEEL COMPANY about', 'fashion PR agency', 'celebrity placement', 'styling placement', 'brand positioning', 'star marketing', 'fashion brand PR'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
@@ -418,9 +390,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			collaborationEyebrow: 'For Collaboration',
 			collaborationBody: ['If you want to shape the moment where a brand meets a celebrity,', 'contact AFEEL COMPANY.'],
 			collaborationCta: 'Inquire for Collaboration',
-			faqEyebrow: 'Frequently Asked Questions',
-			faqTitle: 'What brands ask before working with us',
-			faqDescription: 'Review our service scope, collaboration process, and reporting approach before starting a conversation.',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: 'Brand analysis and\ngoal setting' },
 				{ label: 'STEP 02', title: 'MATCHING', description: 'Artist curation and\nlist confirmation' },
@@ -438,24 +407,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				{ title: 'Strategic Curation', headline: 'Planned Serendipity', description: 'We match celebrities who align with the image a brand wants to build.' },
 				{ title: 'Endless Archive', headline: 'Meticulous Records', description: 'We document and share confirmed exposure across the agreed channels.' },
 				{ title: 'Proven Impact', headline: 'Confirmed Results', description: 'We organize confirmed results and materials for follow-up use.' },
-			],
-			faqItems: [
-				{
-					question: 'What services does AFEEL COMPANY provide?',
-					answer: 'We cover brand positioning, artist matching, styling placements, media exposure tracking, digital strategy, and result archiving.',
-				},
-				{
-					question: 'How does a celebrity placement project work?',
-					answer: 'We analyze the brand and goals, curate artists, execute the placement, confirm exposure, and close with performance analysis and a post-campaign report.',
-				},
-				{
-					question: 'How are collaboration results documented?',
-					answer: 'We record confirmed exposure and organize relevant media and digital responses into materials that support result review and next-step decisions.',
-				},
-				{
-					question: 'What should a brand prepare before an inquiry?',
-					answer: 'Share your brand introduction, product category, target audience, and preferred artist or exposure direction so we can review the appropriate scope and process.',
-				},
 			],
 		},
 		partner: {
@@ -544,6 +495,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			about: '关于',
 			partner: '合作品牌',
 			portfolio: '作品集',
+			faq: '常见问题',
 			contact: '联系',
 		},
 		languageSwitcherLabel: '语言',
@@ -560,16 +512,16 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: 'Fashion PR Agency',
-				description: 'AFEEL COMPANY 是连接时尚品牌与艺人的公关公司，提供造型协赞、品牌定位、媒体曝光管理与成效报告。',
+				title: 'AFEEL COMPANY | 时尚公关与韩国艺人合作',
+				description: 'AFEEL COMPANY 连接时尚品牌和韩国艺人，通过艺人造型合作、品牌定位、媒体曝光追踪和项目报告，帮助品牌提升知名度。',
 				keywords: ['时尚公关公司', '艺人合作', '造型协赞', '品牌定位', '明星营销', 'AFEEL COMPANY'],
 			},
-			heroBadge: 'Fashion PR Agency',
+			heroBadge: 'AFEEL COMPANY',
 			heroTitleLines: [{ text: 'Fashion PR' }, { text: '& Styling.', className: 'italic text-[#715a3e]' }],
 			overviewEyebrow: '服务范围',
 			overviewTitle: 'AFEEL COMPANY 提供哪些服务？',
 			overviewDescription:
-				'AFEEL COMPANY 是一家位于首尔的时尚公关公司，帮助时尚品牌开展韩国艺人造型合作。根据双方确认的合作范围，我们提供品牌分析、艺人匹配、产品流转、公开露出追踪和执行报告。',
+				'AFEEL COMPANY 是一家位于首尔的公关公司，帮助时尚品牌开展韩国艺人合作。根据双方确认的合作范围，我们提供品牌分析、艺人匹配、产品流转、公开露出追踪和执行报告。',
 			overviewLinkLabel: '查看服务与流程',
 			selectedWorkTitle: '精选案例',
 			clientsTitle: '合作客户',
@@ -578,8 +530,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: '时尚公关与艺人协赞公司介绍',
-				description: 'AFEEL COMPANY 是连接时尚品牌与艺人的公关公司，提供品牌分析、艺人匹配、造型协赞、媒体曝光确认与成效报告等完整协作流程。',
+				title: '时尚公关与艺人合作公司介绍',
+				description: '了解 AFEEL COMPANY 如何为时尚品牌提供品牌分析、艺人匹配、造型合作、媒体曝光确认与项目报告等公关服务。',
 				keywords: ['AFEEL COMPANY 介绍', '时尚公关公司', '艺人合作', '造型协赞', '品牌定位', '明星营销', '时尚品牌公关'],
 			},
 			heroTitleLines: [{ text: 'Results,' }, { text: 'not promises.' }],
@@ -600,9 +552,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 			collaborationEyebrow: '合作洽谈',
 			collaborationBody: ['如果你想一起策划品牌与艺人相遇的关键时刻，', '欢迎联系 AFEEL COMPANY。'],
 			collaborationCta: '预约合作咨询',
-			faqEyebrow: '常见问题',
-			faqTitle: '合作前常见问题',
-			faqDescription: '在咨询前了解服务范围、合作流程与结果记录方式。',
 			workflowSteps: [
 				{ label: 'STEP 01', title: 'STRATEGY', description: '品牌分析与\n目标设定' },
 				{ label: 'STEP 02', title: 'MATCHING', description: '艺人筛选与\n名单确认' },
@@ -620,24 +569,6 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 				{ title: 'Strategic Curation', headline: '被设计的契合', description: '我们为品牌匹配真正符合品牌气质的艺人。' },
 				{ title: 'Endless Archive', headline: '细致记录', description: '记录并共享双方约定渠道中已确认的公开露出。' },
 				{ title: 'Proven Impact', headline: '确认结果', description: '整理已确认的结果与后续使用所需资料。' },
-			],
-			faqItems: [
-				{
-					question: 'AFEEL COMPANY 提供哪些服务？',
-					answer: '我们提供品牌定位、艺人匹配、造型协赞、媒体曝光确认、数字策略和结果归档等服务。',
-				},
-				{
-					question: '艺人协赞项目如何进行？',
-					answer: '我们先分析品牌与目标，再筛选艺人、执行协赞、确认曝光，最后完成成效分析与后续报告。',
-				},
-				{
-					question: '合作结果如何记录？',
-					answer: '我们记录已确认的曝光，并整理相关媒体与数字反馈，为结果复盘和后续决策提供资料。',
-				},
-				{
-					question: '咨询前需要准备哪些信息？',
-					answer: '请提供品牌介绍、产品类别、目标人群，以及希望合作的艺人或曝光方向，以便我们评估合适的服务范围与流程。',
-				},
 			],
 		},
 		partner: {

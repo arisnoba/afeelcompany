@@ -34,6 +34,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 		{ href: '/about', label: dictionary.nav.about },
 		{ href: '/partner', label: dictionary.nav.partner },
 		{ href: '/portfolio', label: dictionary.nav.portfolio },
+		{ href: '/faq', label: dictionary.nav.faq },
 		{ href: '/contact', label: dictionary.nav.contact },
 	];
 	const pathname = usePathname();
@@ -72,7 +73,7 @@ export function SiteHeader({ locale = DEFAULT_LOCALE }: SiteHeaderProps) {
 					<Image src="/images/symbol.svg" alt="afeelcompany" width={33} height={30} className="h-5 w-auto invert md:h-8" priority />
 				</Link>
 
-				<nav className="hidden items-center gap-10 md:flex">
+				<nav className="hidden items-center gap-5 md:flex lg:gap-10">
 					{navItems.map(item => {
 						const isActive = isNavItemActive(pathname, item.href);
 

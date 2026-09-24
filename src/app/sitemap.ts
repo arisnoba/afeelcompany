@@ -13,6 +13,7 @@ const PUBLIC_ROUTES: Array<{
 	{ path: '/about', changeFrequency: 'monthly', priority: 0.8 },
 	{ path: '/partner', changeFrequency: 'weekly', priority: 0.85 },
 	{ path: '/portfolio', changeFrequency: 'weekly', priority: 0.9 },
+	{ path: '/faq', changeFrequency: 'monthly', priority: 0.7 },
 	{ path: '/contact', changeFrequency: 'monthly', priority: 0.7 },
 	{ path: '/kpop-celebrity-placement', changeFrequency: 'monthly', priority: 0.72, locales: ['zh'] },
 ];
