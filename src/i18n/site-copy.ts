@@ -177,8 +177,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: '어필컴퍼니 | 패션 PR 대행사, 연예인 협찬',
-				description: '어필컴퍼니는 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 연예인 스타일링 협찬, 브랜드 포지셔닝, 미디어 노출 관리와 결과 리포트를 통해 브랜드의 가치를 알립니다.',
+				title: '어필컴퍼니 AFEEL COMPANY | 패션 PR, 연예인·셀럽 협찬·PPL',
+				description: '어필컴퍼니(AFEEL COMPANY)는 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 연예인 스타일링 협찬, 브랜드 포지셔닝, 미디어 노출 관리와 결과 리포트를 통해 브랜드의 가치를 알립니다.',
 				keywords: ['패션 PR 대행사', '패션 PR 에이전시', '연예인 협찬', '셀럽 협찬', '연예인 스타일링 협찬', '브랜드 포지셔닝', '어필컴퍼니'],
 			},
 			heroBadge: 'AFEEL COMPANY',
@@ -195,7 +195,7 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		about: {
 			metadata: {
-				title: '어필컴퍼니 소개, 패션 PR과 연예인 협찬',
+				title: '회사 소개, 패션 PR과 연예인 협찬',
 				description: '어필컴퍼니는 패션 브랜드를 셀럽과 연결하는 PR 대행사입니다. 브랜드 분석, 아티스트 매칭, 연예인 스타일링 협찬, 미디어 노출 확인, 결과 리포트까지 협업 과정을 소개합니다.',
 				keywords: ['어필컴퍼니 소개', '패션 PR 에이전시', '셀럽 협찬', '스타일링 협찬', '브랜드 포지셔닝', '스타 마케팅', '패션 브랜드 PR'],
 			},
@@ -350,8 +350,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: 'AFEEL COMPANY | Fashion PR, Celebrity Placement',
-				description: 'AFEEL COMPANY connects fashion brands with celebrities through styling placements, brand positioning, media exposure tracking, and campaign reports.',
+				title: 'AFEEL COMPANY (어필컴퍼니) | Fashion PR, Celebrity Placement',
+				description: 'AFEEL COMPANY (어필컴퍼니) connects fashion brands with celebrities through styling placements, brand positioning, media exposure tracking, and campaign reports.',
 				keywords: ['fashion PR agency', 'celebrity placement', 'styling placement', 'brand positioning', 'star marketing', 'AFEEL COMPANY'],
 			},
 			heroBadge: 'AFEEL COMPANY',
@@ -523,8 +523,8 @@ const DICTIONARIES: Record<Locale, SiteDictionary> = {
 		},
 		home: {
 			metadata: {
-				title: 'AFEEL COMPANY | 时尚公关与韩国艺人合作',
-				description: 'AFEEL COMPANY 连接时尚品牌和韩国艺人，通过艺人造型合作、品牌定位、媒体曝光追踪和项目报告，帮助品牌提升知名度。',
+				title: 'AFEEL COMPANY (어필컴퍼니) | 时尚公关与韩国艺人合作',
+				description: 'AFEEL COMPANY (어필컴퍼니) 连接时尚品牌和韩国艺人，通过艺人造型合作、品牌定位、媒体曝光追踪和项目报告，帮助品牌提升知名度。',
 				keywords: ['时尚公关公司', '艺人合作', '造型协赞', '品牌定位', '明星营销', 'AFEEL COMPANY'],
 			},
 			heroBadge: 'AFEEL COMPANY',

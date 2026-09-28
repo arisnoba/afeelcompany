@@ -5,9 +5,10 @@ import { getSiteDictionary } from '@/i18n/site-copy';
 import { INSTAGRAM_PROFILE_URL, NAVER_BLOG_URL } from '@/lib/site';
 
 export const SITE_NAME = 'AFEEL COMPANY';
-export const SITE_TITLE_SUFFIX = 'AFEEL COMPANY';
+export const SITE_KOREAN_NAME = '어필컴퍼니';
+export const SITE_TITLE_SUFFIX = `${SITE_KOREAN_NAME} ${SITE_NAME}`;
 export const DEFAULT_SITE_DESCRIPTION = getSiteDictionary(DEFAULT_LOCALE).home.metadata.description;
-export const DEFAULT_SITE_KEYWORDS = ['AFEEL Company', '어필컴퍼니', '패션 PR', '셀럽 협찬', '스타 마케팅', '스타일링 포트폴리오'];
+export const DEFAULT_SITE_KEYWORDS = [SITE_NAME, 'afeelcompany', SITE_KOREAN_NAME, '패션 PR', '셀럽 협찬', '스타 마케팅', '스타일링 포트폴리오'];
 export const DEFAULT_OG_IMAGE = '/images/og.png';
 
 function normalizeSiteUrl(value?: string | null) {
@@ -64,9 +65,11 @@ export function createPageMetadata({
 	const canonicalPath = path.startsWith('/') ? path : `/${path}`;
 	const mergedKeywords = Array.from(new Set([...DEFAULT_SITE_KEYWORDS, ...keywords]));
 	const localizedPath = getLocalizedPath(locale, canonicalPath);
+	const siteName = locale === DEFAULT_LOCALE ? SITE_TITLE_SUFFIX : `${SITE_NAME} (${SITE_KOREAN_NAME})`;
+	const pageTitle = canonicalPath === '/' ? title : `${title} | ${siteName}`;
 
 	return {
-		title,
+		title: { absolute: pageTitle },
 		description,
 		keywords: mergedKeywords,
 		alternates: {
@@ -74,10 +77,10 @@ export function createPageMetadata({
 			languages: buildLanguageAlternates(canonicalPath),
 		},
 		openGraph: {
-			title,
+			title: pageTitle,
 			description,
 			url: localizedPath,
-			siteName: SITE_NAME,
+			siteName,
 			locale: OPEN_GRAPH_LOCALES[locale],
 			type: 'website',
 			images: [
@@ -91,7 +94,7 @@ export function createPageMetadata({
 		},
 		twitter: {
 			card: 'summary_large_image',
-			title,
+			title: pageTitle,
 			description,
 			images: [DEFAULT_OG_IMAGE],
 		},
@@ -121,7 +124,7 @@ export const organizationJsonLd = {
 	'@type': 'Organization',
 	'@id': ORGANIZATION_ID,
 	name: SITE_NAME,
-	alternateName: ['어필컴퍼니', 'AFEELCOMPANY'],
+	alternateName: [SITE_KOREAN_NAME, 'AFEELCOMPANY', 'afeelcompany'],
 	url: toAbsoluteUrl('/'),
 	logo: toAbsoluteUrl('/images/logo.svg'),
 	description: DEFAULT_SITE_DESCRIPTION,
@@ -138,6 +141,7 @@ export const websiteJsonLd = {
 	'@type': 'WebSite',
 	'@id': WEBSITE_ID,
 	name: SITE_NAME,
+	alternateName: [SITE_KOREAN_NAME, 'AFEELCOMPANY', 'afeelcompany'],
 	url: toAbsoluteUrl('/'),
 	inLanguage: Object.values(LOCALE_LANG_TAGS),
 	publisher: {

@@ -21,20 +21,20 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
 	metadataBase: SITE_URL,
 	title: {
-		default: SITE_NAME,
+		default: SITE_TITLE_SUFFIX,
 		template: `%s | ${SITE_TITLE_SUFFIX}`,
 	},
 	description: DEFAULT_SITE_DESCRIPTION,
-	applicationName: SITE_NAME,
+	applicationName: SITE_TITLE_SUFFIX,
 	keywords: DEFAULT_SITE_KEYWORDS,
 	alternates: {
 		canonical: '/',
 	},
 	openGraph: {
-		title: SITE_NAME,
+		title: SITE_TITLE_SUFFIX,
 		description: DEFAULT_SITE_DESCRIPTION,
 		url: '/',
-		siteName: SITE_NAME,
+		siteName: SITE_TITLE_SUFFIX,
 		locale: 'ko_KR',
 		type: 'website',
 		images: [
@@ -48,7 +48,7 @@ export const metadata: Metadata = {
 	},
 	twitter: {
 		card: 'summary_large_image',
-		title: SITE_NAME,
+		title: SITE_TITLE_SUFFIX,
 		description: DEFAULT_SITE_DESCRIPTION,
 		images: [DEFAULT_OG_IMAGE],
 	},

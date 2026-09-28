@@ -16,16 +16,13 @@ import { getFeaturedPortfolio, getSiteClientBrands, getSiteCompanyProfile } from
 export function getHomeMetadata(locale: Locale): Metadata {
 	const copy = getSiteDictionary(locale).home.metadata;
 
-	return {
-		...createPageMetadata({
-			title: copy.title,
-			description: copy.description,
-			path: '/',
-			keywords: copy.keywords,
-			locale,
-		}),
-		title: { absolute: copy.title },
-	};
+	return createPageMetadata({
+		title: copy.title,
+		description: copy.description,
+		path: '/',
+		keywords: copy.keywords,
+		locale,
+	});
 }
 
 export async function HomePageView({ locale = DEFAULT_LOCALE }: { locale?: Locale }) {
