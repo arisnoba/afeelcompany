@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
+import { waitForPdfRenderReady } from '@/app/pdf-export/_components/wait-for-pdf-render'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -62,25 +63,10 @@ export async function GET(request: NextRequest): Promise<Response> {
 
     const page = await browser.newPage()
 
-    // Wait for fonts, images, and dynamic content to finish loading
+    await page.emulateMediaType('print')
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 45_000 })
-
-    await page.waitForFunction(
-      () => {
-        const mapElement = document.querySelector<HTMLElement>('[data-pdf-contact-map]')
-
-        if (!mapElement) {
-          return true
-        }
-
-        const status = mapElement.dataset.pdfMapStatus
-        return status === 'ready' || status === 'disabled' || status === 'error'
-      },
-      { timeout: 10_000 }
-    ).catch(() => null)
-
-    // Allow the final paint after map/image readiness settles.
-    await new Promise<void>((resolve) => setTimeout(resolve, 500))
+    await page.waitForSelector('.pdf-document .pdf-sheet', { timeout: 10_000 })
+    await page.evaluate(waitForPdfRenderReady)
 
     const pdf = await page.pdf({
       format: 'A4',

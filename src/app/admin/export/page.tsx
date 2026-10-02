@@ -14,15 +14,11 @@ import {
 } from '@/components/ui/card'
 import { cn } from '@/lib/utils'
 
-function getPdfExportHref(locale: Locale, print = false) {
+function getPdfExportHref(locale: Locale) {
   const params = new URLSearchParams()
 
   if (locale !== DEFAULT_LOCALE) {
     params.set('locale', locale)
-  }
-
-  if (print) {
-    params.set('print', '1')
   }
 
   const query = params.toString()
@@ -35,7 +31,7 @@ export default function AdminExportPage() {
       <AdminPageIntro
         eyebrow="익스포트"
         title="포트폴리오 PDF 익스포트"
-        description="브로셔 PDF 전용 화면으로 이동해 현재 포트폴리오와 회사 정보를 인쇄 미리보기 또는 저장 흐름으로 확인합니다."
+        description="브로셔 미리보기에서 현재 포트폴리오와 회사 정보를 확인하고 PDF를 다운로드합니다."
         aside={
           <div>
             PDF 페이지는 별도 레이아웃으로 열리며, 최종 출력 전 이미지 누락과 페이지 구성을 함께 확인하는 용도입니다.
@@ -49,7 +45,7 @@ export default function AdminExportPage() {
             출력 실행
           </CardTitle>
           <CardDescription className="text-sm leading-6">
-            먼저 미리보기로 브로셔 레이아웃을 확인한 뒤, 필요하면 바로 인쇄 대화상자를 열어 PDF로 저장합니다.
+            PDF 출력 버튼으로 미리보기를 연 뒤, Download 버튼을 눌러 PDF 파일을 저장합니다. 이미지와 서체가 준비되면 다운로드가 시작됩니다.
           </CardDescription>
         </CardHeader>
 
@@ -68,7 +64,7 @@ export default function AdminExportPage() {
               </div>
               <div className="mt-5">
                 <Link
-                  href={getPdfExportHref(locale, true)}
+                  href={getPdfExportHref(locale)}
                   target="_blank"
                   rel="noreferrer"
                   className={cn(buttonVariants({ size: 'lg' }), 'w-full sm:w-auto')}

@@ -29,20 +29,21 @@ type DashboardCardData = {
 	bgColor: string;
 };
 
-function getPdfPrintHref(locale: Locale) {
-	const params = new URLSearchParams({ print: '1' });
+function getPdfExportHref(locale: Locale) {
+	const params = new URLSearchParams();
 
 	if (locale !== DEFAULT_LOCALE) {
 		params.set('locale', locale);
 	}
 
-	return `/pdf-export?${params.toString()}`;
+	const query = params.toString();
+	return query ? `/pdf-export?${query}` : '/pdf-export';
 }
 
 export default async function AdminDashboardPage() {
 	const stats = await getDashboardStats();
 	const pdfActions = LOCALES.map(locale => ({
-		href: getPdfPrintHref(locale),
+		href: getPdfExportHref(locale),
 		label: `${LOCALE_LABELS[locale]} 출력`,
 	}));
 

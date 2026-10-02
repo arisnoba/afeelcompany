@@ -3,7 +3,6 @@
 import { Fragment } from 'react'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
-import { useSearchParams } from 'next/navigation'
 import {
   ArrowLeft,
   ArrowRight,
@@ -19,7 +18,6 @@ import { Button } from '@/components/ui/button'
 import { Toaster } from '@/components/ui/sonner'
 import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 import { cn } from '@/lib/utils'
-import { waitForPdfRenderReady } from './wait-for-pdf-render'
 
 const PDF_EXPORT_TOASTER_ID = 'pdf-export-toast'
 
@@ -56,9 +54,7 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
   const [mode, setMode] = useState<PreviewMode>('scroll')
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
-  const [pendingPrint, setPendingPrint] = useState(false)
   const [downloading, setDownloading] = useState(false)
-  const searchParams = useSearchParams()
 
   const activeSection = sections[activeIndex]?.id ?? sections[0]?.id ?? 'cover'
   const sectionIds = useMemo(() => sections.map((section) => section.id), [sections])
@@ -115,46 +111,6 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
     swiper.slideTo(activeIndex)
   }, [activeIndex, mode, swiper])
 
-  useEffect(() => {
-    if (!pendingPrint || mode !== 'scroll') {
-      return
-    }
-
-    let cancelled = false
-
-    const printDocument = async () => {
-      await new Promise<void>((resolve) => {
-        window.requestAnimationFrame(() => {
-          window.requestAnimationFrame(() => resolve())
-        })
-      })
-
-      await waitForPdfRenderReady()
-
-      if (cancelled) {
-        return
-      }
-
-      setPendingPrint(false)
-      window.print()
-    }
-
-    void printDocument()
-
-    return () => {
-      cancelled = true
-    }
-  }, [mode, pendingPrint])
-
-  useEffect(() => {
-    if (searchParams.get('print') !== '1') {
-      return
-    }
-
-    setPendingPrint(true)
-    setMode('scroll')
-  }, [searchParams])
-
   function scrollToSection(index: number) {
     const sectionId = sectionIds[index]
 
@@ -205,6 +161,8 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
   }
 
   async function handleDownload() {
+    if (downloading) return
+
     setDownloading(true)
     const toastId = toast.loading('PDF 파일을 생성중입니다. 잠시만 기다려 주세요.', {
       toasterId: PDF_EXPORT_TOASTER_ID,
@@ -226,10 +184,7 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
         toasterId: PDF_EXPORT_TOASTER_ID,
       })
     } catch {
-      // fallback: browser print
-      setPendingPrint(true)
-      handleModeChange('scroll')
-      toast.error('PDF 다운로드에 실패해 인쇄 화면으로 전환합니다. 잠시만 기다려 주세요.', {
+      toast.error('이미지 또는 서체를 불러오지 못했거나 PDF 생성에 실패했습니다. 잠시 후 다시 다운로드해 주세요.', {
         id: toastId,
         toasterId: PDF_EXPORT_TOASTER_ID,
       })

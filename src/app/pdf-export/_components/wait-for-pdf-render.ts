@@ -1,57 +1,44 @@
+// Keep this function self-contained: Puppeteer executes it in the page context.
 export async function waitForPdfRenderReady() {
-	await document.fonts.ready;
+	const waitForAssets = async () => {
+		await document.fonts.ready;
 
-	const images = Array.from(document.querySelectorAll('img[data-pdf-image]')) as HTMLImageElement[];
+		if (Array.from(document.fonts).some(font => font.status === 'error')) {
+			throw new Error('PDF font loading failed');
+		}
 
-	await Promise.all(
-		images.map(async image => {
-			try {
-				await image.decode();
-			} catch {
-				return;
-			}
-		})
-	);
+		const images = Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img'));
+		await Promise.all(
+			images.map(async image => {
+				image.loading = 'eager';
+				try {
+					await image.decode();
+					if (!image.naturalWidth) throw new Error('Empty image');
+				} catch {
+					// The contact map already has a visual fallback for unavailable maps.
+					if (!image.closest('[data-pdf-contact-map]')) {
+						throw new Error('PDF image loading failed');
+					}
+				}
+			})
+		);
 
-	const mapElement = document.querySelector<HTMLElement>('[data-pdf-contact-map]');
-
-	if (!mapElement) {
-		return;
-	}
-
-	const isMapSettled = () => {
-		const status = mapElement.dataset.pdfMapStatus;
-		return status === 'ready' || status === 'disabled' || status === 'error';
-	};
-
-	if (isMapSettled()) {
-		return;
-	}
-
-	await new Promise<void>(resolve => {
-		const observer = new MutationObserver(() => {
-			if (!isMapSettled()) {
-				return;
-			}
-
-			cleanup();
-		});
-
-		const timeoutId = window.setTimeout(() => {
-			cleanup();
-		}, 10000);
-
-		const cleanup = () => {
-			observer.disconnect();
-			window.clearTimeout(timeoutId);
+		await new Promise<void>(resolve => {
 			window.requestAnimationFrame(() => {
 				window.requestAnimationFrame(() => resolve());
 			});
-		};
-
-		observer.observe(mapElement, {
-			attributes: true,
-			attributeFilter: ['data-pdf-map-status'],
 		});
-	});
+	};
+
+	let timeoutId: ReturnType<typeof setTimeout> | undefined;
+	try {
+		await Promise.race([
+			waitForAssets(),
+			new Promise<never>((_, reject) => {
+				timeoutId = setTimeout(() => reject(new Error('PDF asset loading timed out')), 15_000);
+			}),
+		]);
+	} finally {
+		clearTimeout(timeoutId);
+	}
 }
