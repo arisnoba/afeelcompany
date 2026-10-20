@@ -2,6 +2,7 @@ import type { NextRequest } from 'next/server'
 
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
 import { waitForPdfRenderReady } from '@/app/pdf-export/_components/wait-for-pdf-render'
+import { limitPdfAssetRequests } from './limit-asset-requests'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -62,6 +63,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     })
 
     const page = await browser.newPage()
+    await limitPdfAssetRequests(page)
 
     page.on('requestfailed', (assetRequest) => {
       if (['image', 'font'].includes(assetRequest.resourceType())) {
