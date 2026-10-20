@@ -6,8 +6,7 @@ import { limitPdfAssetRequests } from './limit-asset-requests'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
-// Vercel Pro: 300s / Hobby: 60s
-export const maxDuration = 60
+export const maxDuration = 120
 
 function getDefaultChromiumUrl(): string {
   const architecture = process.arch === 'arm64' ? 'arm64' : 'x64'
@@ -77,6 +76,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     await page.evaluate(waitForPdfRenderReady)
 
     const pdf = await page.pdf({
+      timeout: 60_000,
       format: 'A4',
       landscape: true,
       printBackground: true,

@@ -121,3 +121,21 @@ test('server PDF images are bounded while font preloads continue without blockin
   page.emit('requestfailed', requests[1])
   assert.deepEqual(started, [0, 1, 4, 5, 2, 3])
 })
+
+test('PDF photos use print-sized optimization while local and unsupported sources stay intact', () => {
+  const source = readFileSync(new URL('../src/app/pdf-export/_lib/pdf-image-url.ts', import.meta.url), 'utf8')
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
+  })
+  const context = vm.createContext({ exports: {}, URL })
+  vm.runInContext(outputText, context)
+  const { getPdfImageUrl } = context.exports
+  const original = 'https://example.public.blob.vercel-storage.com/portfolio/photo.jpg'
+  const optimized = new URL(getPdfImageUrl(original), 'https://afeelcompany.com')
+  assert.equal(optimized.pathname, '/_next/image')
+  assert.equal(optimized.searchParams.get('url'), original)
+  assert.equal(optimized.searchParams.get('w'), '828')
+  assert.equal(optimized.searchParams.get('q'), '75')
+  assert.equal(getPdfImageUrl('/pdf-fixtures/photo.jpg'), '/pdf-fixtures/photo.jpg')
+  assert.equal(getPdfImageUrl('https://other.example/photo.jpg'), 'https://other.example/photo.jpg')
+})

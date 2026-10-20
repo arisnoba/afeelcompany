@@ -7,6 +7,7 @@ import { DEFAULT_LOCALE, type Locale } from '@/i18n/config'
 import type { PdfClientBrand, PdfDocument, PdfPortfolioItem } from '@/types/pdf'
 
 import { pdfFixtureDocument } from './pdf-fixtures'
+import { getPdfImageUrl } from './pdf-image-url'
 
 const SECTION_ORDER: PdfDocument['sectionOrder'] = ['cover', 'about', 'work', 'client', 'contact']
 
@@ -52,7 +53,7 @@ function mapWorkItems(rows: PortfolioItemRow[], brandLogoUrlMap: Map<string, str
       ) ?? findBrandLogoUrl(row.brand_name, brandLogoUrlMap),
     celebrityName: row.celebrity_name,
     category: row.category,
-    imageUrl: row.image_url,
+    imageUrl: getPdfImageUrl(row.image_url),
     thumbnailUrl: row.thumbnail_url,
     showOnPdf: row.show_on_pdf,
     sortOrder: row.sort_order,
