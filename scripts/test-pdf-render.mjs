@@ -44,6 +44,7 @@ test('PDF generation waits for images to decode', async () => {
   let finishDecode
   let ready = false
   const image = {
+    loading: 'lazy',
     naturalWidth: 100,
     decode: () => new Promise(resolve => { finishDecode = resolve }),
   }
@@ -64,4 +65,17 @@ test('broken images block PDF generation, except the existing map fallback', asy
   }
   await assert.rejects(renderReady({ images: [brokenImage] }), /PDF image loading failed/)
   await renderReady({ images: [{ ...brokenImage, closest: () => ({}) }] })
+})
+
+test('loaded images remain printable when headless Chromium rejects decode', async () => {
+  const loadedImage = {
+    loading: 'auto',
+    complete: true,
+    naturalWidth: 2000,
+    decode: async () => { throw new Error('The source image cannot be decoded.') },
+    closest: () => null,
+  }
+  await renderReady({ images: [loadedImage] })
+  assert.equal(loadedImage.loading, 'auto')
+  await assert.rejects(renderReady({ images: [{ ...loadedImage, complete: false }] }), /PDF image loading failed/)
 })

@@ -16,14 +16,16 @@ export async function waitForPdfRenderReady() {
 		const images = Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img'));
 		await Promise.all(
 			images.map(async image => {
-				image.loading = 'eager';
+				if (image.loading === 'lazy') image.loading = 'eager';
 				try {
 					await image.decode();
 					if (!image.naturalWidth) throw new Error('Empty image');
 				} catch {
 					// The contact map already has a visual fallback for unavailable maps.
-					if (!image.closest('[data-pdf-contact-map]')) {
-						throw new Error('PDF image loading failed');
+					// Headless Chromium can reject decode() for already loaded images.
+					// Printing still renders them; incomplete/broken images must fail.
+					if (!(image.complete && image.naturalWidth > 0) && !image.closest('[data-pdf-contact-map]')) {
+						throw new Error(`PDF image loading failed: ${image.currentSrc || image.src}`);
 					}
 				}
 			})

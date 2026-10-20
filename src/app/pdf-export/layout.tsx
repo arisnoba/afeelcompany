@@ -14,8 +14,9 @@ const brochureSerif = Newsreader({
 	style: ['italic'],
 	display: 'swap',
 	variable: '--font-brochure-serif',
+	fallback: ['Noto Sans KR', 'sans-serif'],
 });
 
 export default function PdfExportLayout({ children }: { children: ReactNode }) {
-	return <div className={`${brochureSans.variable} ${brochureSerif.variable} min-h-screen bg-[#fcf9f8] text-[#1c1917] font-[family:var(--font-brochure-sans)]`}>{children}</div>;
+	return <div className={`${brochureSans.variable} ${brochureSerif.variable} min-h-screen bg-[#fcf9f8] text-[#1c1917]`} style={{ fontFamily: 'var(--font-brochure-sans)' }}>{children}</div>;
 }
