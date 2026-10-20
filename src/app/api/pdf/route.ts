@@ -63,6 +63,12 @@ export async function GET(request: NextRequest): Promise<Response> {
 
     const page = await browser.newPage()
 
+    page.on('requestfailed', (assetRequest) => {
+      if (['image', 'font'].includes(assetRequest.resourceType())) {
+        console.error('[pdf] asset request failed', assetRequest.url().split('?')[0], assetRequest.failure()?.errorText)
+      }
+    })
+
     await page.emulateMediaType('print')
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 45_000 })
     await page.waitForSelector('.pdf-document .pdf-sheet', { timeout: 10_000 })

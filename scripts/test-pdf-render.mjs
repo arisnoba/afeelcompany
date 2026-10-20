@@ -45,6 +45,7 @@ test('PDF generation waits for images to decode', async () => {
   let ready = false
   const image = {
     loading: 'lazy',
+    complete: true,
     naturalWidth: 100,
     decode: () => new Promise(resolve => { finishDecode = resolve }),
   }
@@ -59,6 +60,8 @@ test('PDF generation waits for images to decode', async () => {
 
 test('broken images block PDF generation, except the existing map fallback', async () => {
   const brokenImage = {
+    src: '/broken.jpg',
+    complete: true,
     naturalWidth: 0,
     decode: async () => { throw new Error('Image unavailable') },
     closest: () => null,
@@ -69,6 +72,7 @@ test('broken images block PDF generation, except the existing map fallback', asy
 
 test('loaded images remain printable when headless Chromium rejects decode', async () => {
   const loadedImage = {
+    src: '/loaded.jpg',
     loading: 'auto',
     complete: true,
     naturalWidth: 2000,
@@ -77,5 +81,22 @@ test('loaded images remain printable when headless Chromium rejects decode', asy
   }
   await renderReady({ images: [loadedImage] })
   assert.equal(loadedImage.loading, 'auto')
-  await assert.rejects(renderReady({ images: [{ ...loadedImage, complete: false }] }), /PDF image loading failed/)
+  await assert.rejects(renderReady({ images: [{ ...loadedImage, naturalWidth: 0 }] }), /PDF image loading failed/)
+})
+
+test('pending image requests finish before decode is checked', async () => {
+  let decoded = false
+  const image = Object.assign(new EventTarget(), {
+    complete: false,
+    naturalWidth: 0,
+    decode: async () => { decoded = true },
+  })
+  const pending = renderReady({ images: [image] })
+  await new Promise(resolve => setImmediate(resolve))
+  assert.equal(decoded, false)
+  image.complete = true
+  image.naturalWidth = 100
+  image.dispatchEvent(new Event('load'))
+  await pending
+  assert.equal(decoded, true)
 })

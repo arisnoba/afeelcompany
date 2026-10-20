@@ -18,6 +18,19 @@ export async function waitForPdfRenderReady() {
 			images.map(async image => {
 				if (image.loading === 'lazy') image.loading = 'eager';
 				try {
+					if (!image.complete) {
+						await new Promise<void>((resolve, reject) => {
+							const cleanup = () => {
+								image.removeEventListener('load', onLoad);
+								image.removeEventListener('error', onError);
+							};
+							const onLoad = () => { cleanup(); resolve(); };
+							const onError = () => { cleanup(); reject(new Error('Image request failed')); };
+							image.addEventListener('load', onLoad, { once: true });
+							image.addEventListener('error', onError, { once: true });
+							if (image.complete) onLoad();
+						});
+					}
 					await image.decode();
 					if (!image.naturalWidth) throw new Error('Empty image');
 				} catch {
@@ -25,7 +38,7 @@ export async function waitForPdfRenderReady() {
 					// Headless Chromium can reject decode() for already loaded images.
 					// Printing still renders them; incomplete/broken images must fail.
 					if (!(image.complete && image.naturalWidth > 0) && !image.closest('[data-pdf-contact-map]')) {
-						throw new Error(`PDF image loading failed: ${image.currentSrc || image.src}`);
+						throw new Error(`PDF image loading failed: ${(image.currentSrc || image.src).split('?')[0]} (complete=${image.complete}, width=${image.naturalWidth})`);
 					}
 				}
 			})
