@@ -89,6 +89,7 @@ export async function GET(request: NextRequest): Promise<Response> {
 
     const pdf = await page.pdf({
       timeout: 60_000,
+      tagged: false,
       format: 'A4',
       landscape: true,
       printBackground: true,
