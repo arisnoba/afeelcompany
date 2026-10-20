@@ -102,7 +102,7 @@ test('pending image requests finish before decode is checked', async () => {
   assert.equal(decoded, true)
 })
 
-test('server PDF asset requests are bounded and release capacity on completion or failure', async () => {
+test('server PDF images are bounded while font preloads continue without blocking', async () => {
   const source = readFileSync(new URL('../src/app/api/pdf/limit-asset-requests.ts', import.meta.url), 'utf8')
   const { outputText } = ts.transpileModule(source, {
     compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
@@ -112,14 +112,14 @@ test('server PDF asset requests are bounded and release capacity on completion o
   const page = Object.assign(new EventEmitter(), { setRequestInterception: async () => {} })
   await context.exports.limitPdfAssetRequests(page, 2)
   const started = []
-  const requests = ['image', 'font', 'image', 'font', 'script'].map((type, index) => ({
+  const requests = ['image', 'image', 'image', 'image', 'font', 'script'].map((type, index) => ({
     resourceType: () => type,
     continue: async () => { started.push(index) },
   }))
   requests.forEach(request => page.emit('request', request))
-  assert.deepEqual(started, [0, 1, 4])
+  assert.deepEqual(started, [0, 1, 4, 5])
   page.emit('requestfinished', requests[0])
-  assert.deepEqual(started, [0, 1, 4, 2])
+  assert.deepEqual(started, [0, 1, 4, 5, 2])
   page.emit('requestfailed', requests[1])
-  assert.deepEqual(started, [0, 1, 4, 2, 3])
+  assert.deepEqual(started, [0, 1, 4, 5, 2, 3])
 })
