@@ -5,6 +5,7 @@ import { tmpdir } from 'node:os'
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
 import { waitForPdfRenderReady } from '@/app/pdf-export/_components/wait-for-pdf-render'
 import { limitPdfAssetRequests } from './limit-asset-requests'
+import { createPdfInBatches } from './create-pdf-in-batches'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
@@ -81,20 +82,14 @@ export async function GET(request: NextRequest): Promise<Response> {
     const temporaryStorage = await statfs(tmpdir())
     const chromiumPid = browser.process()?.pid
     const openFiles = chromiumPid ? await readdir(`/proc/${chromiumPid}/fd`).then(files => files.length).catch(() => null) : null
-    console.info('[pdf] render ready', await page.evaluate(() => ({
+    const renderState = await page.evaluate(() => ({
       sheets: document.querySelectorAll('.pdf-sheet').length,
       images: document.querySelectorAll('.pdf-document img').length,
       decodedImageMiB: Math.round(Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img')).reduce((sum, image) => sum + image.naturalWidth * image.naturalHeight * 4, 0) / 1024 / 1024),
-    })), { temporaryFreeMiB: Math.round(temporaryStorage.bavail * temporaryStorage.bsize / 1024 / 1024), openFiles })
+    }))
+    console.info('[pdf] render ready', renderState, { temporaryFreeMiB: Math.round(temporaryStorage.bavail * temporaryStorage.bsize / 1024 / 1024), openFiles })
 
-    const pdf = await page.pdf({
-      timeout: 60_000,
-      tagged: false,
-      format: 'A4',
-      landscape: true,
-      printBackground: true,
-      margin: { top: '0', right: '0', bottom: '0', left: '0' },
-    })
+    const pdf = await createPdfInBatches(page, renderState.sheets)
 
     return new Response(Buffer.from(pdf), {
       status: 200,

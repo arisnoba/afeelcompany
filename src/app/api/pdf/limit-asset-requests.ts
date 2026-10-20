@@ -16,7 +16,9 @@ export async function limitPdfAssetRequests(page: Page, concurrency = 6) {
     while (active.size < concurrency && queued.length > 0) {
       const request = queued.shift()!
       active.add(request)
-      void request.continue().catch(() => release(request))
+      // JPEG can be embedded directly in PDF. WebP optimization makes Chromium
+      // re-encode the photos and can inflate the brochure by more than 10x.
+      void request.continue({ headers: { ...request.headers(), accept: 'image/jpeg' } }).catch(() => release(request))
     }
   }
 

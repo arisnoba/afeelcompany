@@ -4,6 +4,8 @@ import test from 'node:test'
 import vm from 'node:vm'
 import ts from 'typescript'
 import { EventEmitter } from 'node:events'
+import { createRequire } from 'node:module'
+import { PDFDocument } from 'pdf-lib'
 
 const source = readFileSync(new URL('../src/app/pdf-export/_components/wait-for-pdf-render.ts', import.meta.url), 'utf8')
 const { outputText } = ts.transpileModule(source, {
@@ -112,6 +114,7 @@ test('server PDF images are bounded while font preloads continue without blockin
   const started = []
   const requests = ['image', 'image', 'image', 'image', 'font', 'script'].map((type, index) => ({
     resourceType: () => type,
+    headers: () => ({}),
     continue: async () => { started.push(index) },
   }))
   requests.forEach(request => page.emit('request', request))
@@ -138,4 +141,32 @@ test('PDF photos use print-sized optimization while local and unsupported source
   assert.equal(optimized.searchParams.get('q'), '75')
   assert.equal(getPdfImageUrl('/pdf-fixtures/photo.jpg'), '/pdf-fixtures/photo.jpg')
   assert.equal(getPdfImageUrl('https://other.example/photo.jpg'), 'https://other.example/photo.jpg')
+})
+
+test('PDF batches merge every page in order, including the final partial batch', async () => {
+  const source = readFileSync(new URL('../src/app/api/pdf/create-pdf-in-batches.ts', import.meta.url), 'utf8')
+  const { outputText } = ts.transpileModule(source, {
+    compilerOptions: { module: ts.ModuleKind.CommonJS, target: ts.ScriptTarget.ES2017 },
+  })
+  const context = vm.createContext({ exports: {}, require: createRequire(import.meta.url) })
+  vm.runInContext(outputText, context)
+  const ranges = []
+  let batchFirst = 1
+  const page = {
+    title: async () => 'Company brochure',
+    evaluate: async (_fn, { first }) => { batchFirst = first },
+    pdf: async ({ pageRanges }) => {
+      ranges.push(batchFirst)
+      const batch = await PDFDocument.create()
+      const [first, last] = pageRanges.split('-').map(Number)
+      for (let number = first; number <= last; number++) batch.addPage([100 + batchFirst + number - 1, 200])
+      return batch.save()
+    },
+  }
+  const bytes = await context.exports.createPdfInBatches(page, 10)
+  const merged = await PDFDocument.load(bytes)
+  assert.deepEqual(ranges, [1, 5, 9])
+  assert.equal(merged.getTitle(), 'Company brochure')
+  assert.deepEqual(merged.getPages().map(page => page.getWidth()), [101, 102, 103, 104, 105, 106, 107, 108, 109, 110])
+  await assert.rejects(context.exports.createPdfInBatches({ ...page, pdf: async () => bytes }, 4), /Incomplete PDF print batch/)
 })
