@@ -1,4 +1,6 @@
 import type { NextRequest } from 'next/server'
+import { readdir, statfs } from 'node:fs/promises'
+import { tmpdir } from 'node:os'
 
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
 import { waitForPdfRenderReady } from '@/app/pdf-export/_components/wait-for-pdf-render'
@@ -55,6 +57,7 @@ export async function GET(request: NextRequest): Promise<Response> {
     }
 
     browser = await puppeteer.launch({
+      dumpio: Boolean(process.env.VERCEL),
       args: launchArgs,
       executablePath,
       headless,
@@ -74,6 +77,15 @@ export async function GET(request: NextRequest): Promise<Response> {
     await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 45_000 })
     await page.waitForSelector('.pdf-document .pdf-sheet', { timeout: 10_000 })
     await page.evaluate(waitForPdfRenderReady)
+
+    const temporaryStorage = await statfs(tmpdir())
+    const chromiumPid = browser.process()?.pid
+    const openFiles = chromiumPid ? await readdir(`/proc/${chromiumPid}/fd`).then(files => files.length).catch(() => null) : null
+    console.info('[pdf] render ready', await page.evaluate(() => ({
+      sheets: document.querySelectorAll('.pdf-sheet').length,
+      images: document.querySelectorAll('.pdf-document img').length,
+      decodedImageMiB: Math.round(Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img')).reduce((sum, image) => sum + image.naturalWidth * image.naturalHeight * 4, 0) / 1024 / 1024),
+    })), { temporaryFreeMiB: Math.round(temporaryStorage.bavail * temporaryStorage.bsize / 1024 / 1024), openFiles })
 
     const pdf = await page.pdf({
       timeout: 60_000,
