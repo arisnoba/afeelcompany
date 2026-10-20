@@ -3,8 +3,14 @@ export async function waitForPdfRenderReady() {
 	const waitForAssets = async () => {
 		await document.fonts.ready;
 
-		if (Array.from(document.fonts).some(font => font.status === 'error')) {
-			throw new Error('PDF font loading failed');
+		// next/font's optional local fallback faces can fail on Linux without
+		// Arial/Times New Roman even when the downloaded webfonts load correctly.
+		const failedFonts = Array.from(document.fonts).filter(font => {
+			const family = font.family.replace(/^["']|["']$/g, '');
+			return font.status === 'error' && !family.endsWith(' Fallback');
+		});
+		if (failedFonts.length > 0) {
+			throw new Error(`PDF font loading failed: ${failedFonts.map(font => font.family).join(', ')}`);
 		}
 
 		const images = Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img'));
