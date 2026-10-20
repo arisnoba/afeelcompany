@@ -31,12 +31,11 @@ export async function waitForPdfRenderReady() {
 							if (image.complete) onLoad();
 						});
 					}
-					await image.decode();
+					// Do not force every full-resolution image into decoded memory at
+					// once. Chromium decodes each printed page as needed.
 					if (!image.naturalWidth) throw new Error('Empty image');
 				} catch {
 					// The contact map already has a visual fallback for unavailable maps.
-					// Headless Chromium can reject decode() for already loaded images.
-					// Printing still renders them; incomplete/broken images must fail.
 					if (!(image.complete && image.naturalWidth > 0) && !image.closest('[data-pdf-contact-map]')) {
 						throw new Error(`PDF image loading failed: ${(image.currentSrc || image.src).split('?')[0]} (complete=${image.complete}, width=${image.naturalWidth})`);
 					}

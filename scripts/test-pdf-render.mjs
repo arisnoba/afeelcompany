@@ -41,20 +41,20 @@ test('failed webfonts still block PDF generation and identify the font', async (
   ] }), /PDF font loading failed: Noto Sans KR/)
 })
 
-test('PDF generation waits for images to decode', async () => {
-  let finishDecode
+test('PDF generation waits for lazy images to finish loading', async () => {
   let ready = false
-  const image = {
+  const image = Object.assign(new EventTarget(), {
     loading: 'lazy',
-    complete: true,
-    naturalWidth: 100,
-    decode: () => new Promise(resolve => { finishDecode = resolve }),
-  }
+    complete: false,
+    naturalWidth: 0,
+  })
   const pending = renderReady({ images: [image] }).then(() => { ready = true })
   await new Promise(resolve => setImmediate(resolve))
   assert.equal(image.loading, 'eager')
   assert.equal(ready, false)
-  finishDecode()
+  image.complete = true
+  image.naturalWidth = 100
+  image.dispatchEvent(new Event('load'))
   await pending
   assert.equal(ready, true)
 })
@@ -85,21 +85,19 @@ test('loaded images remain printable when headless Chromium rejects decode', asy
   await assert.rejects(renderReady({ images: [{ ...loadedImage, naturalWidth: 0 }] }), /PDF image loading failed/)
 })
 
-test('pending image requests finish before decode is checked', async () => {
-  let decoded = false
+test('image request errors still prevent PDF generation', async () => {
   const image = Object.assign(new EventTarget(), {
+    src: '/failed.jpg',
     complete: false,
     naturalWidth: 0,
-    decode: async () => { decoded = true },
+    closest: () => null,
   })
   const pending = renderReady({ images: [image] })
+  const rejected = assert.rejects(pending, /PDF image loading failed/)
   await new Promise(resolve => setImmediate(resolve))
-  assert.equal(decoded, false)
   image.complete = true
-  image.naturalWidth = 100
-  image.dispatchEvent(new Event('load'))
-  await pending
-  assert.equal(decoded, true)
+  image.dispatchEvent(new Event('error'))
+  await rejected
 })
 
 test('server PDF images are bounded while font preloads continue without blocking', async () => {
