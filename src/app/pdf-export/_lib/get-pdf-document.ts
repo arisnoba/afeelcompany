@@ -81,6 +81,7 @@ function localizeFixtureDocument(locale: Locale): PdfDocument {
 }
 
 export async function getPdfDocument(locale: Locale = DEFAULT_LOCALE): Promise<PdfDocument> {
+  const allowFixtureFallback = process.env.VERCEL !== '1'
   try {
     const [profileResult, workResult, brandResult] = await Promise.all([
       sql<CompanyProfileRow>`
@@ -118,7 +119,7 @@ export async function getPdfDocument(locale: Locale = DEFAULT_LOCALE): Promise<P
       `,
     ])
 
-    if (workResult.rows.length === 0) {
+    if (workResult.rows.length === 0 && allowFixtureFallback) {
       return localizeFixtureDocument(locale)
     }
 
@@ -130,7 +131,7 @@ export async function getPdfDocument(locale: Locale = DEFAULT_LOCALE): Promise<P
 
     return {
       title: pdfFixtureDocument.title,
-      issueDate: pdfFixtureDocument.issueDate,
+      issueDate: '',
       heroImageUrl: pdfFixtureDocument.heroImageUrl,
       aboutText: getLocalizedPublicAboutCopy(locale, profile?.about_text ?? pdfFixtureDocument.aboutText),
       contact: {
@@ -139,10 +140,12 @@ export async function getPdfDocument(locale: Locale = DEFAULT_LOCALE): Promise<P
         address: getLocalizedSiteAddress(locale, profile?.address ?? pdfFixtureDocument.contact.address),
       },
       workItems,
-      clientBrands: allClientBrands.length > 0 ? allClientBrands : pdfFixtureDocument.clientBrands,
+      clientBrands: allClientBrands.length > 0 || !allowFixtureFallback ? allClientBrands : pdfFixtureDocument.clientBrands,
       sectionOrder: SECTION_ORDER,
     }
-  } catch {
+  } catch (error) {
+    // Never persist demo data as the production brochure during a DB outage.
+    if (!allowFixtureFallback) throw error
     return localizeFixtureDocument(locale)
   }
 }

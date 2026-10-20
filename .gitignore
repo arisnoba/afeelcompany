@@ -40,3 +40,5 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+# Generated local PDFs must never be committed.
+/.cache/pdf-exports/

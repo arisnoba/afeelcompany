@@ -11,6 +11,8 @@ import { BrochureSheet } from './_components/BrochureSheet';
 import { PdfContactMap } from './_components/PdfContactMap';
 import { PdfPreviewWorkspace } from './_components/PdfPreviewWorkspace';
 import { getPdfDocument } from './_lib/get-pdf-document';
+import { formatPdfIssueDate, getPdfCacheKey, parsePdfSavedAt } from './_lib/pdf-version';
+import { getPdfCacheStore } from '@/lib/pdf-cache';
 
 export const dynamic = 'force-dynamic';
 
@@ -22,6 +24,7 @@ const CONTACT_ADDRESS_URL = 'https://naver.me/5WUmv4Fu';
 
 type PdfSearchParams = {
 	locale?: string | string[];
+	savedAt?: string | string[];
 };
 
 type PdfAboutCopy = ReturnType<typeof getSiteDictionary>['about'];
@@ -358,6 +361,14 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 	const locale = resolveLocale(resolvedSearchParams?.locale);
 	const dictionary = getSiteDictionary(locale);
 	const brochure = await getPdfDocument(locale);
+	const cacheKey = getPdfCacheKey(locale, brochure);
+	let savedAt = parsePdfSavedAt(resolvedSearchParams?.savedAt);
+	if (!savedAt) {
+		try { savedAt = (await getPdfCacheStore().find(cacheKey))?.savedAt; }
+		catch (error) { console.error('[pdf] preview cache lookup failed', error); }
+	}
+	savedAt ??= new Date().toISOString();
+	brochure.issueDate = formatPdfIssueDate(savedAt);
 
 	const workChunks = chunk(brochure.workItems, WORK_PER_PAGE);
 	const clientChunks = chunk(brochure.clientBrands, CLIENT_PER_PAGE);
@@ -532,5 +543,5 @@ export default async function PdfExportPage({ searchParams }: { searchParams?: P
 		),
 	});
 
-	return <PdfPreviewWorkspace sections={sections} locale={locale} />;
+	return <div data-pdf-cache-key={cacheKey} data-pdf-saved-at={savedAt}><PdfPreviewWorkspace sections={sections} locale={locale} /></div>;
 }

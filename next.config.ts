@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { getPdfRenderVersion } from './scripts/pdf-render-version.mjs';
 
 const projectRoot = process.cwd();
 
@@ -26,6 +27,9 @@ const legacyPermanentRedirects = [
 ];
 
 const nextConfig: NextConfig = {
+  env: {
+    PDF_RENDER_VERSION: getPdfRenderVersion(projectRoot),
+  },
   outputFileTracingRoot: projectRoot,
   turbopack: {
     root: projectRoot,

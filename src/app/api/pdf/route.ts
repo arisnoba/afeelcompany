@@ -1,108 +1,47 @@
 import type { NextRequest } from 'next/server'
-import { readdir, statfs } from 'node:fs/promises'
-import { tmpdir } from 'node:os'
 
 import { DEFAULT_LOCALE, isLocale } from '@/i18n/config'
-import { waitForPdfRenderReady } from '@/app/pdf-export/_components/wait-for-pdf-render'
-import { limitPdfAssetRequests } from './limit-asset-requests'
-import { createPdfInBatches } from './create-pdf-in-batches'
+import { getPdfDocument } from '@/app/pdf-export/_lib/get-pdf-document'
+import { getPdfCacheKey } from '@/app/pdf-export/_lib/pdf-version'
+import { getOrCreatePdf, getPdfCacheStore, PdfCacheBusyError } from '@/lib/pdf-cache'
+import { generatePdf } from './generate-pdf'
 
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 export const maxDuration = 120
 
-function getDefaultChromiumUrl(): string {
-  const architecture = process.arch === 'arm64' ? 'arm64' : 'x64'
-
-  return `https://github.com/Sparticuz/chromium/releases/download/v147.0.0/chromium-v147.0.0-pack.${architecture}.tar`
-}
-
-/**
- * GET /api/pdf
- * Generates a PDF of the /pdf-export page using headless Chromium.
- * On Vercel: uses @sparticuz/chromium-min (downloaded at runtime).
- * Locally: uses the system Chrome/Chromium binary.
- */
 export async function GET(request: NextRequest): Promise<Response> {
   const requestUrl = new URL(request.url)
-  const origin = requestUrl.origin
   const localeParam = requestUrl.searchParams.get('locale')
   const locale = localeParam && isLocale(localeParam) ? localeParam : DEFAULT_LOCALE
-  const targetUrl = locale === DEFAULT_LOCALE ? `${origin}/pdf-export` : `${origin}/pdf-export?locale=${locale}`
-
-  let browser: import('puppeteer-core').Browser | null = null
+  const localRequest = ['localhost', '127.0.0.1', '[::1]'].includes(requestUrl.hostname)
+  const store = getPdfCacheStore(localRequest)
 
   try {
-    let executablePath: string
-    let launchArgs: string[]
-    let headless: true | 'shell' = true
-
-    const { default: puppeteer } = await import('puppeteer-core')
-
-    if (process.env.VERCEL) {
-      const Chromium = (await import('@sparticuz/chromium-min')).default
-      const chromiumUrl = process.env.CHROMIUM_REMOTE_URL ?? getDefaultChromiumUrl()
-
-      executablePath = await Chromium.executablePath(chromiumUrl)
-      launchArgs = puppeteer.defaultArgs({ args: Chromium.args, headless: 'shell' })
-      headless = 'shell'
-    } else {
-      // Local dev — detect system Chrome
-      executablePath =
-        process.env.PUPPETEER_EXECUTABLE_PATH ??
-        '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'
-      launchArgs = puppeteer.defaultArgs({
-        args: ['--no-sandbox', '--disable-setuid-sandbox'],
-        headless,
-      })
-    }
-
-    browser = await puppeteer.launch({
-      dumpio: Boolean(process.env.VERCEL),
-      args: launchArgs,
-      executablePath,
-      headless,
-      defaultViewport: { width: 1440, height: 900 },
+    const brochure = await getPdfDocument(locale)
+    const key = getPdfCacheKey(locale, brochure)
+    const { file, hit } = await getOrCreatePdf(store, key, async savedAt => {
+      const target = new URL('/pdf-export', requestUrl.origin)
+      target.searchParams.set('locale', locale)
+      target.searchParams.set('savedAt', savedAt)
+      return generatePdf(target.toString(), key, savedAt)
     })
 
-    const page = await browser.newPage()
-    await limitPdfAssetRequests(page)
-
-    page.on('requestfailed', (assetRequest) => {
-      if (['image', 'font'].includes(assetRequest.resourceType())) {
-        console.error('[pdf] asset request failed', assetRequest.url().split('?')[0], assetRequest.failure()?.errorText)
-      }
-    })
-
-    await page.emulateMediaType('print')
-    await page.goto(targetUrl, { waitUntil: 'networkidle2', timeout: 45_000 })
-    await page.waitForSelector('.pdf-document .pdf-sheet', { timeout: 10_000 })
-    await page.evaluate(waitForPdfRenderReady)
-
-    const temporaryStorage = await statfs(tmpdir())
-    const chromiumPid = browser.process()?.pid
-    const openFiles = chromiumPid ? await readdir(`/proc/${chromiumPid}/fd`).then(files => files.length).catch(() => null) : null
-    const renderState = await page.evaluate(() => ({
-      sheets: document.querySelectorAll('.pdf-sheet').length,
-      images: document.querySelectorAll('.pdf-document img').length,
-      decodedImageMiB: Math.round(Array.from(document.querySelectorAll<HTMLImageElement>('.pdf-document img')).reduce((sum, image) => sum + image.naturalWidth * image.naturalHeight * 4, 0) / 1024 / 1024),
-    }))
-    console.info('[pdf] render ready', renderState, { temporaryFreeMiB: Math.round(temporaryStorage.bavail * temporaryStorage.bsize / 1024 / 1024), openFiles })
-
-    const pdf = await createPdfInBatches(page, renderState.sheets)
-
-    return new Response(Buffer.from(pdf), {
-      status: 200,
+    return new Response(await store.read(file), {
       headers: {
         'Content-Type': 'application/pdf',
         'Content-Disposition': `attachment; filename="afeel-company-brochure-${locale}.pdf"`,
         'Cache-Control': 'no-store',
+        'X-PDF-Cache': hit ? 'HIT' : 'MISS',
+        'X-PDF-Saved-At': file.savedAt,
       },
     })
   } catch (error) {
-    console.error('[pdf] generation failed', error)
-    return Response.json({ error: 'PDF 생성에 실패했습니다.' }, { status: 500 })
-  } finally {
-    await browser?.close()
+    console.error('[pdf] download failed', error)
+    const busy = error instanceof PdfCacheBusyError
+    return Response.json(
+      { error: busy ? 'PDF 생성이 진행 중입니다. 잠시 후 다시 다운로드해 주세요.' : 'PDF 파일을 준비하지 못했습니다. 잠시 후 다시 다운로드해 주세요.' },
+      { status: busy ? 503 : 500, headers: { 'Cache-Control': 'no-store', ...(busy ? { 'Retry-After': '3' } : {}) } },
+    )
   }
 }

@@ -3,7 +3,7 @@ import { PUBLIC_ABOUT_COPY } from '@/lib/company-copy';
 
 export const pdfFixtureDocument: PdfDocument = {
 	title: 'AFEEL Company',
-	issueDate: '2026.03',
+	issueDate: '',
 	heroImageUrl: '/images/symbol.svg',
 	aboutText: `${PUBLIC_ABOUT_COPY} 스타일링 협찬을 통해 브랜드의 가시성을 높입니다.`,
 	contact: {

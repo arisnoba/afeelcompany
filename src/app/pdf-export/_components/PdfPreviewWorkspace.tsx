@@ -1,6 +1,7 @@
 'use client'
 
 import { Fragment } from 'react'
+import { useRouter } from 'next/navigation'
 import type { ReactNode } from 'react'
 import { useEffect, useMemo, useState } from 'react'
 import {
@@ -51,6 +52,7 @@ interface PdfPreviewWorkspaceProps {
 }
 
 export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspaceProps) {
+  const router = useRouter()
   const [mode, setMode] = useState<PreviewMode>('scroll')
   const [activeIndex, setActiveIndex] = useState(0)
   const [swiper, setSwiper] = useState<SwiperInstance | null>(null)
@@ -164,14 +166,17 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
     if (downloading) return
 
     setDownloading(true)
-    const toastId = toast.loading('PDF 파일을 생성중입니다. 잠시만 기다려 주세요.', {
+    const toastId = toast.loading('PDF 파일을 준비하고 있습니다. 잠시만 기다려 주세요.', {
       toasterId: PDF_EXPORT_TOASTER_ID,
       duration: Infinity,
     })
     try {
       const apiUrl = locale === DEFAULT_LOCALE ? '/api/pdf' : `/api/pdf?locale=${locale}`
       const res = await fetch(apiUrl)
-      if (!res.ok) throw new Error('PDF 생성 실패')
+      if (!res.ok) {
+        const result = await res.json().catch(() => null)
+        throw new Error(result?.error ?? 'PDF 다운로드에 실패했습니다.')
+      }
       const blob = await res.blob()
       const url = URL.createObjectURL(blob)
       const a = document.createElement('a')
@@ -179,12 +184,13 @@ export function PdfPreviewWorkspace({ sections, locale }: PdfPreviewWorkspacePro
       a.download = `afeel-company-brochure-${locale}.pdf`
       a.click()
       URL.revokeObjectURL(url)
+      if (res.headers.get('X-PDF-Cache') === 'MISS') router.refresh()
       toast.success('PDF 파일 다운로드를 시작합니다.', {
         id: toastId,
         toasterId: PDF_EXPORT_TOASTER_ID,
       })
-    } catch {
-      toast.error('이미지 또는 서체를 불러오지 못했거나 PDF 생성에 실패했습니다. 잠시 후 다시 다운로드해 주세요.', {
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'PDF 다운로드에 실패했습니다. 잠시 후 다시 시도해 주세요.', {
         id: toastId,
         toasterId: PDF_EXPORT_TOASTER_ID,
       })
