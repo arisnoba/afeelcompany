@@ -1,4 +1,5 @@
 import Image from 'next/image'
+import { requireAdminSession } from '@/lib/auth'
 import { getDisplayFeed } from '@/lib/instagram'
 import type { CachedPost } from '@/types/instagram'
 import { SyncButton } from './_components/SyncButton'
@@ -7,6 +8,7 @@ import { SyncButton } from './_components/SyncButton'
 export const dynamic = 'force-dynamic'
 
 export default async function InstagramTestPage() {
+  await requireAdminSession()
   const posts: CachedPost[] = await getDisplayFeed()
   const lastSync = posts[0]?.fetched_at ?? null
 

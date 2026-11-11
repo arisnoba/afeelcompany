@@ -36,16 +36,21 @@ export function SyncButton() {
     try {
       const res = await fetch('/api/instagram/refresh-token', { method: 'POST' })
       const json: unknown = await res.json()
-      const data = json as { success: boolean; data?: { expires_in: number; token_type: string }; error?: string }
-      if (data.success) {
+      const data = json as {
+        success: boolean
+        data?: { expires_at: string }
+        error?: string
+      }
+      if (data.success && data.data) {
         setRefreshStatus('done')
-        const expiresIn = data.data?.expires_in ?? 0
         setRefreshMessage(
-          `Token refreshed. Expires in: ${expiresIn}s (${Math.round(expiresIn / 86400)} days)`
+          `Token refreshed. Set INSTAGRAM_TOKEN_EXPIRES_AT to ${data.data.expires_at} in Vercel.`
         )
       } else {
         setRefreshStatus('error')
-        setRefreshMessage(data.error ?? 'Token refresh failed')
+        setRefreshMessage(data.error === 'TOKEN_REPLACEMENT_REQUIRED'
+          ? 'Update the Instagram token through the Meta app and Vercel settings.'
+          : data.error ?? 'Token refresh failed')
       }
     } catch {
       setRefreshStatus('error')

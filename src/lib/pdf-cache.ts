@@ -146,25 +146,20 @@ export async function getOrCreatePdf(
   store: PdfCacheStore,
   key: string,
   generate: (savedAt: string) => Promise<Uint8Array>,
-  { waitMs = 95_000, pollMs = 1_000 } = {},
 ): Promise<{ file: CachedPdf; hit: boolean }> {
-  const deadline = Date.now() + waitMs
-  do {
-    const cached = await store.find(key)
-    if (cached) return { file: cached, hit: true }
-    const lease = await store.acquire(key)
-    if (lease) {
-      try {
-        const existing = await store.find(key)
-        if (existing) return { file: existing, hit: true }
-        const bytes = await generate(lease.savedAt)
-        if (Buffer.from(bytes.subarray(0, 5)).toString() !== '%PDF-') throw new Error('Invalid generated PDF')
-        return { file: await store.save(lease, bytes), hit: false }
-      } finally {
-        await store.release(lease).catch(error => console.error('[pdf] lease release failed', error))
-      }
-    }
-    await new Promise(resolve => setTimeout(resolve, pollMs))
-  } while (Date.now() < deadline)
-  throw new PdfCacheBusyError('PDF generation is already in progress')
+  const cached = await store.find(key)
+  if (cached) return { file: cached, hit: true }
+
+  const lease = await store.acquire(key)
+  if (!lease) throw new PdfCacheBusyError('PDF generation is already in progress')
+
+  try {
+    const existing = await store.find(key)
+    if (existing) return { file: existing, hit: true }
+    const bytes = await generate(lease.savedAt)
+    if (Buffer.from(bytes.subarray(0, 5)).toString() !== '%PDF-') throw new Error('Invalid generated PDF')
+    return { file: await store.save(lease, bytes), hit: false }
+  } finally {
+    await store.release(lease).catch(error => console.error('[pdf] lease release failed', error))
+  }
 }

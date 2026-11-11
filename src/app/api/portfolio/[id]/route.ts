@@ -2,7 +2,7 @@ import { del } from '@vercel/blob'
 
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
-import { uploadPublicImage } from '@/lib/blob'
+import { InvalidImageError, uploadPublicImage } from '@/lib/blob'
 import {
   getClientBrandOptionById,
   resolvePortfolioHoverImageUrl,
@@ -249,6 +249,9 @@ export async function PATCH(
       data: mapPortfolioRow(result.rows[0]),
     })
   } catch (error) {
+    if (error instanceof InvalidImageError) {
+      return Response.json({ success: false, error: error.message }, { status: 400 })
+    }
     const message = error instanceof Error ? error.message : 'UPDATE_FAILED'
     const status = message.includes('인스타그램') ? 400 : 500
     return Response.json({ success: false, error: message }, { status })

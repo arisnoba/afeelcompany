@@ -39,10 +39,9 @@ export async function fetchFeed(accessToken: string): Promise<InstagramPost[]> {
   url.searchParams.set('fields', FEED_FIELDS)
   url.searchParams.set('access_token', accessToken)
 
-  const res = await fetch(url.toString(), { cache: 'no-store' })
+  const res = await fetch(url.toString(), { cache: 'no-store', signal: AbortSignal.timeout(15_000) })
   if (!res.ok) {
-    const err: unknown = await res.json()
-    throw new Error(`Instagram API error ${res.status}: ${JSON.stringify(err)}`)
+    throw new Error(`Instagram API error ${res.status}`)
   }
 
   const body: InstagramFeedResponse = await res.json()
@@ -63,8 +62,7 @@ export async function refreshToken(
 
   const res = await fetch(url.toString(), { cache: 'no-store' })
   if (!res.ok) {
-    const err: unknown = await res.json()
-    throw new Error(`Token refresh failed ${res.status}: ${JSON.stringify(err)}`)
+    throw new Error(`Token refresh failed ${res.status}`)
   }
 
   return res.json() as Promise<RefreshTokenResult>
@@ -246,11 +244,8 @@ export async function getDisplayFeed(): Promise<CachedPost[]> {
     const freshPosts = await fetchFeed(token)
     await syncToDb(freshPosts)
     return await getCachedFeed()
-  } catch (error: unknown) {
-    console.warn(
-      '[Instagram] Failed to refresh stale feed cache, falling back to cached rows:',
-      error
-    )
+  } catch {
+    console.warn('[Instagram] Failed to refresh stale feed cache, falling back to cached rows')
     return cachedPosts
   }
 }

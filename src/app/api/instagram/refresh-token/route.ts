@@ -1,21 +1,12 @@
+import { isAdminAuthenticated } from '@/lib/auth'
 import { refreshToken } from '@/lib/instagram'
 
-/**
- * POST /api/instagram/refresh-token
- * Renews the 60-day long-lived Instagram access token.
- *
- * Meta API constraint (Pitfall 4 from RESEARCH.md):
- *   - Token must be >24h old to be eligible for refresh
- *   - Token must not yet be expired
- *   - On success: new token valid for another ~60 days (expires_in ≈ 5183944s)
- *
- * D-11: The new token is returned in the response body.
- * The operator must manually update INSTAGRAM_ACCESS_TOKEN in Vercel dashboard
- * and INSTAGRAM_TOKEN_EXPIRES_AT (format: ISO 8601) in environment variables.
- *
- * D-10: Manual invocation only. No automatic scheduling.
- */
+/** Manually refresh the configured Instagram token and report its expiry. */
 export async function POST(): Promise<Response> {
+  if (!(await isAdminAuthenticated())) {
+    return Response.json({ success: false, error: 'UNAUTHORIZED' }, { status: 401 })
+  }
+
   const token = process.env.INSTAGRAM_ACCESS_TOKEN
   if (!token) {
     return Response.json(
@@ -25,24 +16,25 @@ export async function POST(): Promise<Response> {
   }
 
   try {
-    const result = await refreshToken(token)
+    const { access_token: refreshedToken, expires_in: expiresIn } = await refreshToken(token)
+    if (!Number.isSafeInteger(expiresIn) || expiresIn <= 0) {
+      return Response.json({ success: false, error: 'TOKEN_REFRESH_FAILED' }, { status: 500 })
+    }
 
-    // Calculate human-readable expiry date for the operator
-    const expiresAt = new Date(Date.now() + result.expires_in * 1000).toISOString()
+    if (refreshedToken !== token) {
+      return Response.json(
+        { success: false, error: 'TOKEN_REPLACEMENT_REQUIRED' },
+        { status: 409 }
+      )
+    }
+
+    const expiresAt = new Date(Date.now() + expiresIn * 1000).toISOString()
 
     return Response.json({
       success: true,
-      data: {
-        ...result,
-        expires_at: expiresAt,
-        instructions: [
-          'Update INSTAGRAM_ACCESS_TOKEN in Vercel dashboard with the new access_token value',
-          `Update INSTAGRAM_TOKEN_EXPIRES_AT to: ${expiresAt}`,
-        ],
-      },
+      data: { expires_in: expiresIn, expires_at: expiresAt },
     })
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : 'Unknown error during token refresh'
-    return Response.json({ success: false, error: message }, { status: 500 })
+  } catch {
+    return Response.json({ success: false, error: 'TOKEN_REFRESH_FAILED' }, { status: 500 })
   }
 }

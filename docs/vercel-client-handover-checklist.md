@@ -161,7 +161,8 @@
 
 - [ ] Meta 앱 소유권과 운영 주체 확인
 - [ ] `INSTAGRAM_ACCESS_TOKEN` 만료일 확인
-- [ ] 토큰 재발급 절차를 운영 문서에 남김
+- [ ] 토큰을 교체할 때는 Meta 앱 관리 권한이 있는 운영자가 토큰을 발급하고 Vercel의 `INSTAGRAM_ACCESS_TOKEN`과 `INSTAGRAM_TOKEN_EXPIRES_AT`을 함께 갱신
+- [ ] 관리자 화면에서 기존 토큰의 갱신에 성공하면 표시된 만료 시간을 Vercel의 `INSTAGRAM_TOKEN_EXPIRES_AT`에 반영
 - [ ] 관리자에서 수동 동기화 테스트
 
 ### 7. 도메인 전환

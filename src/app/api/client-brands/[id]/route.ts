@@ -2,7 +2,7 @@ import { del } from '@vercel/blob'
 
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
-import { uploadPublicImage } from '@/lib/blob'
+import { InvalidImageError, uploadPublicImage } from '@/lib/blob'
 import { revalidatePublicContent } from '@/lib/public-revalidation'
 import type { ClientBrandAdminItem } from '@/types/client-brand'
 
@@ -125,6 +125,9 @@ export async function PATCH(
       data: mapBrandRow(result.rows[0]),
     })
   } catch (error) {
+    if (error instanceof InvalidImageError) {
+      return Response.json({ success: false, error: error.message }, { status: 400 })
+    }
     const message = error instanceof Error ? error.message : 'BRAND_UPDATE_FAILED'
     const status = message.includes('브랜드 URL') ? 400 : 500
     return Response.json({ success: false, error: message }, { status })

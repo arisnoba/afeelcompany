@@ -1,6 +1,6 @@
 import { sql } from '@/lib/db'
 import { isAdminAuthenticated } from '@/lib/auth'
-import { uploadPublicImage } from '@/lib/blob'
+import { InvalidImageError, preparePublicImage, storePublicImage } from '@/lib/blob'
 import {
   getClientBrandOptionById,
   resolvePortfolioHoverImageUrl,
@@ -155,11 +155,12 @@ export async function POST(request: Request): Promise<Response> {
       brandName: resolvedBrandName,
       celebrityName,
     })
-    const uploadedNormal = await uploadPublicImage(normalFile, 'portfolio')
-    const uploadedHover =
-      hoverFile instanceof File && !managedBrandLogoUrl
-        ? await uploadPublicImage(hoverFile, 'portfolio')
-        : null
+    const normalImage = await preparePublicImage(normalFile)
+    const hoverImage = hoverFile instanceof File && !managedBrandLogoUrl
+      ? await preparePublicImage(hoverFile)
+      : null
+    const uploadedNormal = await storePublicImage(normalImage, 'portfolio')
+    const uploadedHover = hoverImage ? await storePublicImage(hoverImage, 'portfolio') : null
     const client = await sql.connect()
     let result: { rows: PortfolioUploadRow[] }
 
@@ -228,7 +229,7 @@ export async function POST(request: Request): Promise<Response> {
     })
   } catch (error) {
     const message = error instanceof Error ? error.message : 'UPLOAD_FAILED'
-    const status = message.includes('인스타그램') ? 400 : 500
+    const status = error instanceof InvalidImageError || message.includes('인스타그램') ? 400 : 500
     return Response.json({ success: false, error: message }, { status })
   }
 }

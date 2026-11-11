@@ -71,12 +71,14 @@ test('local files survive a new store and simultaneous downloads generate once',
     const store = cache.createLocalPdfCache(root)
     let calls = 0
     const generate = async () => { calls++; await new Promise(resolve => setTimeout(resolve, 10)); return bytes }
-    const results = await Promise.all(Array.from({ length: 4 }, () => cache.getOrCreatePdf(store, key, generate, { pollMs: 1, waitMs: 1000 })))
+    const results = await Promise.allSettled(Array.from({ length: 4 }, () => cache.getOrCreatePdf(store, key, generate)))
     assert.equal(calls, 1)
-    assert.equal(results.filter(result => !result.hit).length, 1)
+    const [generated] = results.filter(result => result.status === 'fulfilled').map(result => result.value)
+    assert.equal(results.filter(result => result.status === 'fulfilled').length, 1)
+    assert.ok(results.filter(result => result.status === 'rejected').every(result => result.reason instanceof cache.PdfCacheBusyError))
     const persisted = await cache.getOrCreatePdf(cache.createLocalPdfCache(root), key, () => { throw new Error('Must reuse') })
     assert.equal(persisted.hit, true)
-    assert.equal(persisted.file.savedAt, results[0].file.savedAt)
+    assert.equal(persisted.file.savedAt, generated.file.savedAt)
     assert.deepEqual(await store.read(persisted.file), bytes)
   } finally { await rm(root, { recursive: true, force: true }) }
 })
@@ -96,11 +98,14 @@ test('separate Blob store instances share generation and stream the saved file',
   const { api } = fakeBlob()
   let calls = 0
   const generate = async () => { calls++; await new Promise(resolve => setTimeout(resolve, 10)); return bytes }
-  const results = await Promise.all(Array.from({ length: 3 }, () => api.getOrCreatePdf(api.createBlobPdfCache(), key, generate, { waitMs: 1000, pollMs: 1 })))
+  const store = api.createBlobPdfCache()
+  const results = await Promise.allSettled(Array.from({ length: 3 }, () => api.getOrCreatePdf(store, key, generate)))
   assert.equal(calls, 1)
-  assert.equal(results.filter(result => !result.hit).length, 1)
-  assert.equal(new Set(results.map(result => result.file.savedAt)).size, 1)
-  assert.deepEqual(Buffer.from(await new Response(await api.createBlobPdfCache().read(results[0].file)).arrayBuffer()), bytes)
+  assert.equal(results.filter(result => result.status === 'fulfilled').length, 1)
+  assert.ok(results.filter(result => result.status === 'rejected').every(result => result.reason instanceof api.PdfCacheBusyError))
+  const persisted = await api.getOrCreatePdf(api.createBlobPdfCache(), key, () => { throw new Error('Must reuse') })
+  assert.equal(persisted.hit, true)
+  assert.deepEqual(Buffer.from(await new Response(await store.read(persisted.file)).arrayBuffer()), bytes)
 })
 
 test('expired Blob leases recover and an older owner cannot save or remove the new lease', async () => {
@@ -123,6 +128,8 @@ test('storage errors are not treated as misses and a busy request never duplicat
   const { api, sdk } = fakeBlob()
   sdk.list = async () => { throw new Error('Storage unavailable') }
   await assert.rejects(api.getOrCreatePdf(api.createBlobPdfCache(), key, async () => bytes), /Storage unavailable/)
-  const busy = { find: async () => null, acquire: async () => null }
-  await assert.rejects(api.getOrCreatePdf(busy, key, async () => { throw new Error('Must not generate') }, { waitMs: 2, pollMs: 1 }), api.PdfCacheBusyError)
+  let lookups = 0
+  const busy = { find: async () => { lookups++; return null }, acquire: async () => null }
+  await assert.rejects(api.getOrCreatePdf(busy, key, async () => { throw new Error('Must not generate') }), api.PdfCacheBusyError)
+  assert.equal(lookups, 1)
 })
