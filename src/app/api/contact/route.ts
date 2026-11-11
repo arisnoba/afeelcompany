@@ -1,6 +1,8 @@
 import { createHash } from 'node:crypto'
 
 import { getSiteCompanyProfile } from '@/lib/site'
+import { readJsonBody } from '@/lib/read-json-body'
+import { requestBudgetBucket, requestClient, reserveRequestBudget } from '@/lib/request-budget'
 import { resend } from '@/lib/resend'
 import { hasInquiryMessageContent } from '@/lib/contact-inquiry'
 
@@ -15,6 +17,7 @@ type ContactRequestPayload = {
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
 const DUPLICATE_WINDOW_MS = 2 * 60 * 1000
+const pendingSubmissions = new Set<string>()
 
 type ContactSubmissionStore = Map<string, number>
 
@@ -77,7 +80,8 @@ function buildSubmissionFingerprint({
 }
 
 export async function POST(request: Request): Promise<Response> {
-	const body = (await request.json()) as ContactRequestPayload
+	const body = await readJsonBody(request, 48_000) as ContactRequestPayload | null
+	if (!body) return Response.json({ success: false, error: 'INVALID_PAYLOAD' }, { status: 400 })
 
 	const name = normalizeField(body.name, 100)
 	const company = normalizeField(body.company, 100)
@@ -118,11 +122,38 @@ export async function POST(request: Request): Promise<Response> {
 		return Response.json({ success: true, duplicate: true })
 	}
 
-	contactSubmissionStore.set(submissionFingerprint, submittedAt)
+	if (pendingSubmissions.size >= 12 || pendingSubmissions.has(submissionFingerprint)) {
+		return Response.json({ success: false, error: 'RATE_LIMITED' }, { status: 429, headers: { 'Retry-After': '2' } })
+	}
 
+	pendingSubmissions.add(submissionFingerprint)
+	try {
+		const client = requestClient(request)
+		if (client) {
+			const bucket = requestBudgetBucket(client)
+			if (!(await reserveRequestBudget(`contact-client:${bucket}`, 4, 900))) {
+				return Response.json({ success: false, error: 'RATE_LIMITED' }, { status: 429, headers: { 'Retry-After': '900' } })
+			}
+			if (!(await reserveRequestBudget(`contact-client-day:${bucket}`, 12, 86_400))) {
+				return Response.json({ success: false, error: 'RATE_LIMITED' }, { status: 429, headers: { 'Retry-After': '86400' } })
+			}
+		}
+		if (!(await reserveRequestBudget('contact-day', 100, 86_400))) {
+			return Response.json({ success: false, error: 'RATE_LIMITED' }, { status: 429, headers: { 'Retry-After': '86400' } })
+		}
+		const response = await sendContactInquiry({ name, company, email, phone, message })
+		if (response.ok) contactSubmissionStore.set(submissionFingerprint, Date.now())
+		return response
+	} catch {
+		return Response.json({ success: false, error: 'SEND_FAILED' }, { status: 502 })
+	} finally {
+		pendingSubmissions.delete(submissionFingerprint)
+	}
+}
+
+async function sendContactInquiry({ name, company, email, phone, message }: Required<Omit<ContactRequestPayload, 'website'>>) {
 	const fromEmail = process.env.RESEND_FROM_EMAIL?.trim()
 	if (!resend || !fromEmail) {
-		contactSubmissionStore.delete(submissionFingerprint)
 		return Response.json({ success: false, error: 'EMAIL_NOT_CONFIGURED' }, { status: 500 })
 	}
 
@@ -130,7 +161,6 @@ export async function POST(request: Request): Promise<Response> {
 	const toEmail = profile.contactEmail.trim()
 
 	if (!toEmail) {
-		contactSubmissionStore.delete(submissionFingerprint)
 		return Response.json({ success: false, error: 'CONTACT_DESTINATION_NOT_CONFIGURED' }, { status: 500 })
 	}
 
@@ -186,7 +216,6 @@ export async function POST(request: Request): Promise<Response> {
 	})
 
 	if (error) {
-		contactSubmissionStore.delete(submissionFingerprint)
 		return Response.json({ success: false, error: 'SEND_FAILED' }, { status: 502 })
 	}
 

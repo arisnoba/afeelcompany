@@ -22,7 +22,9 @@ export function SyncButton() {
         setSyncMessage(`Synced ${data.data?.synced ?? 0} posts. Refresh page to see updates.`)
       } else {
         setSyncStatus('error')
-        setSyncMessage(data.error ?? 'Sync failed')
+        setSyncMessage(data.error === 'SYNC_RATE_LIMITED'
+          ? 'Instagram sync was attempted recently. Try again in a minute.'
+          : data.error ?? 'Sync failed')
       }
     } catch {
       setSyncStatus('error')

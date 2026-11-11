@@ -10,7 +10,8 @@ import type { AdminLoginErrorCode } from '@/types/admin';
 const ERROR_MESSAGES: Record<AdminLoginErrorCode, string> = {
 	BOOTSTRAP_PASSWORD_NOT_CONFIGURED: '초기 관리자 비밀번호가 아직 설정되지 않았습니다. ADMIN_PASSWORD를 확인해주세요.',
 	INVALID_CREDENTIALS: '이메일 또는 비밀번호가 올바르지 않습니다.',
-	SESSION_SECRET_NOT_CONFIGURED: '서버에 ADMIN_SESSION_SECRET 또는 ADMIN_PASSWORD가 설정되지 않았습니다.',
+	SESSION_CREATION_FAILED: '로그인 세션을 만들지 못했습니다. 잠시 후 다시 시도해 주세요.',
+	RATE_LIMITED: '로그인 요청이 많습니다. 1분 후 다시 시도해 주세요.',
 };
 
 export function LoginForm() {

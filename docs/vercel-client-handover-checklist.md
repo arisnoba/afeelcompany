@@ -42,14 +42,8 @@
   - `RESEND_FROM_EMAIL`
 - Google Maps
   - `NEXT_PUBLIC_GOOGLE_MAPS_API_KEY`
-- Instagram 연동
-  - `INSTAGRAM_APP_ID`
-  - `INSTAGRAM_APP_SECRET`
-  - `INSTAGRAM_ACCESS_TOKEN`
-  - `INSTAGRAM_USER_ID`
 - 관리자 인증
   - `ADMIN_PASSWORD`
-  - `ADMIN_SESSION_SECRET`
 
 ## 인수인계 전 원칙
 
@@ -99,11 +93,6 @@
 - [ ] Production / Preview / Development 환경별 변수 구분해서 등록
 - [ ] 아래 변수 누락 없이 재등록
   - `ADMIN_PASSWORD`
-  - `ADMIN_SESSION_SECRET`
-  - `INSTAGRAM_APP_ID`
-  - `INSTAGRAM_APP_SECRET`
-  - `INSTAGRAM_ACCESS_TOKEN`
-  - `INSTAGRAM_USER_ID`
   - `DATABASE_URL`
   - `DATABASE_URL_UNPOOLED`
   - `PGHOST`
@@ -157,13 +146,13 @@
 - [ ] `RESEND_FROM_EMAIL`이 새 계정에서도 사용 가능한지 확인
 - [ ] 문의 폼 발송 테스트
 
-### 6. Instagram 연동
+### 6. Instagram 링크와 관리자 세션
 
-- [ ] Meta 앱 소유권과 운영 주체 확인
-- [ ] `INSTAGRAM_ACCESS_TOKEN` 만료일 확인
-- [ ] 토큰을 교체할 때는 Meta 앱 관리 권한이 있는 운영자가 토큰을 발급하고 Vercel의 `INSTAGRAM_ACCESS_TOKEN`과 `INSTAGRAM_TOKEN_EXPIRES_AT`을 함께 갱신
-- [ ] 관리자 화면에서 기존 토큰의 갱신에 성공하면 표시된 만료 시간을 Vercel의 `INSTAGRAM_TOKEN_EXPIRES_AT`에 반영
-- [ ] 관리자에서 수동 동기화 테스트
+- [ ] 포트폴리오에 저장한 Instagram 링크가 외부 게시물로 열리는지 확인합니다. 링크 운영에는 Meta API 토큰을 사용하지 않습니다.
+- [ ] 운영 DB에 `admin_sessions`와 `request_budgets`가 있는지 확인합니다.
+- [ ] 관리자 세션 전환 후 다시 로그인하고 정상적으로 로그아웃되는지 확인합니다. 관리자 세션은 DB에 저장합니다.
+
+회사소개서 링크는 로그인 없이 열립니다. 이전 공개 PDF를 회수할 때는 언어별 현재 버전을 확인한 뒤 `pdf-exports/`에서 이전 사본을 삭제합니다.
 
 ### 7. 도메인 전환
 

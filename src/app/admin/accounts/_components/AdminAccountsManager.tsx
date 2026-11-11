@@ -16,6 +16,7 @@ const ERROR_MESSAGES: Record<AdminUserMutationErrorCode, string> = {
   INVALID_EMAIL: '유효한 이메일 주소를 입력해주세요.',
   LAST_ACTIVE_ADMIN: '마지막 활성 관리자 계정은 비활성화할 수 없습니다.',
   PASSWORD_TOO_SHORT: '비밀번호는 10자 이상으로 설정해주세요.',
+  PASSWORD_TOO_LONG: '비밀번호는 4,096자 이하로 입력해 주세요.',
   UNAUTHORIZED: '세션이 만료되었습니다. 다시 로그인해주세요.',
 }
 

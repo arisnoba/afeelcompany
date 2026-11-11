@@ -8,7 +8,8 @@ export interface AdminUserSummary {
 export type AdminLoginErrorCode =
   | 'BOOTSTRAP_PASSWORD_NOT_CONFIGURED'
   | 'INVALID_CREDENTIALS'
-  | 'SESSION_SECRET_NOT_CONFIGURED'
+  | 'SESSION_CREATION_FAILED'
+  | 'RATE_LIMITED'
 
 export type AdminUserMutationErrorCode =
   | 'ADMIN_NOT_FOUND'
@@ -17,4 +18,5 @@ export type AdminUserMutationErrorCode =
   | 'INVALID_EMAIL'
   | 'LAST_ACTIVE_ADMIN'
   | 'PASSWORD_TOO_SHORT'
+  | 'PASSWORD_TOO_LONG'
   | 'UNAUTHORIZED'

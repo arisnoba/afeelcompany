@@ -2,6 +2,7 @@
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
+import { toast } from 'sonner'
 
 import { Button, type buttonVariants } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -21,11 +22,14 @@ export function LogoutButton({
     setIsPending(true)
 
     try {
-      await fetch('/api/auth/logout', {
+      const response = await fetch('/api/auth/logout', {
         method: 'POST',
       })
+      if (!response.ok) throw new Error('Logout failed')
       router.replace('/admin/login')
       router.refresh()
+    } catch {
+      toast.error('로그아웃하지 못했습니다. 다시 시도해 주세요.')
     } finally {
       setIsPending(false)
     }

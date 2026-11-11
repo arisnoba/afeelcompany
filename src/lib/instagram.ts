@@ -1,4 +1,5 @@
 import { sql } from '@/lib/db'
+import { reserveRequestBudget } from '@/lib/request-budget'
 import type {
   CachedPost,
   InstagramPost,
@@ -241,6 +242,8 @@ export async function getDisplayFeed(): Promise<CachedPost[]> {
   checkTokenExpiry()
 
   try {
+    if (!(await reserveRequestBudget('instagram-sync', 1, 60))) return cachedPosts
+
     const freshPosts = await fetchFeed(token)
     await syncToDb(freshPosts)
     return await getCachedFeed()

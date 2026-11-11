@@ -18,8 +18,9 @@ function setup({
   upstreamToken = currentToken,
   upstreamExpiry = expiresIn,
 } = {}) {
-  const env = { ADMIN_SESSION_SECRET: 'test-session-secret', INSTAGRAM_ACCESS_TOKEN: token }
+  const env = { INSTAGRAM_ACCESS_TOKEN: token }
   let sessionCookie
+  const sessions = new Set()
   const providerRequests = []
 
   function load(path, imports) {
@@ -52,19 +53,23 @@ function setup({
   }
 
   const db = {
-    sql: async (query) => {
+    sql: async (query, tokenHash) => {
       const statement = query.join('')
-      if (statement.includes('COUNT(*)')) return { rows: [{ count: '1' }] }
-      if (statement.includes('SELECT id, email, is_active')) {
-        return { rows: [{ id: adminId, email: 'admin@example.test', is_active: active }] }
+      if (statement.includes('CREATE ') || statement.includes('DELETE ')) return { rows: [] }
+      if (statement.includes('INSERT INTO admin_sessions')) {
+        sessions.add(tokenHash)
+        return { rowCount: 1 }
       }
-      if (statement.includes('CREATE ')) return { rows: [] }
+      if (statement.includes('FROM admin_sessions')) {
+        return { rows: active && sessions.has(tokenHash) ? [{ id: adminId, email: 'admin@example.test' }] : [] }
+      }
       throw new Error('Unexpected query')
     },
   }
   const auth = load('../src/lib/auth.ts', {
     'server-only': {},
     'node:crypto': require('node:crypto'),
+    'node:util': require('node:util'),
     'next/headers': {
       cookies: async () => ({
         get: () => sessionCookie === undefined ? undefined : { value: sessionCookie },
@@ -74,7 +79,7 @@ function setup({
     'next/navigation': {},
     '@/lib/db': db,
   })
-  const instagram = load('../src/lib/instagram.ts', { '@/lib/db': db })
+  const instagram = load('../src/lib/instagram.ts', { '@/lib/db': db, '@/lib/request-budget': {} })
   const route = load('../src/app/api/instagram/refresh-token/route.ts', {
     '@/lib/auth': auth,
     '@/lib/instagram': instagram,
@@ -83,7 +88,7 @@ function setup({
   return {
     post: route.POST,
     providerRequests,
-    signIn: () => auth.createAdminSession(adminId),
+    signIn: () => auth.createAdminSession(adminId, 'test-version'),
     forgeSession: () => { sessionCookie = `${adminId}.${Date.now() + 60_000}.invalid-signature` },
   }
 }

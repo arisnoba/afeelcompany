@@ -1,4 +1,5 @@
 import { isAdminAuthenticated } from '@/lib/auth'
+import { reserveRequestBudget } from '@/lib/request-budget'
 import { fetchFeed, syncToDb, checkTokenExpiry } from '@/lib/instagram'
 
 /**
@@ -24,6 +25,12 @@ export async function POST(): Promise<Response> {
   }
 
   try {
+    if (!(await reserveRequestBudget('instagram-sync', 1, 60))) {
+      return Response.json(
+        { success: false, error: 'SYNC_RATE_LIMITED' },
+        { status: 429, headers: { 'Retry-After': '60' } },
+      )
+    }
     const posts = await fetchFeed(token)
     const result = await syncToDb(posts)
     return Response.json({ success: true, data: result })

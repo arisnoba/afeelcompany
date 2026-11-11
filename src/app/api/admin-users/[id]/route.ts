@@ -1,4 +1,5 @@
 import { getAdminSession, setAdminUserActive } from '@/lib/auth'
+import { readJsonBody } from '@/lib/read-json-body'
 import type { AdminUserMutationErrorCode } from '@/types/admin'
 
 export async function PATCH(
@@ -15,9 +16,9 @@ export async function PATCH(
   }
 
   const { id } = await context.params
-  const body = (await request.json()) as { isActive?: boolean }
+  const body = await readJsonBody(request, 1024) as { isActive?: unknown } | null
 
-  if (typeof body.isActive !== 'boolean') {
+  if (typeof body?.isActive !== 'boolean') {
     return Response.json(
       { success: false, error: 'ADMIN_NOT_FOUND' satisfies AdminUserMutationErrorCode },
       { status: 400 }
@@ -25,7 +26,7 @@ export async function PATCH(
   }
 
   try {
-    const admin = await setAdminUserActive(id, body.isActive, session.adminId)
+    const admin = await setAdminUserActive(id, body.isActive)
     return Response.json({ success: true, admin })
   } catch (error) {
     return Response.json(
@@ -36,7 +37,7 @@ export async function PATCH(
             ? (error.message as AdminUserMutationErrorCode)
             : 'ADMIN_NOT_FOUND',
       },
-      { status: 400 }
+      { status: error instanceof Error && error.message === 'UNAUTHORIZED' ? 401 : 400 }
     )
   }
 }
